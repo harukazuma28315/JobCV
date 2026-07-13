@@ -1,7 +1,7 @@
 <?php
 
 $host = "localhost";
-$dbname = "cvdb";
+$dbname = "testdatabase";
 $username = "root";
 $password = "";
 
