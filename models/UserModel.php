@@ -38,7 +38,24 @@ class UserModel {
 		
 		return $exists;
 	}
-
+    
+    /**
+	 * Lấy thông tin tài khoản chi tiết dựa theo địa chỉ Email
+	 * @param string $email Địa chỉ email đăng nhập của người dùng
+	 * @return array|null Mảng chứa thông tin cơ bản của User hoặc null nếu không tồn tại
+	 */
+	public function getUserByEmail($email) {
+		$stmt = $this->db->prepare("SELECT MaUser, Email, MatKhau, Role, HoTen FROM user WHERE Email = ?");
+		$stmt->bind_param("s", $email);
+		$stmt->execute();
+		$result = $stmt->get_result();
+		
+		$user = $result->fetch_assoc();
+		$stmt->close();
+		
+		return $user ? $user : null;
+	}
+    
 	/**
 	 * Thực hiện đăng ký tài khoản cho Ứng viên (Role = 0)
 	 * @param array $userData Mảng chứa thông tin chung của User theo Database
