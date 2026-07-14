@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JobHub Vietnam - Nền Tảng Tuyển Dụng Hàng Đầu</title>
     <link href="../../public/css/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../../public/css/css/style.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
@@ -38,7 +39,7 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top py-2">
     <div class="container">
         <!-- Logo -->
-<a class="navbar-brand d-flex align-items-center position-relative" href="index.php?url=home" style="width: 150px; height: 40px;">
+<a class="navbar-brand d-flex align-items-center position-relative" href="../home/index.php" style="width: 150px; height: 40px;">
     <img src="../../public/images/logo1.png" alt="JobHub Logo" 
          style="height: 50px; width: auto; object-fit: contain; position: absolute; top: 50%; transform: translateY(-50%); max-width: none;">
 </a>
@@ -52,26 +53,19 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav mx-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="index.php?url=jobs/search">Tìm việc làm</a>
+                    <a class="nav-link" href="../jobs/search.php">Tìm việc làm</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="index.php?url=employer/list">Danh sách công ty</a>
+                    <a class="nav-link" href="../employer/post-job.php">Danh sách công ty</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="index.php?url=candidate/cv-builder">Dịch vụ CV</a>
+                    <a class="nav-link" href="../candidate/cv-builder.php">Dịch vụ CV</a>
                 </li>
             </ul>
             
-            <!-- Nút điều hướng 
             <div class="d-flex gap-2">
-                <a href="../../index.php?url=auth/login" class="btn btn-outline-primary border-primary text-primary-blue px-4">Đăng Nhập</a>
-                <a href="../../index.php?url=auth/register" class="btn btn-primary-blue px-4">Đăng Ký</a>
-            </div> -->
-
-            <!-- Sài nháp -->
-            <div class="d-flex gap-2">
-                <a href="login.php" class="btn btn-outline-primary border-primary text-primary-blue px-4">Đăng Nhập</a>
-                <a href="register.php" class="btn btn-primary-blue px-4">Đăng Ký</a>
+                <a href="../auth/login.php" class="btn btn-outline-primary border-primary text-primary-blue px-4">Đăng Nhập</a>
+                <a href="../auth/register.php" class="btn btn-primary-blue px-4">Đăng Ký</a>
             </div>
         </div>
     </div>
