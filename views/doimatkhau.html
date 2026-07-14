@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Khôi Phục Mật Khẩu</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f8f9fa; }
+        .forgot-container { max-width: 500px; margin: 80px auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0px 0px 15px rgba(0,0,0,0.1); }
+        .step-form { display: none; }
+        .step-active { display: block; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="forgot-container">
+        <h3 class="text-center mb-4 text-primary fw-bold" id="formTitle">QUÊN MẬT KHẨU</h3>
+
+        <!-- BƯỚC 1: NHẬP EMAIL & XÁC THỰC OTP -->
+        <div id="stepVerification" class="step-form step-active">
+            <div class="mb-3">
+                <label for="Email" class="form-label">Nhập Email tài khoản <span class="text-danger">*</span></label>
+                <div class="input-group">
+                    <input type="email" class="form-control" id="Email" placeholder="name@example.com" required>
+                    <button class="btn btn-outline-secondary fw-bold" type="button" id="btnGetOtp" onclick="requestForgotOtp()">Lấy mã</button>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="Otp" class="form-label">Nhập mã xác thực OTP <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="Otp" placeholder="Nhập 6 chữ số từ email" maxlength="6" required>
+            </div>
+            <div class="d-grid gap-2 mt-4">
+                <button type="button" class="btn btn-primary btn-lg" onclick="verifyForgotOtp()">Xác nhận mã</button>
+                <a href="dangnhap.html" class="text-center mt-2 text-decoration-none text-muted">← Quay lại Đăng nhập</a>
+            </div>
+        </div>
+
+        <!-- BƯỚC 2: NHẬP MẬT KHẨU MỚI (Ẩn ban đầu) -->
+        <div id="stepResetPassword" class="step-form">
+            <div class="mb-3">
+                <label for="MatKhau" class="form-label">Mật khẩu mới <span class="text-danger">*</span></label>
+                <input type="password" class="form-control" id="MatKhau" placeholder="Nhập mật khẩu mới" required>
+            </div>
+            <div class="mb-3">
+                <label for="MatKhauConfirm" class="form-label">Nhập lại mật khẩu mới <span class="text-danger">*</span></label>
+                <input type="password" class="form-control" id="MatKhauConfirm" placeholder="Xác nhận lại mật khẩu mới" required>
+                <div class="text-danger small mt-1" id="passError" style="display:none;">Mật khẩu nhập lại không trùng khớp!</div>
+            </div>
+            <div class="d-grid gap-2 mt-4">
+                <button type="button" class="btn btn-success btn-lg" onclick="submitNewPassword()">Xác nhận đổi mật khẩu</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+const controllerUrl = '../controllers/ForgotPasswordController.php';
+let targetEmail = '';
+
+// 1. GỬI OTP QUA EMAIL
+function requestForgotOtp() {
+    const emailInput = document.getElementById('Email').value;
+    const btnGetOtp = document.getElementById('btnGetOtp');
+
+    if (!emailInput) {
+        alert('Vui lòng điền địa chỉ Email trước khi lấy mã!');
+        return;
+    }
+
+    btnGetOtp.disabled = true;
+    btnGetOtp.innerText = 'Đang gửi...';
+
+    const formData = new FormData();
+    formData.append('action', 'send_forgot_otp');
+    formData.append('email', emailInput);
+
+    fetch(controllerUrl, { method: 'POST', body: formData })
+    .then(res => res.json())
+    .then(data => {
+        alert(data.message);
+        if (data.status === 'success') {
+            targetEmail = emailInput; // Khóa email cố định để xác thực
+            let countdown = 60;
+            const timer = setInterval(() => {
+                countdown--;
+                btnGetOtp.innerText = `Gửi lại (${countdown}s)`;
+                if (countdown <= 0) {
+                    clearInterval(timer);
+                    btnGetOtp.disabled = false;
+                    btnGetOtp.innerText = 'Lấy mã';
+                }
+            }, 1000);
+        } else {
+            btnGetOtp.disabled = false;
+            btnGetOtp.innerText = 'Lấy mã';
+        }
+    })
+    .catch(() => {
+        alert('Đã xảy ra lỗi kết nối!');
+        btnGetOtp.disabled = false;
+        btnGetOtp.innerText = 'Lấy mã';
+    });
+}
+
+// 2. XÁC THỰC MÃ OTP ĐỂ HIỆN FORM TIẾP THEO
+function verifyForgotOtp() {
+    const otpInput = document.getElementById('Otp').value;
+
+    if (!targetEmail || !otpInput) {
+        alert('Vui lòng điền đầy đủ Email đã lấy mã và ô nhập OTP!');
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('action', 'verify_otp');
+    formData.append('email', targetEmail);
+    formData.append('otp', otpInput);
+
+    fetch(controllerUrl, { method: 'POST', body: formData })
+    .then(res => res.json())
+    .then(data => {
+        if (data.status === 'success') {
+            // Chuyển bước giao diện ẩn form cũ hiện form mật khẩu mới
+            document.getElementById('stepVerification').classList.remove('step-active');
+            document.getElementById('stepResetPassword').classList.add('step-active');
+            document.getElementById('formTitle').innerText = 'ĐẶT LẠI MẬT KHẨU';
+        } else {
+            alert(data.message);
+        }
+    });
+}
+
+// 3. XÁC NHẬN LƯU MẬT KHẨU MỚI VÀ CHUYỂN TRANG
+function submitNewPassword() {
+    const matKhau = document.getElementById('MatKhau').value;
+    const matKhauConfirm = document.getElementById('MatKhauConfirm').value;
+    const errorDiv = document.getElementById('passError');
+
+    if(!matKhau || !matKhauConfirm) {
+        alert('Vui lòng điền đầy đủ thông tin mật khẩu!');
+        return;
+    }
+
+    if (matKhau !== matKhauConfirm) {
+        errorDiv.style.display = 'block';
+        return;
+    } else {
+        errorDiv.style.display = 'none';
+    }
+
+    const formData = new FormData();
+    formData.append('action', 'reset_password');
+    formData.append('email', targetEmail);
+    formData.append('matKhau', matKhau);
+    formData.append('matKhauConfirm', matKhauConfirm);
+
+    fetch(controllerUrl, { method: 'POST', body: formData })
+    .then(res => res.json())
+    .then(data => {
+        alert(data.message);
+        if (data.status === 'success') {
+            // Chuyển hướng người dùng qua trang đăng nhập thành công
+            window.location.href = 'dangnhap.html';
+        }
+    });
+}
+</script>
+</body>
+</html>
