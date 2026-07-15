@@ -1,4 +1,7 @@
-<?php include_once __DIR__ . '/../layouts/header.php'; ?>
+<?php
+$baseUrl = '/JobCV';
+include_once __DIR__ . '/../layouts/header.php';
+?>
 
 <section class="position-relative py-5 d-flex align-items-center" style="background: url('<?= $baseUrl ?>/public/images/city-bg.png') no-repeat center center; background-size: cover; min-height: 450px;">
     <!-- Lớp phủ nền -->
