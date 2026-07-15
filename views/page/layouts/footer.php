@@ -6,7 +6,7 @@
             <div class="col-lg-3 col-md-6">
                 <div class="d-flex align-items-center mb-3">
                             <a href="/JobCV/vi/home/index.php">
-                                <img src="../../public/images/logo3.png" alt="JobHub Logo" class="rounded-circle me-2 footer-logo" style="width: 40px; height: auto; object-fit: contain;" />
+                                <img src="<?= $baseUrl ?>/public/images/logo3.png" alt="JobHub Logo" class="rounded-circle me-2 footer-logo" style="width: 40px; height: auto; object-fit: contain;" />
                             </a>
                     <div>
                         <h5 class="fw-bold mb-0" style="letter-spacing: 0.5px;">JobHub</h5>
@@ -92,6 +92,6 @@
         transition: color 0.2s ease-in-out;
     }
 </style>
-<script src="../../public/js/js/bootstrap.bundle.min.js"></script>
+<script src="<?= $baseUrl ?>/public/js/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

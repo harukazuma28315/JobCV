@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JobHub Vietnam - Nền Tảng Tuyển Dụng Hàng Đầu</title>
-    <link href="../../public/css/css/bootstrap.min.css" rel="stylesheet">
-    <link href="../../public/css/css/style.css" rel="stylesheet">
+    <link href="<?= $baseUrl ?>/public/css/css/bootstrap.min.css" rel="stylesheet">
+    <link href="<?= $baseUrl ?>/public/css/css/style.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
@@ -40,7 +40,7 @@
     <div class="container">
         <!-- Logo -->
 <a class="navbar-brand d-flex align-items-center position-relative" href="../home/index.php" style="width: 150px; height: 40px;">
-    <img src="../../public/images/logo1.png" alt="JobHub Logo" 
+    <img src="<?= $baseUrl ?>/public/images/logo1.png" alt="JobHub Logo" 
          style="height: 50px; width: auto; object-fit: contain; position: absolute; top: 50%; transform: translateY(-50%); max-width: none;">
 </a>
         

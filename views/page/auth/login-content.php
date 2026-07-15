@@ -1,4 +1,4 @@
-<section class="min-vh-100 d-flex align-items-center py-5" style="background: url('../../public/images/city-bg.png') no-repeat bottom center; background-size: cover;">
+<section class="min-vh-100 d-flex align-items-center py-5" style="background: url('<?= $baseUrl ?>/public/images/city-bg.png') no-repeat bottom center; background-size: cover;">
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-12" style="max-width: 850px;">
@@ -9,7 +9,7 @@
                         <div class="col-md-5 bg-primary-blue d-flex flex-column justify-content-center align-items-center text-white p-5 text-center">
                             <h3 class="fw-bold mb-3">Chào Mừng Trở Lại!</h3>
                             <a href="../home/index.php">
-                                <img src="../../public/images/logo1.png" alt="JobHub Logo" class="mb-4 rounded-circle" width="80">
+                                <img src="<?= $baseUrl ?>/public/images/logo1.png" alt="JobHub Logo" class="mb-4 rounded-circle" width="80">
                             </a>
                             <p class="small text-white-50 px-2 mb-0">Đăng nhập để tiếp tục kết nối với mọi người!</p>
                         </div>

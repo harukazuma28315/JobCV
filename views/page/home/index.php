@@ -1,6 +1,6 @@
-<?php include_once '../../views/layouts/header.php'; ?>
+<?php include_once __DIR__ . '/../layouts/header.php'; ?>
 
-<section class="position-relative py-5 d-flex align-items-center" style="background: url('../../public/images/city-bg.png') no-repeat center center; background-size: cover; min-height: 450px;">
+<section class="position-relative py-5 d-flex align-items-center" style="background: url('<?= $baseUrl ?>/public/images/city-bg.png') no-repeat center center; background-size: cover; min-height: 450px;">
     <!-- Lớp phủ nền -->
     <div class="position-absolute top-0 start-0 w-100 h-100 bg-white opacity-75" style="z-index: 1;"></div>
     
