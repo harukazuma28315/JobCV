@@ -1,4 +1,7 @@
-<?php include_once '../../views/layouts/header.php'; ?>
+<?php 
+$baseUrl = '/JobCV';
+include_once '../../page/layouts/header.php'; 
+?>
 
 <section class="py-5 bg-dark text-white position-relative" style="background: linear-gradient(135deg, #0b2239 0%, #1d446c 100%);">
     <div class="container">

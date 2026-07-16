@@ -1,33 +1,33 @@
-<!-- Nhúng Header chung của bạn -->
 <?php
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
- include_once '../../views/layouts/header.php'; ?>
+$baseUrl = '/JobCV';
+include_once '../../page/layouts/header.php'; 
+
+// Giả định bạn đã lấy dữ liệu user từ database và lưu vào biến $user
+// Ví dụ: $user = $_SESSION['user_logged_in'];
+?>
 
 <div class="container py-5">
     <div class="row g-4">
         
-        <!-- CỘT TRÁI: THÔNG TIN TÓM TẮT & DIỀU HƯỚNG NHANH (4/12) -->
         <div class="col-12 col-lg-4">
             <div class="card border-0 shadow-sm p-4 text-center bg-white mb-4">
-                <!-- Avatar hoạt hình mặc định hoặc tải lên -->
-<div class="position-relative d-inline-block mx-auto mb-3" style="width: 110px; height: 110px;">
-    <img src="https://api.dicebear.com/7.x/adventurer/svg?seed=ntl" alt="Avatar" class="rounded-circle border border-3 border-primary" style="width: 100%; height: 100%; object-fit: cover;">
-    
-    <!-- Đã sửa: Ép kích thước 1:1 (32px x 32px), triệt tiêu padding lệch và căn giữa icon hoàn hảo -->
-    <span class="position-absolute bottom-0 end-0 bg-primary text-white shadow-sm d-flex align-items-center justify-content-center" 
-          style="cursor: pointer; width: 32px; height: 32px; border-radius: 50%; padding: 0; margin: 0; border: 2px solid #fff;" 
-          title="Đổi ảnh đại diện">
-        <i class="fa-solid fa-camera fa-sm" style="line-height: 1;"></i>
-    </span>
-</div>
+                <div class="position-relative d-inline-block mx-auto mb-3" style="width: 110px; height: 110px;">
+                    <img src="https://api.dicebear.com/7.x/adventurer/svg?seed=<?php echo htmlspecialchars($user['username'] ?? 'default'); ?>" alt="Avatar" class="rounded-circle border border-3 border-primary" style="width: 100%; height: 100%; object-fit: cover;">
+                    
+                    <span class="position-absolute bottom-0 end-0 bg-primary text-white shadow-sm d-flex align-items-center justify-content-center" 
+                          style="cursor: pointer; width: 32px; height: 32px; border-radius: 50%; padding: 0; margin: 0; border: 2px solid #fff;" 
+                          title="Đổi ảnh đại diện">
+                        <i class="fa-solid fa-camera fa-sm" style="line-height: 1;"></i>
+                    </span>
+                </div>
                 
-                <h5 class="fw-bold text-dark mb-1">Nguyễn Thị Liễu</h5> <!-- -->
-                <p class="text-muted small mb-3">Mã UV: UV23111109</p> <!-- -->
-                <span class="badge bg-light text-primary-blue border fw-semibold px-3 py-2 mb-4">Ứng viên / Lập trình viên</span>
+                <h5 class="fw-bold text-dark mb-1"><?php echo htmlspecialchars($user['fullname'] ?? ''); ?></h5> 
+                <p class="text-muted small mb-3">Mã UV: <?php echo htmlspecialchars($user['candidate_code'] ?? ''); ?></p> 
+                <span class="badge bg-light text-primary-blue border fw-semibold px-3 py-2 mb-4">Ứng viên / <?php echo htmlspecialchars($user['job_title'] ?? ''); ?></span>
 
-                <!-- Menu Tab chuyển đổi nhanh bằng Bootstrap Nav-Pills -->
                 <div class="nav flex-column nav-pills text-start gap-2" id="v-pills-tab" role="tablist" aria-orientation="vertical">
                     <button class="nav-link active py-3 px-3 d-flex align-items-center gap-3 border-0" id="v-pills-info-tab" data-bs-toggle="pill" data-bs-target="#v-pills-info" type="button" role="tab" aria-selected="true">
                         <i class="fa-regular fa-user text-primary fs-5"></i>
@@ -45,90 +45,92 @@ if (session_status() === PHP_SESSION_NONE) {
             </div>
         </div>
 
-        <!-- CỘT PHẢI: NỘI DUNG CHI TIẾT THEO TAB (8/12) -->
         <div class="col-12 col-lg-8">
             <div class="tab-content" id="v-pills-tabContent">
                 
-                <!-- TAB 1: THÔNG TIN CÁ NHÂN -->
                 <div class="tab-pane fade show active" id="v-pills-info" role="tabpanel" aria-labelledby="v-pills-info-tab">
                     <div class="card border-0 shadow-sm p-4 bg-white">
                         <h4 class="fw-bold mb-4 border-start border-4 border-primary ps-3 text-dark">Thông Tin Cá Nhân</h4>
                         
-                        <form action="" method="POST">
+                        <form action="update-profile.php" method="POST">
                             <div class="row g-3">
                                 <div class="col-12 col-md-6">
                                     <label class="form-label fw-semibold text-dark">Họ và tên <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control py-2" value="Nguyễn Thị Liễu" required> <!-- -->
+                                    <input type="text" name="fullname" class="form-control py-2" value="<?php echo htmlspecialchars($user['fullname'] ?? ''); ?>" required>
                                 </div>
                                 <div class="col-12 col-md-6">
                                     <label class="form-label fw-semibold text-dark">Mã số ứng viên</label>
-                                    <input type="text" class="form-control py-2" value="UV2311109" readonly> <!-- -->
+                                    <input type="text" name="candidate_code" class="form-control py-2" value="<?php echo htmlspecialchars($user['candidate_code'] ?? ''); ?>" readonly>
                                 </div>
                                 <div class="col-12 col-md-6">
                                     <label class="form-label fw-semibold text-dark">Email liên hệ <span class="text-danger">*</span></label>
-                                    <input type="email" class="form-control py-2" value="ntl@gmail.com" required>
+                                    <input type="email" name="email" class="form-control py-2" value="<?php echo htmlspecialchars($user['email'] ?? ''); ?>" required>
                                 </div>
                                 <div class="col-12 col-md-6">
                                     <label class="form-label fw-semibold text-dark">Số điện thoại <span class="text-danger">*</span></label>
-                                    <input type="tel" class="form-control py-2" value="0987654321" required>
+                                    <input type="tel" name="phone" class="form-control py-2" value="<?php echo htmlspecialchars($user['phone'] ?? ''); ?>" required>
                                 </div>
                                 <div class="col-12 col-md-6">
                                     <label class="form-label fw-semibold text-dark">Lĩnh vực hoạt động</label>
-                                    <input type="text" class="form-control py-2" value="Công nghệ thông tin / Kỹ thuật phần mềm">
+                                    <input type="text" name="industry" class="form-control py-2" value="<?php echo htmlspecialchars($user['industry'] ?? ''); ?>">
                                 </div>
                                 <div class="col-12 col-md-6">
                                     <label class="form-label fw-semibold text-dark">Vị trí mong muốn</label>
-                                    <input type="text" class="form-control py-2" value="Junior Web Developer">
+                                    <input type="text" name="desired_position" class="form-control py-2" value="<?php echo htmlspecialchars($user['desired_position'] ?? ''); ?>">
                                 </div>
                                 <div class="col-12">
                                     <label class="form-label fw-semibold text-dark">Địa chỉ</label>
-                                    <input type="text" class="form-control py-2" value="Ninh Kiều, Cần Thơ"> <!-- -->
+                                    <input type="text" name="address" class="form-control py-2" value="<?php echo htmlspecialchars($user['address'] ?? ''); ?>">
                                 </div>
                                 <div class="col-12">
                                     <label class="form-label fw-semibold text-dark">Giới thiệu ngắn về bản thân</label>
-                                    <textarea class="form-control" rows="4">Em là sinh viên IT mới ra trường, có khả năng tư duy thuật toán tốt, đang học hỏi phát triển các ứng dụng Web vững chắc bằng PHP/MySQL và cải thiện kỹ năng front-end.</textarea>
+                                    <textarea name="bio" class="form-control" rows="4"><?php echo htmlspecialchars($user['bio'] ?? ''); ?></textarea>
                                 </div>
                             </div>
                             
                             <div class="mt-4 pt-3 border-top text-end">
-                                <button type="submit" class="btn btn-primary-blue fw-bold px-4 py-2">Lưu Thay Đổi</button>
+                                <button type="submit" name="btn_submit" class="btn btn-primary-blue fw-bold px-4 py-2">Lưu Thay Đổi</button>
                             </div>
                         </form>
                     </div>
                 </div>
 
-                <!-- TAB 2: QUẢN LÝ HỒ SƠ & CV -->
                 <div class="tab-pane fade" id="v-pills-cv" role="tabpanel" aria-labelledby="v-pills-cv-tab">
                     <div class="card border-0 shadow-sm p-4 bg-white">
                         <h4 class="fw-bold mb-4 border-start border-4 border-primary ps-3 text-dark">Quản Lý Hồ Sơ & CV</h4>
                         
-                        <!-- Khu vực Upload File CV mới -->
-                        <div class="border border-2 border-dashed rounded-3 p-4 text-center bg-light mb-4 position-relative">
-                            <input type="file" class="position-absolute top-0 start-0 w-100 h-100 opacity-0" style="cursor: pointer;" accept=".pdf,.doc,.docx">
-                            <div class="py-3">
-                                <i class="fa-solid fa-cloud-arrow-up text-primary-blue fs-1 mb-3"></i>
-                                <h5 class="fw-bold text-dark">Kéo thả hoặc tải lên CV của bạn</h5>
-                                <p class="text-muted small mb-0">Hỗ trợ định dạng .PDF, .DOCX, .DOC (Tối đa 5MB)</p>
+                        <form action="upload-cv.php" method="POST" enctype="multipart/form-data">
+                            <div class="border border-2 border-dashed rounded-3 p-4 text-center bg-light mb-4 position-relative">
+                                <input type="file" name="cv_file" class="position-absolute top-0 start-0 w-100 h-100 opacity-0" style="cursor: pointer;" accept=".pdf,.doc,.docx" onchange="this.form.submit()">
+                                <div class="py-3">
+                                    <i class="fa-solid fa-cloud-arrow-up text-primary-blue fs-1 mb-3"></i>
+                                    <h5 class="fw-bold text-dark">Kéo thả hoặc tải lên CV của bạn</h5>
+                                    <p class="text-muted small mb-0">Hỗ trợ định dạng .PDF, .DOCX, .DOC (Tối đa 5MB)</p>
+                                </div>
                             </div>
-                        </div>
+                        </form>
 
-                        <!-- Danh sách CV đã tải lên -->
                         <h6 class="fw-bold text-dark mb-3">Các file CV đã tải lên:</h6>
                         <div class="d-flex flex-column gap-3">
-                            <!-- Card CV 1 -->
-                            <div class="p-3 border rounded-3 bg-white d-flex align-items-center justify-content-between">
-                                <div class="d-flex align-items-center gap-3">
-                                    <span class="fs-2 text-danger"><i class="fa-solid fa-file-pdf"></i></span>
-                                    <div>
-                                        <h6 class="fw-bold text-dark mb-1">Nguyen_Thi_Lieu_CV_2026.pdf</h6>
-                                        <span class="text-muted small">Cập nhật: 12:30 - 15/07/2026</span>
+                            <?php if (!empty($user['cv_filename'])): ?>
+                                <div class="p-3 border rounded-3 bg-white d-flex align-items-center justify-content-between">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <span class="fs-2 text-danger"><i class="fa-solid fa-file-pdf"></i></span>
+                                        <div>
+                                            <h6 class="fw-bold text-dark mb-1"><?php echo htmlspecialchars($user['cv_filename']); ?></h6>
+                                            <span class="text-muted small">Cập nhật: <?php echo htmlspecialchars($user['cv_updated_at'] ?? ''); ?></span>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex gap-2">
+                                        <a href="<?php echo htmlspecialchars($user['cv_filepath'] ?? '#'); ?>" target="_blank" class="btn btn-light btn-sm text-primary-blue" title="Xem trước"><i class="fa-solid fa-eye"></i></a>
+                                        <a href="delete-cv.php" class="btn btn-light btn-sm text-danger" title="Xóa" onclick="return confirm('Bạn có chắc chắn muốn xóa CV này?')"><i class="fa-solid fa-trash-can"></i></a>
                                     </div>
                                 </div>
-                                <div class="d-flex gap-2">
-                                    <a href="#" class="btn btn-light btn-sm text-primary-blue" title="Xem trước"><i class="fa-solid fa-eye"></i></a>
-                                    <button class="btn btn-light btn-sm text-danger" title="Xóa"><i class="fa-solid fa-trash-can"></i></button>
+                            <?php else: ?>
+                                <div class="text-center p-3 text-muted border rounded-3 bg-light-subtle">
+                                    Bạn chưa tải lên CV nào.
                                 </div>
-                            </div>
+                            <?php endif; ?>
                         </div>
                     </div>
                 </div>
@@ -139,7 +141,6 @@ if (session_status() === PHP_SESSION_NONE) {
     </div>
 </div>
 
-<!-- Thêm định dạng cho border nét đứt (Dashed Border) của khung upload -->
 <style>
     .border-dashed {
         border-style: dashed !important;
@@ -151,5 +152,4 @@ if (session_status() === PHP_SESSION_NONE) {
     }
 </style>
 
-<!-- Nhúng Footer chung -->
-<?php include_once '../../views/layouts/footer.php'; ?>
+<?php include_once '../../page/layouts/footer.php'; ?>

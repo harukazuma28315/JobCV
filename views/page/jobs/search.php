@@ -1,5 +1,8 @@
 <!-- views/jobs/search.php -->
-<?php include_once '../../views/layouts/header.php'; ?>
+<?php
+$baseUrl = '/JobCV';
+include_once '../../page/layouts/header.php'; 
+?>
 <?php
 // Giả lập dữ liệu để test giao diện khi chưa kết nối Database thực tế, khi kết nối Database, Controller sẽ truyền biến $jobs qua và ta chỉ cần xóa đoạn khởi tạo này đi.
 if (!isset($jobs) || empty($jobs)) {
