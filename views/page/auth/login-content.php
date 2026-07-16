@@ -18,17 +18,17 @@
                         <div class="col-md-7 bg-white p-5 d-flex flex-column justify-content-center">
                             <h4 class="fw-bold text-primary-blue mb-4 text-center text-md-start">Đăng Nhập Tài Khoản</h4>
                             
-                            <form action="login.php" method="POST">
+                            <form action="<?= $baseUrl ?>/controllers/LoginController.php" method="POST">
                                 <div class="mb-3">
                                     <label class="form-label small fw-semibold">Địa chỉ Email / Tài khoản</label>
-                                    <input type="text" name="username" class="form-control py-2" placeholder="name@example.com" required>
+                                    <input type="text" name="Email" class="form-control py-2" placeholder="name@example.com" required>
                                 </div>
                                 <div class="mb-3">
                                     <div class="d-flex justify-content-between align-items-center mb-1">
                                         <label class="form-label small fw-semibold mb-0">Mật khẩu</label>
                                         <a href="#" class="text-primary-blue text-decoration-none small">Quên mật khẩu?</a>
                                     </div>
-                                    <input type="password" name="password" class="form-control py-2" placeholder="Nhập mật khẩu của bạn" required>
+                                    <input type="password" name="MatKhau" class="form-control py-2" placeholder="Nhập mật khẩu của bạn" required>
                                 </div>
                                 <div class="mb-4 form-check">
                                     <input type="checkbox" class="form-check-input" id="rememberMe">

@@ -1,5 +1,17 @@
 <?php
+// BƯỚC 1: Khởi động session và kiểm tra quyền truy cập (Trang chủ chỉ dành cho người đã đăng nhập)
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 $baseUrl = '/JobCV';
+
+// Nếu chưa có thông tin đăng nhập trong session, chuyển hướng thẳng về trang login
+if (!isset($_SESSION['user_id'])) {
+    header("Location: " . $baseUrl . "/views/page/auth/login.php");
+    exit();
+}
+
 include_once __DIR__ . '/../layouts/header.php';
 ?>
 

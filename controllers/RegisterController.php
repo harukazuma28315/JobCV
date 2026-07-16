@@ -122,7 +122,7 @@ class RegisterController {
 
 		// Điều hướng trả về kết quả hiển thị cho View
 		if ($isSuccess) {
-			echo "<script>alert('Đăng ký tài khoản thành công!'); window.location.href='../views/dangnhap.html';</script>";
+			echo "<script>alert('Đăng ký tài khoản thành công!'); window.location.href='../views/page/auth/login.php';</script>";
 		} else {
 			echo "<script>alert('Có lỗi xảy ra trong quá trình ghi dữ liệu!'); window.history.back();</script>";
 		}
