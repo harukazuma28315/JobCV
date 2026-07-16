@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Đăng Ký Thành Viên</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+	<style>
+		body { background-color: #f8f9fa; }
+		.register-container { max-width: 650px; margin: 50px auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0px 0px 15px rgba(0,0,0,0.1); }
+		.nav-pills .nav-link { font-weight: bold; border-radius: 6px; padding: 10px 20px; }
+	</style>
+</head>
+<body>
+
+<div class="container">
+	<div class="register-container">
+		<h2 class="text-center mb-4 text-primary fw-bold">ĐĂNG KÝ THÀNH VIÊN</h2>
+
+		<!-- Tab chuyển đổi vai trò thành viên -->
+		<ul class="nav nav-pills nav-justified mb-4 border p-1 rounded-3 bg-light" id="registerTab" role="tablist">
+			<li class="nav-item" role="presentation">
+				<button class="nav-link active" id="ungvien-tab" data-bs-toggle="pill" type="button" onclick="switchRole(0)">
+					👤 Tôi là Ứng Viên
+				</button>
+			</li>
+			<li class="nav-item" role="presentation">
+				<button class="nav-link" id="nhatuyendung-tab" data-bs-toggle="pill" type="button" onclick="switchRole(1)">
+					🏢 Tôi là Nhà Tuyển Dụng
+				</button>
+			</li>
+		</ul>
+
+		<form action="../controllers/RegisterController.php" method="POST" class="needs-validation" novalidate>
+			<input type="hidden" id="Role" name="Role" value="0">
+
+			<!-- [CHUNG] Thông tin tài khoản đăng nhập chính -->
+			<div class="mb-3">
+				<label for="Email" class="form-label" id="labelEmail">Email <span class="text-danger">*</span></label>
+				<input type="email" class="form-control" id="Email" name="Email" required placeholder="name@example.com">
+			</div>
+
+			<div class="mb-3">
+				<label for="MatKhau" class="form-label">Mật khẩu <span class="text-danger">*</span></label>
+				<input type="password" class="form-control" id="MatKhau" name="MatKhau" required placeholder="Nhập mật khẩu">
+			</div>
+
+			<!-- [ĐỔI NHÃN ĐỘNG] Thay đổi linh hoạt theo vai trò -->
+			<div class="mb-3">
+				<label for="HoTen" class="form-label" id="labelHoTen">Họ và Tên <span class="text-danger">*</span></label>
+				<input type="text" class="form-control" id="HoTen" name="HoTen" required placeholder="Nhập họ và tên đầy đủ">
+			</div>
+
+			<!-- [ẨN KHI LÀ CÔNG TY] Thông tin cá nhân của Ứng viên -->
+			<div class="row" id="personalFields">
+				<div class="col-md-6 mb-3">
+					<label for="NgaySinh" class="form-label">Ngày sinh</label>
+					<input type="date" class="form-control" id="NgaySinh" name="NgaySinh">
+				</div>
+				<div class="col-md-6 mb-3">
+					<label class="form-label d-block">Giới tính</label>
+					<div class="form-check form-check-inline mt-2">
+						<input class="form-check-input" type="radio" name="GioiTinh" id="Nam" value="1" checked>
+						<label class="form-check-label" for="Nam">Nam</label>
+					</div>
+					<div class="form-check form-check-inline mt-2">
+						<input class="form-check-input" type="radio" name="GioiTinh" id="Nu" value="0">
+						<label class="form-check-label" for="Nu">Nữ</label>
+					</div>
+				</div>
+			</div>
+
+			<!-- [CHUNG] Các trường thông tin liên hệ -->
+			<div class="mb-3">
+				<label for="SDT" class="form-label" id="labelSDT">Số điện thoại</label>
+				<input type="tel" class="form-control" id="SDT" name="SDT" placeholder="Nhập số điện thoại">
+			</div>
+
+			<div class="mb-3">
+				<label for="DiaChi" class="form-label" id="labelDiaChi">Địa chỉ</label>
+				<input type="text" class="form-control" id="DiaChi" name="DiaChi" placeholder="Số nhà, tên đường, tỉnh/thành phố">
+			</div>
+
+			<!-- [HIỆN KHI LÀ CÔNG TY] Thông tin bổ sung riêng của Doanh nghiệp -->
+			<div id="employerFields" style="display: none;" class="border p-3 rounded bg-light mb-3">
+				<h5 class="text-secondary mb-3 border-bottom pb-2">Thông tin doanh nghiệp bổ sung</h5>
+				
+				<div class="mb-3">
+					<label for="MaSoThue" class="form-label">Mã số thuế <span class="text-danger">*</span></label>
+					<input type="number" class="form-control" id="MaSoThue" name="MaSoThue" placeholder="Nhập mã số thuế công ty">
+				</div>
+
+				<div class="mb-3">
+					<label for="Website" class="form-label">Website công ty</label>
+					<input type="url" class="form-control" id="Website" name="Website" placeholder="https://example.com">
+				</div>
+
+				<div class="mb-3">
+					<label for="LinhVuc" class="form-label">Lĩnh vực hoạt động</label>
+					<input type="text" class="form-control" id="LinhVuc" name="LinhVuc" placeholder="Ví dụ: Công nghệ thông tin, Logistics...">
+				</div>
+			</div>
+
+			<div class="d-grid gap-2 mt-4">
+				<button type="submit" class="btn btn-primary btn-block btn-lg" id="btnSubmit">Đăng Ký Ứng Viên</button>
+			</div>
+		</form>
+	</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+function switchRole(roleVal) {
+	document.getElementById('Role').value = roleVal;
+	
+	const personalFields = document.getElementById('personalFields');
+	const employerFields = document.getElementById('employerFields');
+	const btnSubmit = document.getElementById('btnSubmit');
+	
+	const labelHoTen = document.getElementById('labelHoTen');
+	const inputHoTen = document.getElementById('HoTen');
+	const labelEmail = document.getElementById('labelEmail');
+	const labelSDT = document.getElementById('labelSDT');
+	const labelDiaChi = document.getElementById('labelDiaChi');
+	const maSoThue = document.getElementById('MaSoThue');
+
+	if (roleVal === 1) {
+		// --- CHUYỂN DÀNH CHO NHÀ TUYỂN DỤNG ---
+		personalFields.style.display = 'none';
+		employerFields.style.display = 'block';
+		
+		labelHoTen.innerHTML = 'Tên công ty / Doanh nghiệp <span class="text-danger">*</span>';
+		inputHoTen.placeholder = 'Nhập tên công ty chính thức';
+		labelEmail.innerHTML = 'Email công ty <span class="text-danger">*</span>';
+		labelSDT.innerText = 'Số điện thoại công ty';
+		labelDiaChi.innerText = 'Địa chỉ trụ sở chính';
+		
+		btnSubmit.innerText = 'Đăng Ký Nhà Tuyển Dụng';
+		btnSubmit.className = 'btn btn-success btn-block btn-lg';
+		
+		maSoThue.setAttribute('required', 'required');
+	} else {
+		// --- CHUYỂN DÀNH CHO ỨNG VIÊN ---
+		personalFields.style.display = 'flex';
+		employerFields.style.display = 'none';
+		
+		labelHoTen.innerHTML = 'Họ và Tên <span class="text-danger">*</span>';
+		inputHoTen.placeholder = 'Nhập họ và tên đầy đủ';
+		labelEmail.innerHTML = 'Email <span class="text-danger">*</span>';
+		labelSDT.innerText = 'Số điện thoại';
+		labelDiaChi.innerText = 'Địa chỉ';
+		
+		btnSubmit.innerText = 'Đăng Ký Ứng Viên';
+		btnSubmit.className = 'btn btn-primary btn-block btn-lg';
+		
+		maSoThue.removeAttribute('required');
+	}
+}
+
+// Kiểm tra tính hợp lệ dữ liệu mẫu Bootstrap Validation
+(function () {
+	'use strict'
+	var forms = document.querySelectorAll('.needs-validation')
+	Array.prototype.slice.call(forms).forEach(function (form) {
+		form.addEventListener('submit', function (event) {
+			if (!form.checkValidity()) {
+				event.preventDefault()
+				event.stopPropagation()
+			}
+			form.classList.add('was-validated')
+		}, false)
+	})
+})()
+</script>
+</body>
+</html>
