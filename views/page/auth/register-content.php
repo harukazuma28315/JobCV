@@ -66,11 +66,11 @@
                                             <div class="col-md-6 mb-3">
                                                 <label class="form-label small fw-semibold d-block">Giới tính</label>
                                                 <div class="form-check form-check-inline mt-2">
-                                                    <input class="form-check-input" type="radio" name="GioiTinh" id="Nam" value="1" checked>
+                                                    <input class="form-check-input" type="radio" name="GioiTinh" id="Nam" value="0" checked>
                                                     <label class="form-check-label" for="Nam">Nam</label>
                                                 </div>
                                                 <div class="form-check form-check-inline mt-2">
-                                                    <input class="form-check-input" type="radio" name="GioiTinh" id="Nu" value="0">
+                                                    <input class="form-check-input" type="radio" name="GioiTinh" id="Nu" value="1">
                                                     <label class="form-check-label" for="Nu">Nữ</label>
                                                 </div>
                                             </div>

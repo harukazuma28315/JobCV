@@ -3,10 +3,23 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 $baseUrl = '/JobCV';
-include_once '../../page/layouts/header.php'; 
+require_once __DIR__ . '/../../../config/db.php';
+require_once __DIR__ . '/../../../controllers/ProfileController.php';
+include_once '../../page/layouts/header.php';
 
-// Giả định bạn đã lấy dữ liệu user từ database và lưu vào biến $user
-// Ví dụ: $user = $_SESSION['user_logged_in'];
+$profileCtrl = new ProfileController($conn);
+$user = $profileCtrl->handleGetProfile();
+
+$profileData = [
+    'fullname' => $user['HoTen'] ?? $_SESSION['user_name'] ?? 'Người dùng',
+    // 'candidate_code' => $user['MaUser'] ?? '',
+    'email' => $user['Email'] ?? '',
+    'phone' => $user['SDT'] ?? '',
+    'address' => $user['DiaChi'] ?? '',
+    'birth_date' => $user['NgaySinh'] ?? $user['birth_date'] ?? 'Chưa cập nhật',
+    'Gender' => $user['GioiTinh'] ?? $user['Gender'] ?? 'null',
+    // 'bio' => $user['GioiThieu'] ?? $user['bio'] ?? 'Chưa cập nhật',
+];
 ?>
 
 <div class="container py-5">
@@ -24,19 +37,19 @@ include_once '../../page/layouts/header.php';
                     </span>
                 </div>
                 
-                <h5 class="fw-bold text-dark mb-1"><?php echo htmlspecialchars($user['fullname'] ?? ''); ?></h5> 
-                <p class="text-muted small mb-3">Mã UV: <?php echo htmlspecialchars($user['candidate_code'] ?? ''); ?></p> 
-                <span class="badge bg-light text-primary-blue border fw-semibold px-3 py-2 mb-4">Ứng viên / <?php echo htmlspecialchars($user['job_title'] ?? ''); ?></span>
+                <h5 class="fw-bold text-dark mb-1"><?php echo htmlspecialchars($profileData['fullname']); ?></h5> 
+                <!-- <p class="text-muted small mb-3">Mã UV: <?php echo htmlspecialchars($profileData['candidate_code']); ?></p>  -->
+                <span class="badge bg-light text-primary-blue border fw-semibold px-3 py-2 mb-4">Ứng viên</span>
 
                 <div class="nav flex-column nav-pills text-start gap-2" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-                    <button class="nav-link active py-3 px-3 d-flex align-items-center gap-3 border-0" id="v-pills-info-tab" data-bs-toggle="pill" data-bs-target="#v-pills-info" type="button" role="tab" aria-selected="true">
+                    <!-- <button class="nav-link active py-3 px-3 d-flex align-items-center gap-3 border-0" id="v-pills-info-tab" data-bs-toggle="pill" data-bs-target="#v-pills-info" type="button" role="tab" aria-selected="true">
                         <i class="fa-regular fa-user text-primary fs-5"></i>
                         <span>Thông tin cá nhân</span>
-                    </button>
-                    <button class="nav-link py-3 px-3 d-flex align-items-center gap-3 border-0" id="v-pills-cv-tab" data-bs-toggle="pill" data-bs-target="#v-pills-cv" type="button" role="tab" aria-selected="false">
+                    </button> -->
+                    <a href="list_cv.php" class="nav-link py-3 px-3 d-flex align-items-center gap-3 border-0 text-decoration-none">
                         <i class="fa-solid fa-file-pdf text-danger fs-5"></i>
                         <span>Quản lý hồ sơ & CV</span>
-                    </button>
+                    </a>
                     <a href="applied-jobs.php" class="nav-link py-3 px-3 d-flex align-items-center gap-3 border-0 text-decoration-none">
                         <i class="fa-solid fa-paper-plane text-success fs-5"></i>
                         <span>Việc làm đã ứng tuyển</span>
@@ -55,37 +68,40 @@ include_once '../../page/layouts/header.php';
                         <form action="update-profile.php" method="POST">
                             <div class="row g-3">
                                 <div class="col-12 col-md-6">
-                                    <label class="form-label fw-semibold text-dark">Họ và tên <span class="text-danger">*</span></label>
-                                    <input type="text" name="fullname" class="form-control py-2" value="<?php echo htmlspecialchars($user['fullname'] ?? ''); ?>" required>
+                                    <label class="form-label fw-semibold text-dark">Họ và tên</label>
+                                    <input type="text" name="fullname" class="form-control py-2" value="<?php echo htmlspecialchars($profileData['fullname']); ?>" required>
                                 </div>
-                                <div class="col-12 col-md-6">
+                                <!-- <div class="col-12 col-md-6">
                                     <label class="form-label fw-semibold text-dark">Mã số ứng viên</label>
-                                    <input type="text" name="candidate_code" class="form-control py-2" value="<?php echo htmlspecialchars($user['candidate_code'] ?? ''); ?>" readonly>
+                                    <input type="text" name="candidate_code" class="form-control py-2" value="<?php echo htmlspecialchars($profileData['candidate_code']); ?>" readonly>
+                                </div> -->
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label fw-semibold text-dark">Email liên hệ</label>
+                                    <input type="email" name="email" class="form-control py-2" value="<?php echo htmlspecialchars($profileData['email']); ?>" readonly>
                                 </div>
                                 <div class="col-12 col-md-6">
-                                    <label class="form-label fw-semibold text-dark">Email liên hệ <span class="text-danger">*</span></label>
-                                    <input type="email" name="email" class="form-control py-2" value="<?php echo htmlspecialchars($user['email'] ?? ''); ?>" required>
+                                    <label class="form-label fw-semibold text-dark">Số điện thoại</label>
+                                    <input type="tel" name="phone" class="form-control py-2" value="<?php echo htmlspecialchars($profileData['phone']); ?>" required>
                                 </div>
                                 <div class="col-12 col-md-6">
-                                    <label class="form-label fw-semibold text-dark">Số điện thoại <span class="text-danger">*</span></label>
-                                    <input type="tel" name="phone" class="form-control py-2" value="<?php echo htmlspecialchars($user['phone'] ?? ''); ?>" required>
+                                    <label class="form-label fw-semibold text-dark">Ngày sinh</label>
+                                    <input type="date" name="birth_date" class="form-control py-2" value="<?php echo htmlspecialchars($profileData['birth_date']); ?>">
                                 </div>
                                 <div class="col-12 col-md-6">
-                                    <label class="form-label fw-semibold text-dark">Lĩnh vực hoạt động</label>
-                                    <input type="text" name="industry" class="form-control py-2" value="<?php echo htmlspecialchars($user['industry'] ?? ''); ?>">
-                                </div>
-                                <div class="col-12 col-md-6">
-                                    <label class="form-label fw-semibold text-dark">Vị trí mong muốn</label>
-                                    <input type="text" name="desired_position" class="form-control py-2" value="<?php echo htmlspecialchars($user['desired_position'] ?? ''); ?>">
+                                    <label class="form-label fw-semibold text-dark">Giới tính</label>
+                                    <select name="Gender" class="form-select py-2">
+                                        <option value="0" <?php echo ($profileData['Gender'] !== null && (int)$profileData['Gender'] === 0) ? 'selected' : ''; ?>>Nam</option>
+                                        <option value="1" <?php echo ($profileData['Gender'] !== null && (int)$profileData['Gender'] === 1) ? 'selected' : ''; ?>>Nữ</option>
+                                    </select>
                                 </div>
                                 <div class="col-12">
                                     <label class="form-label fw-semibold text-dark">Địa chỉ</label>
-                                    <input type="text" name="address" class="form-control py-2" value="<?php echo htmlspecialchars($user['address'] ?? ''); ?>">
+                                    <input type="text" name="address" class="form-control py-2" value="<?php echo htmlspecialchars($profileData['address']); ?>">
                                 </div>
-                                <div class="col-12">
+                                <!-- <div class="col-12">
                                     <label class="form-label fw-semibold text-dark">Giới thiệu ngắn về bản thân</label>
-                                    <textarea name="bio" class="form-control" rows="4"><?php echo htmlspecialchars($user['bio'] ?? ''); ?></textarea>
-                                </div>
+                                    <textarea name="bio" class="form-control" rows="4"><?php echo htmlspecialchars($profileData['bio']); ?></textarea>
+                                </div> -->
                             </div>
                             
                             <div class="mt-4 pt-3 border-top text-end">
@@ -95,7 +111,7 @@ include_once '../../page/layouts/header.php';
                     </div>
                 </div>
 
-                <div class="tab-pane fade" id="v-pills-cv" role="tabpanel" aria-labelledby="v-pills-cv-tab">
+                <!-- <div class="tab-pane fade" id="v-pills-cv" role="tabpanel" aria-labelledby="v-pills-cv-tab">
                     <div class="card border-0 shadow-sm p-4 bg-white">
                         <h4 class="fw-bold mb-4 border-start border-4 border-primary ps-3 text-dark">Quản Lý Hồ Sơ & CV</h4>
                         
@@ -133,7 +149,7 @@ include_once '../../page/layouts/header.php';
                             <?php endif; ?>
                         </div>
                     </div>
-                </div>
+                </div> -->
 
             </div>
         </div>

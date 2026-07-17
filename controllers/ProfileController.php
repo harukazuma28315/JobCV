@@ -1,5 +1,4 @@
 <?php
-session_start();
 require_once __DIR__ . '/../config/db.php';
 require_once __DIR__ . '/../models/UserModel.php';
 
@@ -33,14 +32,14 @@ class ProfileController {
 			session_destroy();
 
 			// 4. Chuyển hướng về trang đăng nhập
-			header("Location: dangnhap.html");
+			header("Location: /JobCV/views/page/auth/login.php");
 			exit();
 		}
 	}
 
 	public function handleGetProfile() : ?array {
 		if (!isset($_SESSION['user_id'])) {
-			header("Location: ../views/dangnhap.html");
+			header("Location: /JobCV/views/page/auth/login.php");
 			exit();
 		}
 		$maUser = $_SESSION['user_id'];
@@ -56,7 +55,7 @@ class ProfileController {
 
 	public function handleUpdateProfile() {
 		if (!isset($_SESSION['user_id'])) {
-			header("Location: ../views/dangnhap.html");
+			header("Location: /JobCV/views/page/auth/login.php");
 			exit();
 		}
 

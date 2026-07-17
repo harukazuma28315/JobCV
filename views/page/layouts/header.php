@@ -1,3 +1,13 @@
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+$baseUrl = isset($baseUrl) ? $baseUrl : '/JobCV';
+$isLoggedIn = !empty($_SESSION['user_id']);
+$userName = trim($_SESSION['user_name'] ?? '');
+$avatarText = !empty($userName) ? strtoupper(substr($userName, 0, 1)) : 'U';
+?>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -63,9 +73,18 @@
                 </li>
             </ul>
             
-            <div class="d-flex gap-2">
-                <a href="../auth/login.php" class="btn btn-outline-primary border-primary text-primary-blue px-4">Đăng Nhập</a>
-                <a href="../auth/register.php" class="btn btn-primary-blue px-4">Đăng Ký</a>
+            <div class="d-flex gap-2 align-items-center">
+                <?php if ($isLoggedIn): ?>
+                    <a href="<?= $baseUrl ?>/views/page/candidate/profile.php" class="btn btn-outline-primary border-primary text-primary-blue px-3 d-flex align-items-center gap-2 rounded-pill">
+                        <span class="rounded-circle bg-primary-blue text-white d-inline-flex align-items-center justify-content-center" style="width: 34px; height: 34px; font-weight: 700;">
+                            <?= htmlspecialchars($avatarText) ?>
+                        </span>
+                        <span class="fw-semibold">Tài khoản</span>
+                    </a>
+                <?php else: ?>
+                    <a href="../auth/login.php" class="btn btn-outline-primary border-primary text-primary-blue px-4">Đăng Nhập</a>
+                    <a href="../auth/register.php" class="btn btn-primary-blue px-4">Đăng Ký</a>
+                <?php endif; ?>
             </div>
         </div>
     </div>
