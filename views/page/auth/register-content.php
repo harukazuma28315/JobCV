@@ -33,7 +33,7 @@
                                             <label for="Email" class="form-label small fw-semibold" id="labelEmail">Email <span class="text-danger">*</span></label>
                                             <div class="input-group">
                                                 <input type="email" class="form-control py-2" id="Email" name="Email" required placeholder="name@example.com">
-                                                <button class="btn btn-outline-secondary fw-bold" type="button" id="btnGetOtp" onclick="requestOtp()">Lấy mã xác thực</button>
+                                                <button class="btn btn-outline-secondary fw-bold" type="button" id="btnGetOtp" onclick="requestOtp('candidate')">Lấy mã xác thực</button>
                                             </div>
                                         </div>
 
@@ -117,7 +117,7 @@
                                             <label for="EmailEmployer" class="form-label small fw-semibold" id="labelEmailEmployer">Email công ty <span class="text-danger">*</span></label>
                                             <div class="input-group">
                                                 <input type="email" class="form-control py-2" id="EmailEmployer" name="Email" required placeholder="hr@company.com">
-                                                <button class="btn btn-outline-secondary fw-bold" type="button" id="btnGetOtpEmployer" onclick="requestOtp()">Lấy mã xác thực</button>
+                                                <button class="btn btn-outline-secondary fw-bold" type="button" id="btnGetOtpEmployer" onclick="requestOtp('employer')">Lấy mã xác thực</button>
                                             </div>
                                         </div>
 
@@ -180,7 +180,7 @@
     </div>
 </section>
 
-<script>
+<!-- <script>
 function requestOtp() {
     const emailInput = document.getElementById('Email')?.value || document.getElementById('EmailEmployer')?.value || '';
     const btnGetOtp = document.getElementById('btnGetOtp') || document.getElementById('btnGetOtpEmployer');
@@ -206,8 +206,8 @@ function requestOtp() {
     .then(response => response.json())
     .then(data => {
         alert(data.message);
-        if (data.status === 'success') {
-            let countdown = 60;
+        if (data.status === 'success' || data.status === 'cooldown') {
+            let countdown = data.remaining || 60;
             const timer = setInterval(() => {
                 countdown--;
                 if (btnGetOtp) {
@@ -304,4 +304,11 @@ function switchRole(roleVal) {
         }, false);
     });
 })();
+</script> -->
+
+<script>
+    window.appConfig = {
+        baseUrl: '<?= $baseUrl ?>'
+    };
 </script>
+<script src="<?= $baseUrl ?>/public/js/register.js"></script>

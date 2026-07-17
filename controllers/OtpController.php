@@ -5,38 +5,47 @@ require_once __DIR__ . '/../models/UserModel.php';
 require_once __DIR__ . '/../config/mail.php';
 
 $userModel = new UserModel($conn);
+$cooldownSeconds = 60;
 
-// Kiểm tra nếu có yêu cầu gửi OTP qua phương thức POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'send_otp') {
-	$email = trim($_POST['email']);
+    $email = trim($_POST['email'] ?? '');
 
-	// 1. Kiểm tra email trống hoặc sai định dạng
-	if (empty($email) || !$userModel->isValidEmail($email)) {
-		echo json_encode(['status' => 'error', 'message' => 'Email không đúng định dạng!']);
-		exit();
-	}
+    if (empty($email) || !$userModel->isValidEmail($email)) {
+        echo json_encode(['status' => 'error', 'message' => 'Email không đúng định dạng!']);
+        exit();
+    }
 
-	// 2. Kiểm tra xem email này đã đăng ký tài khoản trước đó chưa
-	if ($userModel->isUserExists($email)) {
-		echo json_encode(['status' => 'error', 'message' => 'Email này đã tồn tại trong hệ thống!']);
-		exit();
-	}
+    if ($userModel->isUserExists($email)) {
+        echo json_encode(['status' => 'error', 'message' => 'Email này đã tồn tại trong hệ thống!']);
+        exit();
+    }
 
-	// 3. Tạo mã OTP ngẫu nhiên gồm 6 chữ số
-	$otp = rand(100000, 999999);
+    $now = time();
+    $lastSentAt = isset($_SESSION['register_otp_last_sent_at']) ? (int) $_SESSION['register_otp_last_sent_at'] : 0;
 
-	// 4. Lưu OTP và Email vào Session để đối chiếu lúc sau, kèm thời gian hết hạn (15 phút)
-	$_SESSION['register_otp'] = $otp;
-	$_SESSION['register_email'] = $email;
-	$_SESSION['otp_expired'] = time() + (15 * 60); 
+    if ($lastSentAt > 0 && ($now - $lastSentAt) < $cooldownSeconds) {
+        $remaining = $cooldownSeconds - ($now - $lastSentAt);
+        echo json_encode([
+            'status' => 'cooldown',
+            'message' => "Vui lòng chờ {$remaining} giây trước khi lấy mã lại.",
+            'remaining' => $remaining
+        ]);
+        exit();
+    }
 
-	// 5. Tiến hành gửi mail
-	if (sendOTPEmail($email, $otp)) {
-		echo json_encode(['status' => 'success', 'message' => 'Mã OTP đã được gửi vào email của bạn!']);
-	} else {
-		echo json_encode(['status' => 'error', 'message' => 'Không thể gửi email, vui lòng thử lại sau!']);
-	}
-	$conn->close();
-	exit();
+    $otp = rand(100000, 999999);
+
+    $_SESSION['register_otp'] = $otp;
+    $_SESSION['register_email'] = $email;
+    $_SESSION['otp_expired'] = $now + (15 * 60);
+    $_SESSION['register_otp_last_sent_at'] = $now;
+
+    if (sendOTPEmail($email, $otp)) {
+        echo json_encode(['status' => 'success', 'message' => 'Mã OTP đã được gửi vào email của bạn!']);
+    } else {
+        echo json_encode(['status' => 'error', 'message' => 'Không thể gửi email, vui lòng thử lại sau!']);
+    }
+    $conn->close();
+    exit();
 }
 ?>

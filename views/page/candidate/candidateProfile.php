@@ -14,6 +14,7 @@ $logoutCtrl->handleLogout();
 $profileCtrl = new ProfileController($conn);
 $profileCtrl->handleUpdateProfile();
 $profileData = $profileCtrl->handleGetProfile();
+$resetEmail = $_SESSION['user_email'] ?? $profileData['email'] ?? '';
 
 ?>
 
@@ -103,6 +104,9 @@ $profileData = $profileCtrl->handleGetProfile();
                             <div class="mt-4 pt-3 border-top text-end">
                                 <a href="?action=logout" class="btn btn-outline-danger fw-bold px-4 py-2 me-auto" onclick="return confirm('Bạn có chắc chắn muốn đăng xuất không?')">
                                     <i class="fa-solid fa-right-from-bracket me-2"></i>Đăng Xuất
+                                </a>
+                                <a href="<?= $baseUrl ?>/views/page/auth/forgot-password.php?email=<?= urlencode($resetEmail) ?>" class="btn btn-outline-warning fw-bold px-4 py-2" onclick="return true;">
+                                    <i class="fa-solid fa-key me-2"></i>Đổi Mật Khẩu
                                 </a>
                                 <button type="submit" name="btn_submit" class="btn btn-primary-blue fw-bold px-4 py-2">Lưu Thay Đổi</button>
                             </div>

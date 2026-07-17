@@ -1,4 +1,3 @@
-<!-- Nhúng Header chung -->
 <?php 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
@@ -16,6 +15,8 @@ $logoutCtrl->handleLogout();
 $profileCtrl = new ProfileController($conn);
 $profileCtrl->handleUpdateProfile();
 $profile = $profileCtrl->handleGetProfile();
+
+$resetEmail = $_SESSION['user_email'] ?? $profileData['email'] ?? '';
 ?>
 
 <div class="container py-5">
@@ -66,19 +67,19 @@ $profile = $profileCtrl->handleGetProfile();
                     <input type="hidden" name="action" value="update">
                     <div class="row g-3">
                         <div class="col-12 col-md-6">
-                            <label class="form-label fw-semibold text-dark">Tên công ty / Doanh nghiệp <span class="text-danger">*</span></label>
+                            <label class="form-label fw-semibold text-dark">Tên công ty / Doanh nghiệp</label>
                             <input type="text" class="form-control py-2" value="<?php echo htmlspecialchars($profile['companyName'] ?? ''); ?>" readonly>
                         </div>
                         <div class="col-12 col-md-6">
-                            <label class="form-label fw-semibold text-dark">Mã số thuế / Giấy phép KD <span class="text-danger">*</span></label>
+                            <label class="form-label fw-semibold text-dark">Mã số thuế / Giấy phép KD</label>
                             <input type="text" class="form-control py-2" value="<?php echo htmlspecialchars($profile['taxCode'] ?? ''); ?>" readonly>
                         </div>
                         <div class="col-12 col-md-6">
-                            <label class="form-label fw-semibold text-dark">Email liên hệ tuyển dụng <span class="text-danger">*</span></label>
+                            <label class="form-label fw-semibold text-dark">Email liên hệ tuyển dụng</label>
                             <input type="email" class="form-control py-2" value="<?php echo htmlspecialchars($profile['email'] ?? ''); ?>" readonly>
                         </div>
                         <div class="col-12 col-md-6">
-                            <label class="form-label fw-semibold text-dark">Số điện thoại liên hệ <span class="text-danger">*</span></label>
+                            <label class="form-label fw-semibold text-dark">Số điện thoại liên hệ</label>
                             <input type="tel" name="sdt" class="form-control py-2" value="<?php echo htmlspecialchars($profile['phone'] ?? ''); ?>" required>
                         </div>
                         <div class="col-12 col-md-6">
@@ -90,7 +91,7 @@ $profile = $profileCtrl->handleGetProfile();
                             <input type="text" name="linhVuc" class="form-control py-2" value="<?php echo htmlspecialchars($profile['industry'] ?? ''); ?>">
                         </div>
                         <div class="col-12">
-                            <label class="form-label fw-semibold text-dark">Địa chỉ trụ sở chính <span class="text-danger">*</span></label>
+                            <label class="form-label fw-semibold text-dark">Địa chỉ trụ sở chính</label>
                             <input type="text" name="diaChi" class="form-control py-2" value="<?php echo htmlspecialchars($profile['address'] ?? ''); ?>" required>
                         </div>
                     </div>
@@ -98,6 +99,9 @@ $profile = $profileCtrl->handleGetProfile();
                     <div class="mt-4 pt-3 border-top text-end">
                         <a href="?action=logout" class="btn btn-outline-danger fw-bold px-4 py-2 me-auto" onclick="return confirm('Bạn có chắc chắn muốn đăng xuất không?')">
                             <i class="fa-solid fa-right-from-bracket me-2"></i>Đăng Xuất
+                        </a>
+                        <a href="<?= $baseUrl ?>/views/page/auth/forgot-password.php?email=<?= urlencode($resetEmail) ?>" class="btn btn-outline-warning fw-bold px-4 py-2" onclick="return true;">
+                                    <i class="fa-solid fa-key me-2"></i>Đổi Mật Khẩu
                         </a>
                         <button type="submit" class="btn btn-primary-blue fw-bold px-4 py-2">Lưu Thay Đổi</button>
                     </div>

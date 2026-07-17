@@ -36,7 +36,7 @@
                                         <input type="checkbox" class="form-check-input" id="rememberMe">
                                         <label class="form-check-label text-secondary small" for="rememberMe">Ghi nhớ đăng nhập</label>
                                     </div>
-                                    <a href="#" class="text-primary-blue text-decoration-none small">Quên mật khẩu?</a>
+                                    <a href="forgot-password.php" class="text-primary-blue text-decoration-none small">Quên mật khẩu?</a>
                                 </div>
                                 
                                 <button type="submit" class="btn btn-primary-blue w-100 py-2 fw-semibold mb-3">
