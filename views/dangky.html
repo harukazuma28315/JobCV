@@ -31,18 +31,34 @@
 			</li>
 		</ul>
 
-		<form action="../controllers/RegisterController.php" method="POST" class="needs-validation" novalidate>
+		<form action="../controllers/RegisterController.php" method="POST" class="needs-validation" novalidate id="registerForm">
 			<input type="hidden" id="Role" name="Role" value="0">
 
 			<!-- [CHUNG] Thông tin tài khoản đăng nhập chính -->
 			<div class="mb-3">
 				<label for="Email" class="form-label" id="labelEmail">Email <span class="text-danger">*</span></label>
-				<input type="email" class="form-control" id="Email" name="Email" required placeholder="name@example.com">
+				<div class="input-group">
+					<input type="email" class="form-control" id="Email" name="Email" required placeholder="name@example.com">
+					<button class="btn btn-outline-secondary fw-bold" type="button" id="btnGetOtp" onclick="requestOtp()">Lấy mã xác thực</button>
+				</div>
+			</div>
+
+			<!-- Ô NHẬP MÃ OTP -->
+			<div class="mb-3">
+				<label for="Otp" class="form-label">Mã xác thực OTP <span class="text-danger">*</span></label>
+				<input type="text" class="form-control" id="Otp" name="Otp" required placeholder="Nhập 6 chữ số lấy từ Email" maxlength="6">
 			</div>
 
 			<div class="mb-3">
 				<label for="MatKhau" class="form-label">Mật khẩu <span class="text-danger">*</span></label>
 				<input type="password" class="form-control" id="MatKhau" name="MatKhau" required placeholder="Nhập mật khẩu">
+			</div>
+
+			<!-- Ô NHẬP LẠI MẬT KHẨU MỚI THÊM -->
+			<div class="mb-3">
+				<label for="MatKhauConfirm" class="form-label">Nhập lại mật khẩu <span class="text-danger">*</span></label>
+				<input type="password" class="form-control" id="MatKhauConfirm" name="MatKhauConfirm" required placeholder="Xác nhận lại mật khẩu">
+				<div class="invalid-feedback" id="passwordErrorMsg">Vui lòng nhập lại mật khẩu trùng khớp.</div>
 			</div>
 
 			<!-- [ĐỔI NHÃN ĐỘNG] Thay đổi linh hoạt theo vai trò -->
@@ -110,6 +126,54 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
+// HÀM AJAX GỬI OTP KHÔNG LOAD TRANG[cite: 27]
+function requestOtp() {
+	const emailInput = document.getElementById('Email').value;
+	const btnGetOtp = document.getElementById('btnGetOtp');
+
+	if (!emailInput) {
+		alert('Vui lòng nhập địa chỉ Email trước khi yêu cầu mã xác thực!');
+		return;
+	}
+
+	btnGetOtp.disabled = true;
+	btnGetOtp.innerText = 'Đang gửi...';
+
+	const formData = new FormData();
+	formData.append('action', 'send_otp');
+	formData.append('email', emailInput);
+
+	fetch('../controllers/OtpController.php', {
+		method: 'POST',
+		body: formData
+	})
+	.then(response => response.json())
+	.then(data => {
+		alert(data.message);
+		if (data.status === 'success') {
+			let countdown = 60;
+			const timer = setInterval(() => {
+				countdown--;
+				btnGetOtp.innerText = `Gửi lại sau (${countdown}s)`;
+				if (countdown <= 0) {
+					clearInterval(timer);
+					btnGetOtp.disabled = false;
+					btnGetOtp.innerText = 'Lấy mã xác thực';
+				}
+			}, 1000);
+		} else {
+			btnGetOtp.disabled = false;
+			btnGetOtp.innerText = 'Lấy mã xác thực';
+		}
+	})
+	.catch(error => {
+		console.error('Error:', error);
+		alert('Đã có lỗi kết nối xảy ra!');
+		btnGetOtp.disabled = false;
+		btnGetOtp.innerText = 'Lấy mã xác thực';
+	});
+}
+
 function switchRole(roleVal) {
 	document.getElementById('Role').value = roleVal;
 	
@@ -125,7 +189,6 @@ function switchRole(roleVal) {
 	const maSoThue = document.getElementById('MaSoThue');
 
 	if (roleVal === 1) {
-		// --- CHUYỂN DÀNH CHO NHÀ TUYỂN DỤNG ---
 		personalFields.style.display = 'none';
 		employerFields.style.display = 'block';
 		
@@ -140,7 +203,6 @@ function switchRole(roleVal) {
 		
 		maSoThue.setAttribute('required', 'required');
 	} else {
-		// --- CHUYỂN DÀNH CHO ỨNG VIÊN ---
 		personalFields.style.display = 'flex';
 		employerFields.style.display = 'none';
 		
@@ -157,12 +219,23 @@ function switchRole(roleVal) {
 	}
 }
 
-// Kiểm tra tính hợp lệ dữ liệu mẫu Bootstrap Validation
+// KHỞI CHẠY KIỂM TRA ĐIỀU KIỆN SUBMIT (BỔ SUNG SO KHỚP MẬT KHẨU)
 (function () {
 	'use strict'
 	var forms = document.querySelectorAll('.needs-validation')
 	Array.prototype.slice.call(forms).forEach(function (form) {
 		form.addEventListener('submit', function (event) {
+			const password = document.getElementById('MatKhau').value;
+			const confirmPassword = document.getElementById('MatKhauConfirm').value;
+			const confirmInput = document.getElementById('MatKhauConfirm');
+
+			// Kiểm tra mật khẩu khớp nhau
+			if (password !== confirmPassword) {
+				confirmInput.setCustomValidity('Mật khẩu không trùng khớp!');
+			} else {
+				confirmInput.setCustomValidity(''); // Hợp lệ
+			}
+
 			if (!form.checkValidity()) {
 				event.preventDefault()
 				event.stopPropagation()

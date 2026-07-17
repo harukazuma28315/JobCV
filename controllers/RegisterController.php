@@ -1,4 +1,6 @@
 <?php
+session_start();
+
 require_once __DIR__ . '/../config/db.php';
 require_once __DIR__ . '/../models/UserModel.php';
 
@@ -25,6 +27,40 @@ class RegisterController {
 		if ($_SERVER["REQUEST_METHOD"] !== "POST") {
 			return;
 		}
+
+		// Nhận dữ liệu kiểm tra OTP từ form gửi lên
+		$email = trim($_POST['Email']);
+		$userOtp = isset($_POST['Otp']) ? trim($_POST['Otp']) : '';
+
+		// ================= KIỂM TRA MÃ OTP HỢP LỆ TRƯỚC KHI LÀM BẤT CỨ VIỆC GÌ =================
+		if (!isset($_SESSION['register_otp']) || !isset($_SESSION['register_email'])) {
+			echo "<script>alert('Vui lòng click lấy mã xác thực trước khi tiến hành đăng ký!'); window.history.back();</script>";
+			return;
+		}
+
+		if (time() > $_SESSION['otp_expired']) {
+			echo "<script>alert('Mã OTP đã hết hạn 15 phút, hãy nhấn lấy mã mới!'); window.history.back();</script>";
+			return;
+		}
+
+		if ($email !== $_SESSION['register_email'] || (int)$userOtp !== (int)$_SESSION['register_otp']) {
+			echo "<script>alert('Mã xác thực OTP không chính xác, vui lòng kiểm tra lại hộp thư!'); window.history.back();</script>";
+			return;
+		}
+
+		// Nhận dữ liệu mật khẩu và kiểm tra trùng khớp
+		$matKhau = $_POST['MatKhau'];
+		$matKhauConfirm = isset($_POST['MatKhauConfirm']) ? $_POST['MatKhauConfirm'] : '';
+
+		if ($matKhau !== $matKhauConfirm) {
+			echo "<script>alert('Mật khẩu nhập lại không trùng khớp, vui lòng kiểm tra lại!'); window.history.back();</script>";
+			return;
+		}
+		
+		// Xoá mã OTP sau khi xác nhận khớp để tránh dùng lại (Bảo mật nâng cao)
+		unset($_SESSION['register_otp']);
+		unset($_SESSION['register_email']);
+		unset($_SESSION['otp_expired']);
 
 		// Định danh vai trò tài khoản (0: Ứng viên, 1: Nhà tuyển dụng)
 		$role = isset($_POST['Role']) ? intval($_POST['Role']) : 0;
@@ -86,7 +122,7 @@ class RegisterController {
 
 		// Điều hướng trả về kết quả hiển thị cho View
 		if ($isSuccess) {
-			echo "<script>alert('Đăng ký tài khoản thành công!'); window.location.href='../views/dangnhap.html';</script>";
+			echo "<script>alert('Đăng ký tài khoản thành công!'); window.location.href='../views/page/auth/login.php';</script>";
 		} else {
 			echo "<script>alert('Có lỗi xảy ra trong quá trình ghi dữ liệu!'); window.history.back();</script>";
 		}

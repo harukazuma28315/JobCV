@@ -49,7 +49,7 @@ class LoginController {
 			$_SESSION['user_role'] = $user['Role'];
 
 			// Định tuyến trang chủ hoặc bảng điều khiển tùy theo vai trò (Role)
-			echo "<script>alert('Đăng nhập thành công! Chào mừng " . $user['HoTen'] . "'); window.location.href='../views/trangchu.html';</script>";
+			echo "<script>alert('Đăng nhập thành công! Chào mừng " . $user['HoTen'] . "'); window.location.href='../views/page/home/index.php';</script>";
 		} else {
 			// Thông báo lỗi chung bảo mật (không chỉ rõ sai email hay mật khẩu)
 			echo "<script>alert('Email hoặc mật khẩu không chính xác!'); window.history.back();</script>";
