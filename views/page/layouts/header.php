@@ -7,6 +7,8 @@ $baseUrl = isset($baseUrl) ? $baseUrl : '/JobCV';
 $isLoggedIn = !empty($_SESSION['user_id']);
 $userName = trim($_SESSION['user_name'] ?? '');
 $avatarText = !empty($userName) ? strtoupper(substr($userName, 0, 1)) : 'U';
+$userRole = isset($_SESSION['user_role']) ? (int)$_SESSION['user_role'] : 0;
+$profilePage = ($userRole === 1) ? '/JobCV/views/page/employer/employerProfile.php' : '/JobCV/views/page/candidate/candidateProfile.php';
 ?>
 <!DOCTYPE html>
 <html lang="vi">
@@ -75,7 +77,7 @@ $avatarText = !empty($userName) ? strtoupper(substr($userName, 0, 1)) : 'U';
             
             <div class="d-flex gap-2 align-items-center">
                 <?php if ($isLoggedIn): ?>
-                    <a href="<?= $baseUrl ?>/views/page/candidate/profile.php" class="btn btn-outline-primary border-primary text-primary-blue px-3 d-flex align-items-center gap-2 rounded-pill">
+                    <a href="<?= $profilePage ?>" class="btn btn-outline-primary border-primary text-primary-blue px-3 d-flex align-items-center gap-2 rounded-pill">
                         <span class="rounded-circle bg-primary-blue text-white d-inline-flex align-items-center justify-content-center" style="width: 34px; height: 34px; font-weight: 700;">
                             <?= htmlspecialchars($avatarText) ?>
                         </span>

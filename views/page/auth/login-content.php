@@ -23,17 +23,22 @@
                                     <label class="form-label small fw-semibold">Địa chỉ Email / Tài khoản</label>
                                     <input type="text" name="Email" class="form-control py-2" placeholder="name@example.com" required>
                                 </div>
+                                
+                                <!-- Ô mật khẩu (đã bỏ link quên mật khẩu) -->
                                 <div class="mb-3">
-                                    <div class="d-flex justify-content-between align-items-center mb-1">
-                                        <label class="form-label small fw-semibold mb-0">Mật khẩu</label>
-                                        <a href="#" class="text-primary-blue text-decoration-none small">Quên mật khẩu?</a>
-                                    </div>
+                                    <label class="form-label small fw-semibold">Mật khẩu</label>
                                     <input type="password" name="MatKhau" class="form-control py-2" placeholder="Nhập mật khẩu của bạn" required>
                                 </div>
-                                <div class="mb-4 form-check">
-                                    <input type="checkbox" class="form-check-input" id="rememberMe">
-                                    <label class="form-check-label text-secondary small" for="rememberMe">Ghi nhớ đăng nhập</label>
+                                
+                                <!-- Ghi nhớ đăng nhập & Quên mật khẩu nằm chung một hàng -->
+                                <div class="mb-4 d-flex justify-content-between align-items-center">
+                                    <div class="form-check mb-0">
+                                        <input type="checkbox" class="form-check-input" id="rememberMe">
+                                        <label class="form-check-label text-secondary small" for="rememberMe">Ghi nhớ đăng nhập</label>
+                                    </div>
+                                    <a href="forgot-password.php" class="text-primary-blue text-decoration-none small">Quên mật khẩu?</a>
                                 </div>
+                                
                                 <button type="submit" class="btn btn-primary-blue w-100 py-2 fw-semibold mb-3">
                                     Đăng Nhập
                                 </button>

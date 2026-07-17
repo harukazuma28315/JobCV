@@ -37,20 +37,50 @@ class ProfileController {
 		}
 	}
 
-	public function handleGetProfile() : ?array {
+	/**
+	 * Lấy và chuẩn hóa dữ liệu hồ sơ người dùng dựa theo phân quyền Role.
+	 * Trả về cấu trúc dữ liệu tương ứng cho Ứng viên hoặc Nhà tuyển dụng.
+	 * 
+	 * @return array Mảng dữ liệu đã được xử lý và chuẩn hóa theo quy tắc camelCase.
+	 */
+	public function handleGetProfile() : array {
 		if (!isset($_SESSION['user_id'])) {
 			header("Location: /JobCV/views/page/auth/login.php");
 			exit();
 		}
+		
 		$maUser = $_SESSION['user_id'];
-		$role = $_SESSION['user_role'] ?? 0; // Giả định bạn đã lưu role vào session lúc đăng nhập
+		$role = isset($_SESSION['user_role']) ? (int) $_SESSION['user_role'] : 0;
 
-		// Nếu là Công ty (Role = 1), lấy dữ liệu liên kết bảng nhatuyendung
-		if ($role == 1) {
-			return $this->userModel->getEmployerById($maUser);
+		// Phân tách dữ liệu lấy ra dựa trên Role của tài khoản
+		if ($role === 1) {
+			// Luồng xử lý cho NHÀ TUYỂN DỤNG
+			$rawData = $this->userModel->getEmployerById($maUser);
+			
+			return [
+				'role'        => 1,
+				'companyName' => $rawData['TenCongTy'] ?? $rawData['HoTen'] ?? 'Chưa cập nhật tên công ty',
+				'email'       => $rawData['Email'] ?? '',
+				'phone'       => $rawData['SDT'] ?? '',
+				'address'     => $rawData['DiaChi'] ?? '',
+				'website'     => $rawData['Website'] ?? 'Chưa cập nhật',
+				'industry'    => $rawData['LinhVuc'] ?? 'Chưa cập nhật',
+				'taxCode'     => $rawData['MaSoThue'] ?? 'Chưa cập nhật'
+			];
 		}
-		// Nếu là Ứng viên (Role = 0)
-		return $this->userModel->getUserById($maUser);
+
+		// Luồng xử lý cho ỨNG VIÊN (Mặc định hoặc Role = 0)
+		$rawData = $this->userModel->getUserById($maUser);
+		
+		return [
+			'role'      => 0,
+			'fullname'  => $rawData['HoTen'] ?? $_SESSION['user_name'] ?? 'Người dùng',
+			'email'     => $rawData['Email'] ?? '',
+			'phone'     => $rawData['SDT'] ?? '',
+			'address'   => $rawData['DiaChi'] ?? '',
+			'birthDate' => $rawData['NgaySinh'] ?? 'Chưa cập nhật',
+			'gender'    => $rawData['GioiTinh'] ?? null,
+		];
 	}
 
 	public function handleUpdateProfile() {
@@ -62,34 +92,60 @@ class ProfileController {
 		if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'update') {
 			$maUser = $_SESSION['user_id'];
 			$role = $_SESSION['user_role'] ?? 0;
+			$currentProfile = $this->handleGetProfile();
 
 			if ($role == 1) {
-				// Dữ liệu cập nhật cho CÔNG TY
 				$dataUpdate = [
-					'sdt'      => trim($_POST['sdt']),
-					'diaChi'   => trim($_POST['diaChi']),
-					'website'  => trim($_POST['website']),
-					'linhVuc'  => trim($_POST['linhVuc'])
+					'sdt'      => trim($_POST['sdt'] ?? ''),
+					'diaChi'   => trim($_POST['diaChi'] ?? ''),
+					'website'  => trim($_POST['website'] ?? ''),
+					'linhVuc'  => trim($_POST['linhVuc'] ?? '')
 				];
+
+				$hasChange = (
+					($currentProfile['phone'] ?? '') !== $dataUpdate['sdt'] ||
+					($currentProfile['address'] ?? '') !== $dataUpdate['diaChi'] ||
+					($currentProfile['website'] ?? '') !== $dataUpdate['website'] ||
+					($currentProfile['industry'] ?? '') !== $dataUpdate['linhVuc']
+				);
+
+				if (!$hasChange) {
+					header("Location: /JobCV/views/page/employer/employerProfile.php?status=unchanged");
+					exit();
+				}
+
 				$result = $this->userModel->updateEmployerProfile($maUser, $dataUpdate);
 			} else {
-				// Dữ liệu cập nhật cho ỨNG VIÊN
 				$dataUpdate = [
-					'hoTen'    => trim($_POST['hoTen']),
+					'hoTen'    => trim($_POST['hoTen'] ?? ''),
 					'ngaySinh' => !empty($_POST['ngaySinh']) ? $_POST['ngaySinh'] : null,
-					'gioiTinh' => $_POST['gioiTinh'],
-					'sdt'      => trim($_POST['sdt']),
-					'diaChi'   => trim($_POST['diaChi'])
+					'gioiTinh' => $_POST['gioiTinh'] ?? null,
+					'sdt'      => trim($_POST['sdt'] ?? ''),
+					'diaChi'   => trim($_POST['diaChi'] ?? '')
 				];
+
+				$hasChange = (
+					($currentProfile['fullname'] ?? '') !== $dataUpdate['hoTen'] ||
+					($currentProfile['birthDate'] ?? '') !== ($dataUpdate['ngaySinh'] ?? '') ||
+					($currentProfile['gender'] ?? null) !== ($dataUpdate['gioiTinh'] ?? null) ||
+					($currentProfile['phone'] ?? '') !== $dataUpdate['sdt'] ||
+					($currentProfile['address'] ?? '') !== $dataUpdate['diaChi']
+				);
+
+				if (!$hasChange) {
+					header("Location: /JobCV/views/page/candidate/candidateProfile.php?status=unchanged");
+					exit();
+				}
+
 				$result = $this->userModel->updateUserProfile($maUser, $dataUpdate);
 			}
 
 			if ($result) {
 				if(isset($dataUpdate['hoTen'])) $_SESSION['user_name'] = $dataUpdate['hoTen'];
-				header("Location: profile.php?status=success");
+				header("Location: /JobCV/views/page/" . ($role == 1 ? 'employer/employerProfile.php' : 'candidate/candidateProfile.php') . "?status=success");
 				exit();
 			} else {
-				header("Location: profile.php?status=error");
+				header("Location: /JobCV/views/page/" . ($role == 1 ? 'employer/employerProfile.php' : 'candidate/candidateProfile.php') . "?status=error");
 				exit();
 			}
 		}
