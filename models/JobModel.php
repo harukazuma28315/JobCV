@@ -1,104 +1,173 @@
 <?php
 /**
  * File: app/models/JobModel.php
- * Đường dẫn: Module5_UngTuyenVaQuanLyHoSo/app/models/JobModel.php
- * Chức năng: Truy vấn dữ liệu bảng `tintuyendung` phục vụ nghiệp vụ ứng tuyển
- *            (kiểm tra tin tồn tại, tin còn hạn, lấy danh sách tin của nhà tuyển dụng).
+ * Chức năng: Truy vấn dữ liệu bảng `tintuyendung` phục vụ cả Nhà tuyển dụng và Admin
  */
 
 require_once ROOT_PATH . '/config/Database.php';
 
 class JobModel
 {
-	/**
-	 * @var mysqli
-	 */
-	private $link;
+    private $link;
 
-	public function __construct()
-	{
-		$this->link = Database::getConnection();
-	}
+    public function __construct()
+    {
+        $this->link = Database::getConnection();
+    }
 
-	/**
-	 * Lấy thông tin tin tuyển dụng theo mã.
-	 *
-	 * @param string $maTinTuyenDung
-	 * @return array|null
-	 */
-	public function getById($maTinTuyenDung)
-	{
-		$sql = 'SELECT * FROM tintuyendung WHERE MaTinTuyenDung = ? LIMIT 1';
-		$stmt = mysqli_prepare($this->link, $sql);
-		mysqli_stmt_bind_param($stmt, 's', $maTinTuyenDung);
-		mysqli_stmt_execute($stmt);
-		$result = mysqli_stmt_get_result($stmt);
-		$row = mysqli_fetch_assoc($result);
-		mysqli_stmt_close($stmt);
+    // ====================== PHẦN CODE NHÀ TUYỂN DỤNG - KHÔNG THAY ĐỔI ======================
 
-		return $row ? $row : null;
-	}
+    /**
+     * Lấy thông tin tin tuyển dụng theo mã.
+     */
+    public function getById($maTinTuyenDung)
+    {
+        $sql = 'SELECT * FROM tintuyendung WHERE MaTinTuyenDung = ? LIMIT 1';
+        $stmt = mysqli_prepare($this->link, $sql);
+        mysqli_stmt_bind_param($stmt, 's', $maTinTuyenDung);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+        $row = mysqli_fetch_assoc($result);
+        mysqli_stmt_close($stmt);
 
-	/**
-	 * Kiểm tra tin tuyển dụng đã hết hạn hay chưa dựa trên NgayHetHan.
-	 * Tin không có NgayHetHan (NULL) được xem là còn hiệu lực vô thời hạn.
-	 *
-	 * @param array $tinTuyenDung Bản ghi tin tuyển dụng (đã lấy từ getById)
-	 * @return bool true nếu đã hết hạn
-	 */
-	public function isExpired($tinTuyenDung)
-	{
-		if (empty($tinTuyenDung['NgayHetHan'])) {
-			return false;
-		}
+        return $row ? $row : null;
+    }
 
-		$today = date('Y-m-d');
+    /**
+     * Kiểm tra tin tuyển dụng đã hết hạn hay chưa.
+     */
+    public function isExpired($tinTuyenDung)
+    {
+        if (empty($tinTuyenDung['NgayHetHan'])) {
+            return false;
+        }
 
-		return $tinTuyenDung['NgayHetHan'] < $today;
-	}
+        $today = date('Y-m-d');
+        return $tinTuyenDung['NgayHetHan'] < $today;
+    }
 
-	/**
-	 * Lấy tin tuyển dụng theo mã, kèm kiểm tra tin thuộc đúng nhà tuyển dụng
-	 * đang đăng nhập (chống truy cập chéo dữ liệu công ty khác).
-	 *
-	 * @param string $maTinTuyenDung
-	 * @param string $maNhaTuyenDung
-	 * @return array|null
-	 */
-	public function getOwnedJob($maTinTuyenDung, $maNhaTuyenDung)
-	{
-		$sql = 'SELECT * FROM tintuyendung WHERE MaTinTuyenDung = ? AND MaNhaTuyenDung = ? LIMIT 1';
-		$stmt = mysqli_prepare($this->link, $sql);
-		mysqli_stmt_bind_param($stmt, 'ss', $maTinTuyenDung, $maNhaTuyenDung);
-		mysqli_stmt_execute($stmt);
-		$result = mysqli_stmt_get_result($stmt);
-		$row = mysqli_fetch_assoc($result);
-		mysqli_stmt_close($stmt);
+    /**
+     * Lấy tin tuyển dụng theo mã, kiểm tra thuộc nhà tuyển dụng.
+     */
+    public function getOwnedJob($maTinTuyenDung, $maNhaTuyenDung)
+    {
+        $sql = 'SELECT * FROM tintuyendung WHERE MaTinTuyenDung = ? AND MaNhaTuyenDung = ? LIMIT 1';
+        $stmt = mysqli_prepare($this->link, $sql);
+        mysqli_stmt_bind_param($stmt, 'ss', $maTinTuyenDung, $maNhaTuyenDung);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+        $row = mysqli_fetch_assoc($result);
+        mysqli_stmt_close($stmt);
 
-		return $row ? $row : null;
-	}
+        return $row ? $row : null;
+    }
 
-	/**
-	 * Lấy danh sách tin tuyển dụng của một Nhà tuyển dụng,
-	 * dùng để hiển thị bộ lọc theo tin trong trang danh sách hồ sơ.
-	 *
-	 * @param string $maNhaTuyenDung
-	 * @return array
-	 */
-	public function getJobsByRecruiter($maNhaTuyenDung)
-	{
-		$sql = 'SELECT MaTinTuyenDung, TieuDe FROM tintuyendung WHERE MaNhaTuyenDung = ? ORDER BY NgayDang DESC';
-		$stmt = mysqli_prepare($this->link, $sql);
-		mysqli_stmt_bind_param($stmt, 's', $maNhaTuyenDung);
-		mysqli_stmt_execute($stmt);
-		$result = mysqli_stmt_get_result($stmt);
+    /**
+     * Lấy danh sách tin tuyển dụng của một Nhà tuyển dụng.
+     */
+    public function getJobsByRecruiter($maNhaTuyenDung)
+    {
+        $sql = 'SELECT MaTinTuyenDung, TieuDe FROM tintuyendung WHERE MaNhaTuyenDung = ? ORDER BY NgayDang DESC';
+        $stmt = mysqli_prepare($this->link, $sql);
+        mysqli_stmt_bind_param($stmt, 's', $maNhaTuyenDung);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
 
-		$danhSachTinTuyenDung = array();
-		while ($row = mysqli_fetch_assoc($result)) {
-			$danhSachTinTuyenDung[] = $row;
-		}
-		mysqli_stmt_close($stmt);
+        $danhSachTinTuyenDung = array();
+        while ($row = mysqli_fetch_assoc($result)) {
+            $danhSachTinTuyenDung[] = $row;
+        }
+        mysqli_stmt_close($stmt);
 
-		return $danhSachTinTuyenDung;
-	}
+        return $danhSachTinTuyenDung;
+    }
+
+    // ====================== PHẦN CHO ADMIN  ======================
+
+    /**
+     * Lấy danh sách tin tuyển dụng cho Admin (có lọc)
+     */
+    public function getJobListForAdmin($keyword = '', $status = null)
+    {
+        $sql = "SELECT t.MaTinTuyenDung, t.TieuDe, t.NgayDang, t.NgayHetHan, 
+                       t.TrangThaiDuyet, ntd.TenCongTy
+                FROM tintuyendung t
+                JOIN nhatuyendung ntd ON t.MaNhaTuyenDung = ntd.MaNhaTuyenDung
+                WHERE 1=1";
+
+        $params = [];
+        $types = '';
+
+        if (!empty($keyword)) {
+            $sql .= " AND (t.TieuDe LIKE ? OR ntd.TenCongTy LIKE ?)";
+            $like = "%$keyword%";
+            $params = [$like, $like];
+            $types .= 'ss';
+        }
+
+        if (in_array($status, ['pending', 'ChoDuyet'])) {
+            $sql .= " AND t.TrangThaiDuyet = 'ChoDuyet'";
+        } elseif (in_array($status, ['approved', 'DaDuyet'])) {
+            $sql .= " AND t.TrangThaiDuyet = 'DaDuyet'";
+        } elseif (in_array($status, ['rejected', 'TuChoi'])) {
+            $sql .= " AND t.TrangThaiDuyet = 'TuChoi'";
+        }
+
+        $sql .= " ORDER BY t.NgayDang DESC";
+
+        $stmt = mysqli_prepare($this->link, $sql);
+        if (!empty($params)) {
+            mysqli_stmt_bind_param($stmt, $types, ...$params);
+        }
+
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+
+        $list = [];
+        while ($row = mysqli_fetch_assoc($result)) {
+            $list[] = $row;
+        }
+
+        mysqli_stmt_close($stmt);
+        return $list;
+    }
+
+    /**
+     * Duyệt tin tuyển dụng
+     */
+    public function approveJob($maTin)
+    {
+        $sql = "UPDATE tintuyendung SET TrangThaiDuyet = 'DaDuyet' WHERE MaTinTuyenDung = ?";
+        $stmt = mysqli_prepare($this->link, $sql);
+        mysqli_stmt_bind_param($stmt, 's', $maTin);
+        $success = mysqli_stmt_execute($stmt);
+        mysqli_stmt_close($stmt);
+        return $success;
+    }
+
+    /**
+     * Từ chối tin tuyển dụng
+     */
+    public function rejectJob($maTin)
+    {
+        $sql = "UPDATE tintuyendung SET TrangThaiDuyet = 'TuChoi' WHERE MaTinTuyenDung = ?";
+        $stmt = mysqli_prepare($this->link, $sql);
+        mysqli_stmt_bind_param($stmt, 's', $maTin);
+        $success = mysqli_stmt_execute($stmt);
+        mysqli_stmt_close($stmt);
+        return $success;
+    }
+
+    /**
+     * Gỡ tin tuyển dụng
+     */
+    public function removeJob($maTin)
+    {
+        $sql = "UPDATE tintuyendung SET TrangThaiDuyet = 'DaGoi' WHERE MaTinTuyenDung = ?";
+        $stmt = mysqli_prepare($this->link, $sql);
+        mysqli_stmt_bind_param($stmt, 's', $maTin);
+        $success = mysqli_stmt_execute($stmt);
+        mysqli_stmt_close($stmt);
+        return $success;
+    }
 }

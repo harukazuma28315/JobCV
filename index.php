@@ -11,14 +11,32 @@ session_start();
 
 // ===== TEST MODULE =====
 // TODO: Xóa hoặc comment phần test này khi deploy thật
-$_SESSION['MaUser'] = 'NTD001';   // Phải tồn tại trong bảng user + nhatuyendung
-$_SESSION['Role'] = 1;
+// === TEST ADMIN (bật cái này để test Dashboard) ===
+
+
+
+
+// $_SESSION['MaUser'] = 'ADMIN001';
+// $_SESSION['Role']   = 2;           // 2 = Admin
+// $_SESSION['HoTen']  = 'Admin Test';
+
+
+
+
+
+// $_SESSION['MaUser'] = 'NTD001';   // Phải tồn tại trong bảng user + nhatuyendung
+// $_SESSION['Role'] = 1;
 
 require_once __DIR__ . '/config/config.php';
-require_once __DIR__ . '/helpers/ResponseHelper.php';
-require_once __DIR__ . '/helpers/AuthHelper.php';
-require_once __DIR__ . '/controllers/ApplicationController.php';
-require_once __DIR__ . '/controllers/RecruiterController.php';
+require_once __DIR__ . '/app/helpers/ResponseHelper.php';
+require_once __DIR__ . '/app/helpers/AuthHelper.php';
+require_once __DIR__ . '/app/controllers/ApplicationController.php';
+require_once __DIR__ . '/app/controllers/RecruiterController.php';
+//Admin
+require_once __DIR__ . '/app/controllers/AdminController.php';
+require_once __DIR__ . '/app/controllers/UserManagementController.php';
+require_once __DIR__ . '/app/controllers/JobManagementController.php';
+
 
 $action = isset($_GET['action']) ? $_GET['action'] : '';
 
@@ -35,6 +53,20 @@ $routes = array(
 	'recruiterList'    => array('RecruiterController', 'showList'),
 	'recruiterDetail'  => array('RecruiterController', 'showDetail'),
 	'updateStatus'     => array('RecruiterController', 'updateStatus'),
+
+	//Module 6- Trang Admin
+	// Nhóm Admin
+	'adminDashboard' => array('AdminController', 'showDashboard'),
+	// Quản lý người dùng 
+	'adminUserList' => array('UserManagementController', 'showUserList'),
+	'lockUser'      => array('UserManagementController', 'lockUser'),
+	'unlockUser'    => array('UserManagementController', 'unlockUser'),
+	'approveUser'   => array('UserManagementController', 'approveUser'),
+	// Quản lý bài đăng 
+    'adminJobList'  => array('JobManagementController', 'showJobList'),
+    'approveJob'    => array('JobManagementController', 'approveJob'),
+    'rejectJob'     => array('JobManagementController', 'rejectJob'),
+    'removeJob'     => array('JobManagementController', 'removeJob'),
 );
 
 if ($action === '') {
