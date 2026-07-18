@@ -92,6 +92,6 @@
         transition: color 0.2s ease-in-out;
     }
 </style>
-<script src="<?= $baseUrl ?>/public/js/js/bootstrap.bundle.min.js"></script>
+<script src="<?= $baseUrl ?>/public/js/jsbs/bootstrap.bundle.min.js"></script>
 </body>
 </html>
