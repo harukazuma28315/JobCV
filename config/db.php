@@ -6,7 +6,10 @@
  *            tránh mở nhiều kết nối CSDL không cần thiết.
  */
 
-require_once __DIR__ . '/config.php';
+$host = "localhost";
+$dbname = "jobcv";
+$username = "root";
+$password = "";
 
 class Database
 {
