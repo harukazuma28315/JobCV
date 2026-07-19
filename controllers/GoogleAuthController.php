@@ -1,5 +1,7 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+	session_start();
+}
 require_once __DIR__ . '/../config/db.php';
 require_once __DIR__ . '/../models/UserModel.php';
 
@@ -24,7 +26,7 @@ class GoogleAuthController {
 	 */
 	public function handleGoogleAuth() {
 		if ($_SERVER["REQUEST_METHOD"] !== "POST" || empty($_POST['credential'])) {
-			echo "<script>alert('Yêu cầu không hợp lệ!'); window.location.href='../views/dangnhap.html';</script>";
+			echo "<script>alert('Yêu cầu không hợp lệ!'); window.location.href='/JobCV/index.php?route=auth/login';</script>";
 			return;
 		}
 
@@ -99,8 +101,4 @@ class GoogleAuthController {
 	}
 }
 
-// Khởi tạo tiến trình thực thi định tuyến
-$googleAuthCtrl = new GoogleAuthController($conn);
-$googleAuthCtrl->handleGoogleAuth();
-$conn->close();
 ?>

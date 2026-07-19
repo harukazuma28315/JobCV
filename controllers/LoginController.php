@@ -1,5 +1,4 @@
 <?php
-session_start();
 require_once __DIR__ . '/../config/db.php';
 require_once __DIR__ . '/../models/UserModel.php';
 
@@ -57,8 +56,4 @@ class LoginController {
 	}
 }
 
-// Thực thi chạy và dọn dẹp kết nối sau khi đóng phiên làm việc
-$loginCtrl = new LoginController($conn);
-$loginCtrl->handleLogin();
-$conn->close();
 ?>

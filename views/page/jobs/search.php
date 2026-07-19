@@ -183,7 +183,7 @@ if (!isset($jobs) || empty($jobs)) {
                         <div class="card job-card border-0 shadow-sm p-3 rounded-3 bg-white">
                             <div class="row align-items-center">
                                 <div class="col-auto">
-                                    <img src="<?= !empty($job['company_logo']) ? htmlspecialchars($job['company_logo']) : 'assets/images/default-logo.png' ?>" class="company-logo" alt="Logo" style="width: 60px; height: 60px; object-fit: contain; border-radius: 8px;">
+                                    <img src="<?= !empty($job['company_logo']) ? htmlspecialchars($job['company_logo']) : 'assets//images/default-logo.png' ?>" class="company-logo" alt="Logo" style="width: 60px; height: 60px; object-fit: contain; border-radius: 8px;">
                                 </div>
                                 <div class="col">
                                     <h5 class="fw-bold mb-1 text-dark"><?= htmlspecialchars($job['title']) ?></h5>
