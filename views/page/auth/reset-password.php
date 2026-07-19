@@ -5,7 +5,7 @@ include_once '../../page/layouts/header.php';
 ?>
 
 <div class="container-fluid min-vh-100 d-flex align-items-center justify-content-center position-relative py-5"
-     style="background-color: #f0f4f8; background-image: url('../public/images/bg-city.png'); background-size: cover; background-position: center;">
+     style="background-color: #f0f4f8; background-image: url('../assets/images/bg-city.png'); background-size: cover; background-position: center;">
 
     <div class="card p-4 p-md-5 shadow-sm border-0" style="max-width: 760px; width: 100%; border-radius: 12px;">
         <div class="card-body p-0">
@@ -92,4 +92,4 @@ btnResetPassword.addEventListener('click', () => {
         baseUrl: '<?= $baseUrl ?>'
     };
 </script>
-<script src="<?= $baseUrl ?>/public/js/reset-password.js"></script>
+<script src="<?= $baseUrl ?>/assets/js/reset-password.js"></script>

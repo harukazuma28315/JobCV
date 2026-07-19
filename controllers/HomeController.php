@@ -1,5 +1,4 @@
 <?php
-session_start();
 require_once __DIR__ . '/../config/db.php';
 require_once __DIR__ . '/../models/UserModel.php';
 
@@ -27,12 +26,16 @@ class HomeController {
 	public function getProfileData() {
 		// Ngăn chặn truy cập nếu chưa đăng nhập thông qua Session
 		if (!isset($_SESSION['user_id'])) {
-			header("Location: ../views/dangnhap.html");
+			header("Location: /JobCV/index.php?route=auth/login");
 			exit();
 		}
 
 		$maUser = $_SESSION['user_id'];
 		return $this->userModel->getUserById($maUser);
+	}
+	public function index()
+	{
+		require_once __DIR__ . '/../views/page/home/index.php';
 	}
 }
 ?>
