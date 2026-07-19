@@ -16,7 +16,7 @@
                             Chào Mừng Trở Lại!
                         </h3>
 
-                        <a href="<?= $baseUrl ?>/?route=home/index">
+                        <a href="<?= $baseUrl ?>/index.php?route=home">
                             <img
                                 src="<?= $baseUrl ?>/assets/images/logo1.png"
                                 alt="JobHub Logo"
@@ -39,7 +39,7 @@
                         </h4>
 
                         <form
-                            action="<?= $baseUrl ?>/?route=auth/login"
+                            action="<?= $baseUrl ?>/index.php?route=auth/login-submit"
                             method="POST"
                         >
 

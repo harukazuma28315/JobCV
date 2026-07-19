@@ -16,7 +16,9 @@ class LogoutController {
 	 * @return void Điều hướng client trực tiếp về trang đăng nhập.
 	 */
 	public function handleLogout() {
-		if (isset($_GET['action']) && $_GET['action'] === 'logout') {
+		$shouldLogout = (isset($_GET['action']) && $_GET['action'] === 'logout') || (isset($_GET['route']) && $_GET['route'] === 'auth/logout');
+
+		if ($shouldLogout) {
 			// 1. Xóa bỏ tất cả các biến session
 			$_SESSION = array();
 
@@ -33,7 +35,7 @@ class LogoutController {
 			session_destroy();
 
 			// 4. Chuyển hướng về trang đăng nhập
-			header("Location: /JobCV/views/page/auth/login.php");
+			header("Location: /JobCV/index.php?route=auth/login");
 			exit();
 		}
 	}

@@ -1,5 +1,8 @@
 <?php
-
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+require_once __DIR__ . '/../config/config.php';
 require_once __DIR__ . '/../config/db.php';
 require_once __DIR__ . '/../models/UserModel.php';
 
@@ -131,7 +134,7 @@ class RegisterController {
 
 		// Điều hướng trả về kết quả hiển thị cho View
 		if ($isSuccess) {
-			echo "<script>alert('Đăng ký tài khoản thành công!'); window.location.href='../views/page/auth/login.php';</script>";
+			echo "<script>alert('Đăng ký tài khoản thành công!'); window.location.href='/JobCV/index.php?route=auth/login';</script>";
 		} else {
 			echo "<script>alert('Có lỗi xảy ra trong quá trình ghi dữ liệu!'); window.history.back();</script>";
 		}

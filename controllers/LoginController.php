@@ -1,5 +1,8 @@
 <?php
-
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+require_once __DIR__ . '/../config/config.php';
 require_once __DIR__ . '/../config/db.php';
 require_once __DIR__ . '/../models/UserModel.php';
 
@@ -22,6 +25,16 @@ class LoginController
         $content = __DIR__ . '/../views/page/auth/login-content.php';
 
         require_once __DIR__ . '/../views/page/layouts/main.php';
+    }
+
+    public function showForgotPassword()
+    {
+        require_once __DIR__ . '/../views/page/auth/forgot-password.php';
+    }
+
+    public function showResetPassword()
+    {
+        require_once __DIR__ . '/../views/page/auth/reset-password.php';
     }
 
     /**
@@ -53,7 +66,7 @@ class LoginController
             $_SESSION['user_name'] = $user['HoTen'];
             $_SESSION['user_role'] = $user['Role'];
 
-            header('Location: /JobCV/?route=home');
+            header('Location: /JobCV/index.php?route=home');
             exit;
 
         } else {
@@ -65,5 +78,4 @@ class LoginController
         }
     }
 }
-
 ?>

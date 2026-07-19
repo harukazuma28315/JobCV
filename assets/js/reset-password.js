@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
             showResetMessage(data.message, data.status === 'success' ? 'success' : 'danger');
             if (data.status === 'success') {
                 setTimeout(() => {
-                    window.location.href = `${baseUrl}/views/page/auth/login.php`;
+                    window.location.href = `${baseUrl}/index.php?route=auth/login`;
                 }, 1200);
             }
         })

@@ -29,7 +29,7 @@ if (!isset($_SESSION['user_id'])) {
 			
 			<div class="d-flex justify-content-center gap-3">
 				<!-- CHỨC NĂNG ĐIỀU HƯỚNG: Bấm vào sẽ chuyển hẳn hướng sang trang profile -->
-				<a href="profile.php" class="btn btn-primary btn-lg fw-bold px-4 py-3 shadow-sm">
+				<a href="/JobCV/index.php?route=profile" class="btn btn-primary btn-lg fw-bold px-4 py-3 shadow-sm">
 					👤 Quản lý tài khoản
 				</a>
 				

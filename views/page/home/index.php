@@ -460,7 +460,7 @@ include_once __DIR__ . '/../layouts/header.php';
 
             </div>
 
-            <a href="<?= $baseUrl ?>/views/auth/register.php"
+            <a href="<?= $baseUrl ?>/index.php?route=auth/register"
                class="btn btn-warning fw-bold px-4 py-3 text-dark shadow">
 
                 Đăng Ký Ngay
@@ -762,14 +762,14 @@ include_once __DIR__ . '/../layouts/header.php';
 
             <div class="modal-footer justify-content-center border-0 gap-2 pb-4">
 
-                <a href="<?= $baseUrl ?>/views/auth/login.php"
+                <a href="<?= $baseUrl ?>/index.php?route=auth/login"
                    class="btn btn-primary-blue px-4 fw-semibold">
 
                     Đăng Nhập
 
                 </a>
 
-                <a href="<?= $baseUrl ?>/views/auth/register.php"
+                <a href="<?= $baseUrl ?>/index.php?route=auth/register"
                    class="btn btn-outline-secondary px-4 fw-semibold">
 
                     Đăng Ký

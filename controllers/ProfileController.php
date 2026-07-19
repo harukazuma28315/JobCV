@@ -15,7 +15,9 @@ class ProfileController {
 	 * Xử lý đăng xuất tài khoản an toàn
 	 */
 	public function handleLogout() {
-		if (isset($_GET['action']) && $_GET['action'] === 'logout') {
+		$shouldLogout = (isset($_GET['action']) && $_GET['action'] === 'logout') || (isset($_GET['route']) && $_GET['route'] === 'auth/logout');
+
+		if ($shouldLogout) {
 			// 1. Xóa bỏ tất cả các biến session
 			$_SESSION = array();
 
@@ -32,9 +34,25 @@ class ProfileController {
 			session_destroy();
 
 			// 4. Chuyển hướng về trang đăng nhập
-			header("Location: /JobCV/views/page/auth/login.php");
+			header("Location: /JobCV/index.php?route=auth/login");
 			exit();
 		}
+	}
+
+	public function showProfile() {
+		if (!isset($_SESSION['user_id'])) {
+			header("Location: /JobCV/index.php?route=auth/login");
+			exit();
+		}
+
+		$profile = $this->handleGetProfile(); 
+
+		$role = isset($_SESSION['user_role']) ? (int) $_SESSION['user_role'] : 0;
+		$viewPath = $role === 1
+			? __DIR__ . '/../views/page/employer/employerProfile.php'
+			: __DIR__ . '/../views/page/candidate/candidateProfile.php';
+
+		require_once $viewPath;
 	}
 
 	/**
@@ -45,7 +63,7 @@ class ProfileController {
 	 */
 	public function handleGetProfile() : array {
 		if (!isset($_SESSION['user_id'])) {
-			header("Location: /JobCV/views/page/auth/login.php");
+			header("Location: /JobCV/index.php?route=auth/login");
 			exit();
 		}
 		
@@ -85,7 +103,7 @@ class ProfileController {
 
 	public function handleUpdateProfile() {
 		if (!isset($_SESSION['user_id'])) {
-			header("Location: /JobCV/views/page/auth/login.php");
+			header("Location: /JobCV/index.php?route=auth/login");
 			exit();
 		}
 
@@ -110,7 +128,7 @@ class ProfileController {
 				);
 
 				if (!$hasChange) {
-					header("Location: /JobCV/views/page/employer/employerProfile.php?status=unchanged");
+					header("Location: /JobCV/index.php?route=profile&status=unchanged");
 					exit();
 				}
 
@@ -133,7 +151,7 @@ class ProfileController {
 				);
 
 				if (!$hasChange) {
-					header("Location: /JobCV/views/page/candidate/candidateProfile.php?status=unchanged");
+					header("Location: /JobCV/index.php?route=profile&status=unchanged");
 					exit();
 				}
 
@@ -142,10 +160,10 @@ class ProfileController {
 
 			if ($result) {
 				if(isset($dataUpdate['hoTen'])) $_SESSION['user_name'] = $dataUpdate['hoTen'];
-				header("Location: /JobCV/views/page/" . ($role == 1 ? 'employer/employerProfile.php' : 'candidate/candidateProfile.php') . "?status=success");
+				header("Location: /JobCV/index.php?route=profile&status=success");
 				exit();
 			} else {
-				header("Location: /JobCV/views/page/" . ($role == 1 ? 'employer/employerProfile.php' : 'candidate/candidateProfile.php') . "?status=error");
+				header("Location: /JobCV/index.php?route=profile&status=error");
 				exit();
 			}
 		}
