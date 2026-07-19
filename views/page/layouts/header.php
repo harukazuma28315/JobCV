@@ -61,7 +61,7 @@ $profilePage = ($userRole === 1)
          style="height: 50px; width: auto; object-fit: contain; position: absolute; top: 50%; transform: translateY(-50%); max-width: none;">
 </a>
 
-```
+
     <!-- Toggle di động -->
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
         <span class="navbar-toggler-icon"></span>

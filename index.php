@@ -1,4 +1,7 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
 session_start();
 
@@ -51,16 +54,28 @@ $routes = [
 
 	'auth/login' => [
 		'controller' => 'LoginController',
+		'method' => 'showLogin',
+		'constructor' => 'database'
+	],
+
+	'auth/login-submit' => [
+		'controller' => 'LoginController',
 		'method' => 'handleLogin',
 		'constructor' => 'database'
 	],
 
 	'auth/register' => [
+    'controller' => 'RegisterController',
+    'method' => 'showRegister',
+    'constructor' => 'database'
+	],
+
+	'auth/register-submit' => [
 		'controller' => 'RegisterController',
 		'method' => 'handleRegister',
 		'constructor' => 'database'
 	],
-
+	
 	'auth/google' => [
 		'controller' => 'GoogleAuthController',
 		'method' => 'handleGoogleAuth',

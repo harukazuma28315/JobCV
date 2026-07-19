@@ -11,6 +11,16 @@ class RegisterController {
 	private $conn;
 
 	/**
+     * Hiển thị trang đăng ký
+     */
+	public function showRegister()
+	{	
+		$content = __DIR__ . '/../views/page/auth/register-content.php';
+
+		require_once __DIR__ . '/../views/page/layouts/main.php';
+	}
+
+	/**
 	 * Khởi tạo Controller đăng ký
 	 * @param mysqli $conn Kết nối cơ sở dữ liệu kế thừa từ cấu hình hệ thống
 	 */

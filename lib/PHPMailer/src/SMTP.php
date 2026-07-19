@@ -134,16 +134,16 @@ class SMTP
      * * `error_log` Output to error log as configured in php.ini
      * Alternatively, you can provide a callable expecting two params: a message string and the debug level:
      *
-     * ```php
+     * php
      * $smtp->Debugoutput = function($str, $level) {echo "debug level $level; message: $str";};
-     * ```
+     * 
      *
      * Alternatively, you can pass in an instance of a PSR-3 compatible logger, though only `debug`
      * level output is used:
      *
-     * ```php
+     * php
      * $mail->Debugoutput = new myPsr3Logger;
-     * ```
+     * 
      *
      * @var string|callable|\Psr\Log\LoggerInterface
      */
