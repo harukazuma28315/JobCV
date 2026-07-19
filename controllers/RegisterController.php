@@ -1,5 +1,4 @@
 <?php
-session_start();
 
 require_once __DIR__ . '/../config/db.php';
 require_once __DIR__ . '/../models/UserModel.php';
@@ -10,6 +9,16 @@ require_once __DIR__ . '/../models/UserModel.php';
 class RegisterController {
 	private $userModel;
 	private $conn;
+
+	/**
+     * Hiển thị trang đăng ký
+     */
+	public function showRegister()
+	{	
+		$content = __DIR__ . '/../views/page/auth/register-content.php';
+
+		require_once __DIR__ . '/../views/page/layouts/main.php';
+	}
 
 	/**
 	 * Khởi tạo Controller đăng ký
@@ -129,8 +138,4 @@ class RegisterController {
 	}
 }
 
-// Thực thi chạy và dọn dẹp kết nối sau khi đóng phiên làm việc
-$registerCtrl = new RegisterController($conn);
-$registerCtrl->handleRegister();
-$conn->close();
 ?>

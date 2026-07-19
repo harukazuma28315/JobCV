@@ -1,4 +1,4 @@
-<section class="min-vh-100 d-flex align-items-center py-4" style="background: url('<?= $baseUrl ?>/public/images/city-bg.png') no-repeat bottom center; background-size: cover;">
+<section class="min-vh-100 d-flex align-items-center py-4" style="background: url('<?= $baseUrl ?>/assets/images/city-bg.png') no-repeat bottom center; background-size: cover;">
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-12" style="max-width: 950px;">
@@ -8,7 +8,7 @@
                         <div class="col-md-5 bg-primary-blue text-white p-4 d-flex flex-column justify-content-center align-items-center text-center">
                             <h3 class="fw-bold mb-3">Chào Mừng Đến Với JobHub</h3>
                             <a href="<?= $baseUrl ?>/views/page/home/index.php">
-                                <img src="<?= $baseUrl ?>/public/images/logo.png" alt="JobHub Logo" class="mb-4 rounded-circle" width="80">
+                                <img src="<?= $baseUrl ?>/assets/images/logo.png" alt="JobHub Logo" class="mb-4 rounded-circle" width="80">
                             </a>
                             <p class="mb-4 text-white-50 fs-6">Chọn loại tài khoản phù hợp với bạn!</p>
 
@@ -311,4 +311,4 @@ function switchRole(roleVal) {
         baseUrl: '<?= $baseUrl ?>'
     };
 </script>
-<script src="<?= $baseUrl ?>/public/js/register.js"></script>
+<script src="<?= $baseUrl ?>/assets/js/register.js"></script>
