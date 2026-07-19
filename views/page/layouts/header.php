@@ -8,9 +8,7 @@ $isLoggedIn = !empty($_SESSION['user_id']);
 $userName = trim($_SESSION['user_name'] ?? '');
 $avatarText = !empty($userName) ? strtoupper(substr($userName, 0, 1)) : 'U';
 $userRole = isset($_SESSION['user_role']) ? (int)$_SESSION['user_role'] : 0;
-$profilePage = ($userRole === 1)
-    ? $baseUrl . '/index.php?route=employer/detail'
-    : $baseUrl . '/index.php?route=profile';
+$profilePage = $baseUrl . '/index.php?route=profile';
 ?>
 
 <!DOCTYPE html>

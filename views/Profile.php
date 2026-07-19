@@ -46,7 +46,7 @@ $isCompany = ($user['Role'] == 1);
                     </a>
 
                     <!-- NÚT ĐĂNG XUẤT -->
-                    <a href="profile.php?action=logout" class="btn btn-outline-danger btn-sm fw-bold shadow-sm" onclick="return confirm('Bạn có chắc chắn muốn đăng xuất không?')">
+                    <a href="/JobCV/index.php?route=auth/logout" class="btn btn-outline-danger btn-sm fw-bold shadow-sm" onclick="return confirm('Bạn có chắc chắn muốn đăng xuất không?')">
                         🚪 Đăng xuất
                     </a>
                 </div>
@@ -57,7 +57,7 @@ $isCompany = ($user['Role'] == 1);
 					<?php echo $isCompany ? '🏢 THÔNG TIN CÔNG TY' : '👤 THÔNG TIN CÁ NHÂN'; ?>
 				</h4>
 				
-				<form action="profile.php" method="POST">
+				<form action="/JobCV/index.php?route=profile/update" method="POST">
 					<input type="hidden" name="action" value="update">
 					
 					<table class="table table-striped table-hover align-middle">

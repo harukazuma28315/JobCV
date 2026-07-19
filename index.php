@@ -64,6 +64,18 @@ $routes = [
 		'constructor' => 'database'
 	],
 
+	'auth/forgot-password' => [
+		'controller' => 'LoginController',
+		'method' => 'showForgotPassword',
+		'constructor' => 'database'
+	],
+
+	'auth/reset-password' => [
+		'controller' => 'LoginController',
+		'method' => 'showResetPassword',
+		'constructor' => 'database'
+	],
+
 	'auth/register' => [
     'controller' => 'RegisterController',
     'method' => 'showRegister',
@@ -95,7 +107,7 @@ $routes = [
 
 	'profile' => [
 		'controller' => 'ProfileController',
-		'method' => 'handleGetProfile',
+		'method' => 'showProfile',
 		'constructor' => 'database'
 	],
 

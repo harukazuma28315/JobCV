@@ -26,7 +26,7 @@
                             <div class="tab-content" id="v-pills-tabContent">
                                 <div class="tab-pane fade show active" id="candidate-form" role="tabpanel">
                                     <h4 class="fw-bold text-primary-blue mb-4">Đăng Ký Tài Khoản Ứng Viên</h4>
-                                    <form action="<?= $baseUrl ?>/controllers/RegisterController.php" method="POST" class="needs-validation" novalidate id="registerForm">
+                                    <form action="<?= $baseUrl ?>/index.php?route=auth/register-submit" method="POST" class="needs-validation" novalidate id="registerForm">
                                         <input type="hidden" id="Role" name="Role" value="0">
 
                                         <div class="mb-3">
@@ -110,7 +110,7 @@
 
                                 <div class="tab-pane fade" id="employer-form" role="tabpanel">
                                     <h4 class="fw-bold text-success mb-4">Đăng Ký Tài Khoản Doanh Nghiệp</h4>
-                                    <form action="<?= $baseUrl ?>/controllers/RegisterController.php" method="POST" class="needs-validation" novalidate id="registerFormEmployer">
+                                    <form action="<?= $baseUrl ?>/index.php?route=auth/register-submit" method="POST" class="needs-validation" novalidate id="registerFormEmployer">
                                         <input type="hidden" id="RoleEmployer" name="Role" value="1">
 
                                         <div class="mb-3">

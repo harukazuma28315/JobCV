@@ -1,9 +1,16 @@
 <?php
+ob_start();
+ini_set('display_errors', 0);
+error_reporting(0);
 session_start();
+require_once __DIR__ . '/../config/config.php';
 require_once __DIR__ . '/../config/db.php';
 require_once __DIR__ . '/../models/UserModel.php';
-require_once __DIR__ . '/../config/mail.php';
+require_once __DIR__ . '/../services/EmailService.php';
 
+header('Content-Type: application/json; charset=utf-8');
+
+$emailService = new EmailService();
 $userModel = new UserModel($conn);
 $cooldownSeconds = 60;
 
@@ -40,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     $_SESSION['otp_expired'] = $now + (15 * 60);
     $_SESSION['register_otp_last_sent_at'] = $now;
 
-    if (sendOTPEmail($email, $otp)) {
+    if ($emailService->sendOTPEmail($email, $otp)) {
         echo json_encode(['status' => 'success', 'message' => 'Mã OTP đã được gửi vào email của bạn!']);
     } else {
         echo json_encode(['status' => 'error', 'message' => 'Không thể gửi email, vui lòng thử lại sau!']);
@@ -48,4 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     $conn->close();
     exit();
 }
+
+echo json_encode(['status' => 'error', 'message' => 'Yêu cầu không hợp lệ.']);
+exit();
 ?>

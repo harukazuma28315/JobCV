@@ -115,6 +115,31 @@ class EmailService
 	}
 
 	/**
+	 * Gửi mã xác thực (OTP) đăng ký tài khoản thành viên mới.
+	 * Tách và chuyển đổi từ hàm sendOTPEmail cũ qua chuẩn OOP Class.
+	 * 
+	 * @param string $userEmail Email nhận mã xác thực
+	 * @param string|int $otpCode Mã số OTP ngẫu nhiên
+	 * @return bool
+	 */
+	public function sendOTPEmail($userEmail, $otpCode)
+	{
+		$tieuDeEmail = 'Mã xác thực đăng ký tài khoản';
+		
+		// Xây dựng template HTML rõ ràng, sử dụng hàm taoNoiDungEmail để đồng bộ chữ ký hệ thống[cite: 10]
+		$noiDungChinh = "
+			<h3>Mã xác thực (OTP) của bạn là:</h3>
+			<h1 style='color: #0d6efd; letter-spacing: 5px; margin: 15px 0;'>$otpCode</h1>
+			<p>Vui lòng không chia sẻ mã này với bất kỳ ai. Mã có hiệu lực trong vòng 15 phút.</p>
+		";
+
+		$noiDungEmail = $this->taoNoiDungEmail('Bạn', $noiDungChinh);
+
+		// Thực hiện gửi thông qua cấu hình SMTP tập trung của hệ thống
+		return $this->guiEmailSMTP($userEmail, 'Người dùng mới', $tieuDeEmail, $noiDungEmail);
+	}
+
+	/**
 	 * Gửi email qua SMTP bằng PHPMailer.
 	 * Bắt Exception nội bộ để 1 lỗi gửi mail không làm sập luồng cập nhật trạng thái.
 	 *

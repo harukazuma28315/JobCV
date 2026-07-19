@@ -37,7 +37,7 @@ include_once '../../page/layouts/header.php';
                 <div id="formMessage" class="small"></div>
 
                 <div class="text-start mt-3">
-                    <a href="login.php" class="text-decoration-none text-dark fw-medium">Quay lại Đăng Nhập</a>
+                    <a href="<?= $baseUrl ?>/index.php?route=auth/login" class="text-decoration-none text-dark fw-medium">Quay lại Đăng Nhập</a>
                 </div>
             </form>
         </div>
@@ -124,7 +124,7 @@ function verifyForgotOtp() {
         .then(data => {
             showMessage(data.message, data.status === 'success' ? 'success' : 'danger');
             if (data.status === 'success') {
-                window.location.href = `${baseUrl}/views/page/auth/reset-password.php?email=${encodeURIComponent(email)}`;
+                window.location.href = `${baseUrl}/index.php?route=auth/reset-password&email=${encodeURIComponent(email)}`;
             } else {
                 setButtonState(btnVerifyOtp, false, 'Xác Nhận');
             }

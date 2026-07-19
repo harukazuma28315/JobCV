@@ -34,7 +34,14 @@ window.requestOtp = function (type) {
     method: "POST",
     body: formData,
   })
-    .then((response) => response.json())
+    .then(async (response) => {
+      const text = await response.text();
+      try {
+        return JSON.parse(text);
+      } catch (error) {
+        throw new Error(`Invalid JSON response from server:\n${text}`);
+      }
+    })
     .then((data) => {
       alert(data.message);
       if (data.status === "success" || data.status === "cooldown") {
@@ -129,10 +136,10 @@ document.addEventListener("DOMContentLoaded", () => {
       function (event) {
         // Chỉ tìm các ô nhập password của chính form đang submit hiện tại (Tránh lấy nhầm form kia)
         const passwordInput = form.querySelector(
-          'input[type="password"][name="MatKhau"]',
+          'input[type="password"][name="MatKhau"]'
         );
         const confirmInput = form.querySelector(
-          'input[type="password"][name="MatKhauConfirm"]',
+          'input[type="password"][name="MatKhauConfirm"]'
         );
 
         if (passwordInput && confirmInput) {
@@ -152,8 +159,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         form.classList.add("was-validated");
       },
-      false,
+      false
     );
   });
 });
-git log --oneline --graph -10

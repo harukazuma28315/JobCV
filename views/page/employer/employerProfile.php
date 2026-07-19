@@ -4,17 +4,17 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 $baseUrl = '/JobCV';
-require_once __DIR__ . '/../../../config/db.php';
-require_once __DIR__ . '/../../../controllers/ProfileController.php';
-require_once __DIR__ . '/../../../controllers/LogoutController.php';
-include_once '../../page/layouts/header.php'; 
+// require_once __DIR__ . '/../../../config/db.php';
+// require_once __DIR__ . '/../../../controllers/ProfileController.php';
+// require_once __DIR__ . '/../../../controllers/LogoutController.php';
+include_once __DIR__ . '/../layouts/header.php'; 
 
-$logoutCtrl = new LogoutController($conn);
-$logoutCtrl->handleLogout();
+// $logoutCtrl = new LogoutController($conn);
+// $logoutCtrl->handleLogout();
 
-$profileCtrl = new ProfileController($conn);
-$profileCtrl->handleUpdateProfile();
-$profile = $profileCtrl->handleGetProfile();
+// $profileCtrl = new ProfileController($conn);
+// $profileCtrl->handleUpdateProfile();
+// $profile = $profileCtrl->handleGetProfile();
 
 $resetEmail = $_SESSION['user_email'] ?? $profileData['email'] ?? '';
 ?>
@@ -63,7 +63,7 @@ $resetEmail = $_SESSION['user_email'] ?? $profileData['email'] ?? '';
             <div class="card border-0 shadow-sm p-4 bg-white rounded-3">
                 <h4 class="fw-bold mb-4 border-start border-4 border-primary-blue ps-3 text-dark">Thông Tin Doanh Nghiệp</h4>
                 
-                <form action="employerProfile.php" method="POST">
+                <form action="<?= $baseUrl ?>/index.php?route=profile/update" method="POST">
                     <input type="hidden" name="action" value="update">
                     <div class="row g-3">
                         <div class="col-12 col-md-6">
@@ -97,10 +97,10 @@ $resetEmail = $_SESSION['user_email'] ?? $profileData['email'] ?? '';
                     </div>
                     
                     <div class="mt-4 pt-3 border-top text-end">
-                        <a href="?action=logout" class="btn btn-outline-danger fw-bold px-4 py-2 me-auto" onclick="return confirm('Bạn có chắc chắn muốn đăng xuất không?')">
+                        <a href="<?= $baseUrl ?>/index.php?route=auth/logout" class="btn btn-outline-danger fw-bold px-4 py-2 me-auto" onclick="return confirm('Bạn có chắc chắn muốn đăng xuất không?')">
                             <i class="fa-solid fa-right-from-bracket me-2"></i>Đăng Xuất
                         </a>
-                        <a href="<?= $baseUrl ?>/views/page/auth/forgot-password.php?email=<?= urlencode($resetEmail) ?>" class="btn btn-outline-warning fw-bold px-4 py-2" onclick="return true;">
+                        <a href="<?= $baseUrl ?>/index.php?route=auth/forgot-password&email=<?= urlencode($resetEmail) ?>" class="btn btn-outline-warning fw-bold px-4 py-2" onclick="return true;">
                                     <i class="fa-solid fa-key me-2"></i>Đổi Mật Khẩu
                         </a>
                         <button type="submit" class="btn btn-primary-blue fw-bold px-4 py-2">Lưu Thay Đổi</button>
@@ -112,4 +112,4 @@ $resetEmail = $_SESSION['user_email'] ?? $profileData['email'] ?? '';
 </div>
 
 <!-- Nhúng Footer chung -->
-<?php include_once '../../page/layouts/footer.php'; ?>
+<?php include_once __DIR__ . '/../layouts/footer.php'; ?>

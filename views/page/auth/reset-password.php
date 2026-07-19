@@ -44,7 +44,7 @@ include_once '../../page/layouts/header.php';
                 <div id="resetMessage" class="small"></div>
 
                 <div class="text-start mt-3">
-                    <a href="login.php" class="text-decoration-none text-dark fw-medium">Quay lại Đăng Nhập</a>
+                    <a href="<?= $baseUrl ?>/index.php?route=auth/login" class="text-decoration-none text-dark fw-medium">Quay lại Đăng Nhập</a>
                 </div>
             </form>
         </div>
@@ -73,7 +73,7 @@ btnResetPassword.addEventListener('click', () => {
             showResetMessage(data.message, data.status === 'success' ? 'success' : 'danger');
             if (data.status === 'success') {
                 setTimeout(() => {
-                    window.location.href = `${baseUrl}/views/page/auth/login.php`;
+                    window.location.href = `${baseUrl}/index.php?route=auth/login`;
                 }, 1200);
             }
         })
