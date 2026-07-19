@@ -417,16 +417,16 @@ class PHPMailer
      * By default PHPMailer will use `echo` if run from a `cli` or `cli-server` SAPI, `html` otherwise.
      * Alternatively, you can provide a callable expecting two params: a message string and the debug level:
      *
-     * ```php
+     * php
      * $mail->Debugoutput = function($str, $level) {echo "debug level $level; message: $str";};
-     * ```
+     * 
      *
      * Alternatively, you can pass in an instance of a PSR-3 compatible logger, though only `debug`
      * level output is used:
      *
-     * ```php
+     * php
      * $mail->Debugoutput = new myPsr3Logger;
-     * ```
+     * 
      *
      * @see SMTP::$Debugoutput
      *
@@ -1495,11 +1495,11 @@ class PHPMailer
      * * `noregex` Don't use a regex: super fast, really dumb.
      * Alternatively you may pass in a callable to inject your own validator, for example:
      *
-     * ```php
+     * php
      * PHPMailer::validateAddress('user@example.com', function($address) {
      *     return (strpos($address, '@') !== false);
      * });
-     * ```
+     * 
      *
      * You can also set the PHPMailer::$validator static to a callable, allowing built-in methods to use your validator.
      *
@@ -4826,7 +4826,7 @@ class PHPMailer
      * which was removed for license reasons in #232.
      * Example usage:
      *
-     * ```php
+     * php
      * //Use default conversion
      * $plain = $mail->html2text($html);
      * //Use your own custom converter
@@ -4834,7 +4834,7 @@ class PHPMailer
      *     $converter = new MyHtml2text($html);
      *     return $converter->get_text();
      * });
-     * ```
+     * 
      *
      * @param string        $html     The HTML text to convert
      * @param bool|callable $advanced Any boolean value to use the internal converter,
