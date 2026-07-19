@@ -88,7 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(data => {
                 showMessage(data.message, data.status === 'success' ? 'success' : 'danger');
                 if (data.status === 'success') {
-                    window.location.href = `${baseUrl}/views/page/auth/reset-password.php?email=${encodeURIComponent(email)}`;
+                    window.location.href = `${baseUrl}/index.php?route=auth/reset-password&email=${encodeURIComponent(email)}`;
                 } else {
                     setButtonState(btnVerifyOtp, false, 'Xác Nhận');
                 }

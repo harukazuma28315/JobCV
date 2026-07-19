@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../config/config.php';
 /**
  * File: config/db.php
  * Đường dẫn: Module5_UngTuyenVaQuanLyHoSo/config/db.php
@@ -7,7 +8,7 @@
  */
 
 $host = "localhost";
-$dbname = "jobcv";
+$dbname = "cvdb";
 $username = "root";
 $password = "";
 
