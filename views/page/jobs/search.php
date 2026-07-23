@@ -1,48 +1,17 @@
 <!-- views/jobs/search.php -->
 <?php
 $baseUrl = '/JobCV';
-include_once '../../page/layouts/header.php'; 
-?>
-<?php
-// Giả lập dữ liệu để test giao diện khi chưa kết nối Database thực tế, khi kết nối Database, Controller sẽ truyền biến $jobs qua và ta chỉ cần xóa đoạn khởi tạo này đi.
-if (!isset($jobs) || empty($jobs)) {
-    $jobs = [
-        [
-            'title' => 'Lập Trình Viên PHP (Laravel / MVC)',
-            'company_name' => 'Công Nghệ Số Cần Thơ (CTTech)',
-            'company_logo' => 'https://placehold.co/80x80/0d6efd/ffffff?text=CTTech',
-            'salary_text' => '12 - 18 Triệu',
-            'location_text' => 'Ninh Kiều, Cần Thơ',
-            'experience_text' => '1 - 3 năm kinh nghiệm'
-        ],
-        [
-            'title' => 'Chuyên Viên Thiết Kế Giao Diện UI/UX',
-            'company_name' => 'Nippon Design Agency',
-            'company_logo' => 'https://placehold.co/80x80/e11d48/ffffff?text=NDA',
-            'salary_text' => 'Thỏa thuận',
-            'location_text' => 'Quận 1, TP. Hồ Chí Minh',
-            'experience_text' => 'Dưới 1 năm kinh nghiệm'
-        ],
-        [
-            'title' => 'Thực Tập Sinh Lập Trình Web (Front-end)',
-            'company_name' => 'Sông Hậu Media & Software',
-            'company_logo' => 'https://placehold.co/80x80/16a34a/ffffff?text=SHM',
-            'salary_text' => 'Hỗ trợ 3 - 5 Triệu',
-            'location_text' => 'Cần Thơ',
-            'experience_text' => 'Không yêu cầu kinh nghiệm'
-        ]
-    ];
-}
+include_once __DIR__ . '/../layouts/header.php';
 ?>
 
 <div class="container mb-5">
     <div class="row justify-content-center">
         <div class="col-12 col-lg-10">
             
-            <form action="" method="GET" class="p-4 bg-primary-blue rounded-4 shadow-lg" autocomplete="off">
-                <!-- Các input ẩn để không mất routing của MVC khi submit GET -->
-                <input type="hidden" name="controller" value="job">
-                <input type="hidden" name="action" value="search">
+            <form action="<?= $baseUrl ?>/index.php" method="GET" class="p-4 bg-primary-blue rounded-4 shadow-lg" autocomplete="off">
+
+                <!-- Giữ route MVC khi submit form -->
+                <input type="hidden" name="route" value="jobs/list">
                 
                 <!-- 1: NHẬP TỪ KHÓA -->
                 <div class="row mb-3 justify-content-center">
@@ -63,7 +32,12 @@ if (!isset($jobs) || empty($jobs)) {
                         <select name="location" class="form-select border-0 py-2 fw-semibold">
                             <option value="">Chọn Địa Điểm</option>
                             <?php 
-                            $locations = ['can-tho' => 'Cần Thơ', 'hcm' => 'TP. Hồ Chí Minh', 'ha-noi' => 'Hà Nội', 'da-nang' => 'Đà Nẵng'];
+                            $locations = [
+    'Cần Thơ' => 'Cần Thơ',
+    'Hồ Chí Minh' => 'Hồ Chí Minh',
+    'Hà Nội' => 'Hà Nội',
+    'Đà Nẵng' => 'Đà Nẵng'
+];
                             foreach ($locations as $val => $lbl): 
                                 $selected = (isset($_GET['location']) && $_GET['location'] == $val) ? 'selected' : '';
                             ?>
@@ -116,10 +90,21 @@ if (!isset($jobs) || empty($jobs)) {
                             <label class="form-label text-white-50 small fw-semibold mb-1">Cấp Bậc</label>
                             <select name="level" class="form-select border-0 py-2 small text-dark fw-semibold">
                                 <option value="">Tất cả cấp bậc</option>
-                                <option value="intern" <?= (isset($_GET['level']) && $_GET['level'] == 'intern') ? 'selected' : '' ?>>Thực tập sinh</option>
-                                <option value="fresher" <?= (isset($_GET['level']) && $_GET['level'] == 'fresher') ? 'selected' : '' ?>>Mới tốt nghiệp</option>
-                                <option value="junior" <?= (isset($_GET['level']) && $_GET['level'] == 'junior') ? 'selected' : '' ?>>Nhân viên</option>
-                                <option value="senior" <?= (isset($_GET['level']) && $_GET['level'] == 'senior') ? 'selected' : '' ?>>Trưởng nhóm</option>
+                                <option value="Fresher" <?= ($_GET['level'] ?? '') == 'Fresher' ? 'selected' : '' ?>>
+                                    Fresher
+                                </option>
+
+                                <option value="Junior" <?= ($_GET['level'] ?? '') == 'Junior' ? 'selected' : '' ?>>
+                                    Junior
+                                </option>
+
+                                <option value="Middle" <?= ($_GET['level'] ?? '') == 'Middle' ? 'selected' : '' ?>>
+                                    Middle
+                                </option>
+
+                                <option value="Senior" <?= ($_GET['level'] ?? '') == 'Senior' ? 'selected' : '' ?>>
+                                    Senior
+                                </option>
                             </select>
                         </div>
 
@@ -128,9 +113,21 @@ if (!isset($jobs) || empty($jobs)) {
                             <label class="form-label text-white-50 small fw-semibold mb-1">Hình Thức</label>
                             <select name="job_type" class="form-select border-0 py-2 small text-dark fw-semibold">
                                 <option value="">Tất cả hình thức</option>
-                                <option value="onsite" <?= (isset($_GET['job_type']) && $_GET['job_type'] == 'onsite') ? 'selected' : '' ?>>Tại văn phòng</option>
-                                <option value="remote" <?= (isset($_GET['job_type']) && $_GET['job_type'] == 'remote') ? 'selected' : '' ?>>Từ xa (Remote)</option>
-                                <option value="hybrid" <?= (isset($_GET['job_type']) && $_GET['job_type'] == 'hybrid') ? 'selected' : '' ?>>Linh hoạt (Hybrid)</option>
+                                <option value="Full-time" <?= ($_GET['job_type'] ?? '') == 'Full-time' ? 'selected' : '' ?>>
+                                    Full-time
+                                </option>
+
+                                <option value="Remote" <?= ($_GET['job_type'] ?? '') == 'Remote' ? 'selected' : '' ?>>
+                                    Remote
+                                </option>
+
+                                <option value="Hybrid" <?= ($_GET['job_type'] ?? '') == 'Hybrid' ? 'selected' : '' ?>>
+                                    Hybrid
+                                </option>
+
+                                <option value="Part-time" <?= ($_GET['job_type'] ?? '') == 'Part-time' ? 'selected' : '' ?>>
+                                    Part-time
+                                </option>
                             </select>
                         </div>
 
@@ -139,9 +136,22 @@ if (!isset($jobs) || empty($jobs)) {
                             <label class="form-label text-white-50 small fw-semibold mb-1">Kinh Nghiệm</label>
                             <select name="experience" class="form-select border-0 py-2 small text-dark fw-semibold">
                                 <option value="">Tất cả kinh nghiệm</option>
-                                <option value="no-experience" <?= (isset($_GET['experience']) && $_GET['experience'] == 'no-experience') ? 'selected' : '' ?>>Không yêu cầu</option>
-                                <option value="under-1" <?= (isset($_GET['experience']) && $_GET['experience'] == 'under-1') ? 'selected' : '' ?>>Dưới 1 năm</option>
-                                <option value="1-3" <?= (isset($_GET['experience']) && $_GET['experience'] == '1-3') ? 'selected' : '' ?>>1 - 3 năm</option>
+
+                                <option value="0" <?= ($_GET['experience'] ?? '') === '0' ? 'selected' : '' ?>>
+                                    Không yêu cầu kinh nghiệm
+                                </option>
+
+                                <option value="1" <?= ($_GET['experience'] ?? '') === '1' ? 'selected' : '' ?>>
+                                    Tối đa 1 năm
+                                </option>
+
+                                <option value="3" <?= ($_GET['experience'] ?? '') === '3' ? 'selected' : '' ?>>
+                                    Tối đa 3 năm
+                                </option>
+
+                                <option value="5" <?= ($_GET['experience'] ?? '') === '5' ? 'selected' : '' ?>>
+                                    Tối đa 5 năm
+                                </option>
                             </select>
                         </div>
 
@@ -220,4 +230,4 @@ if (!isset($jobs) || empty($jobs)) {
         alert("Bạn cần Đăng Nhập với tài khoản Ứng viên để thực hiện chức năng này!");
     }
 </script>
-<?php include_once '../../views/layouts/footer.php'; ?>
+<?php include_once __DIR__ . '/../layouts/footer.php'; ?>
