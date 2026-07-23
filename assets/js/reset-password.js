@@ -1,9 +1,4 @@
-/**
- * reset-password.js
- * Xử lý kiểm tra mật khẩu khớp và gọi API cập nhật mật khẩu mới
- */
 document.addEventListener('DOMContentLoaded', () => {
-    // Đọc baseUrl từ cấu hình hệ thống (mặc định là /JobCV)
     const baseUrl = window.appConfig?.baseUrl || '/JobCV';
     
     const resetForm = document.getElementById('resetForm');
@@ -22,7 +17,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const matKhau = document.getElementById('matKhau')?.value || '';
         const matKhauConfirm = document.getElementById('matKhauConfirm')?.value || '';
 
-        // Validate cơ bản phía Client trước khi gửi request
         if (!matKhau || !matKhauConfirm) {
             showResetMessage('Vui lòng nhập đầy đủ các trường mật khẩu.', 'danger');
             return;
@@ -35,11 +29,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const formData = new FormData(resetForm);
         
-        // Khóa nút để tránh spam click
         btnResetPassword.disabled = true;
         btnResetPassword.innerText = 'Đang xử lý...';
 
-        fetch(`${baseUrl}/controllers/ForgotPasswordController.php`, { 
+        fetch(`${baseUrl}/index.php?route=auth/forgot-password-submit`, { 
             method: 'POST', 
             body: formData 
         })

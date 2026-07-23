@@ -22,6 +22,7 @@ require_once __DIR__ . '/controllers/RegisterController.php';
 require_once __DIR__ . '/controllers/RecruiterController.php';
 require_once __DIR__ . '/controllers/TinTuyenDungController.php';
 require_once __DIR__ . '/controllers/UserManagementController.php';
+require_once __DIR__ . '/controllers/ForgotPasswordController.php';
 
 
 // ==========================================================
@@ -410,7 +411,13 @@ $routes = [
 		'controller' => 'JobManagementController',
 		'method' => 'removeJob',
 		'constructor' => 'default'
-	]
+	],
+	//forgot password
+	'auth/forgot-password-submit' => [
+        'controller' => 'ForgotPasswordController',
+        'method' => 'handleRequest',
+        'constructor' => 'database'
+    ],
 ];
 
 

@@ -1,7 +1,7 @@
 <?php
 $baseUrl = '/JobCV';
 $email = trim($_GET['email'] ?? '');
-include_once '../../page/layouts/header.php';
+include_once __DIR__ . '/../layouts/header.php';
 ?>
 
 <div class="container-fluid min-vh-100 d-flex align-items-center justify-content-center position-relative py-5"
@@ -50,42 +50,6 @@ include_once '../../page/layouts/header.php';
         </div>
     </div>
 </div>
-
-<!-- <script>
-const baseUrl = '<?= $baseUrl ?>';
-const resetForm = document.getElementById('resetForm');
-const resetMessage = document.getElementById('resetMessage');
-const btnResetPassword = document.getElementById('btnResetPassword');
-
-function showResetMessage(message, type = 'info') {
-    resetMessage.className = `small mt-2 text-${type === 'success' ? 'success' : type === 'danger' ? 'danger' : 'secondary'}`;
-    resetMessage.innerText = message;
-}
-
-btnResetPassword.addEventListener('click', () => {
-    const formData = new FormData(resetForm);
-    btnResetPassword.disabled = true;
-    btnResetPassword.innerText = 'Đang xử lý...';
-
-    fetch(`${baseUrl}/controllers/ForgotPasswordController.php`, { method: 'POST', body: formData })
-        .then(response => response.json())
-        .then(data => {
-            showResetMessage(data.message, data.status === 'success' ? 'success' : 'danger');
-            if (data.status === 'success') {
-                setTimeout(() => {
-                    window.location.href = `${baseUrl}/index.php?route=auth/login`;
-                }, 1200);
-            }
-        })
-        .catch(() => {
-            showResetMessage('Không thể kết nối tới máy chủ.', 'danger');
-        })
-        .finally(() => {
-            btnResetPassword.disabled = false;
-            btnResetPassword.innerText = 'Lưu Mật Khẩu Mới';
-        });
-});
-</script> -->
 
 <script>
     window.appConfig = {

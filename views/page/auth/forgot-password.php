@@ -1,6 +1,6 @@
 <?php
 $baseUrl = '/JobCV';
-include_once '../../page/layouts/header.php';
+include_once __DIR__ . '/../layouts/header.php';
 ?>
 <div class="container-fluid min-vh-100 d-flex align-items-center justify-content-center position-relative py-5"
      style="background-color: #f0f4f8; background-image: url('../assets/images/bg-city.png'); background-size: cover; background-position: center;">

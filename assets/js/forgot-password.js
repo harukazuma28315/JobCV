@@ -1,9 +1,4 @@
-/**
- * forgot-password.js
- * Xử lý yêu cầu gửi và xác minh OTP khi quên mật khẩu
- */
 document.addEventListener('DOMContentLoaded', () => {
-    // Đọc baseUrl từ cấu hình hệ thống (nếu không có thì mặc định là /JobCV)
     const baseUrl = window.appConfig?.baseUrl || '/JobCV';
     
     const emailInput = document.getElementById('email');
@@ -12,7 +7,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnVerifyOtp = document.getElementById('btnVerifyOtp');
     const formMessage = document.getElementById('formMessage');
 
-    // Nếu không tồn tại các nút trên giao diện thì không chạy tiếp
     if (!btnGetOtp || !btnVerifyOtp) return;
 
     function setButtonState(button, disabled, text) {
@@ -52,7 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
         formData.append('email', email);
 
         setButtonState(btnGetOtp, true, 'Đang gửi...');
-        fetch(`${baseUrl}/controllers/ForgotPasswordController.php`, { method: 'POST', body: formData })
+        fetch(`${baseUrl}/index.php?route=auth/forgot-password-submit`, { method: 'POST', body: formData })
             .then(response => response.json())
             .then(data => {
                 showMessage(data.message, data.status === 'success' ? 'success' : 'danger');
@@ -83,7 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
         formData.append('otp', otp);
 
         setButtonState(btnVerifyOtp, true, 'Đang xác nhận...');
-        fetch(`${baseUrl}/controllers/ForgotPasswordController.php`, { method: 'POST', body: formData })
+        fetch(`${baseUrl}/index.php?route=auth/forgot-password-submit`, { method: 'POST', body: formData })
             .then(response => response.json())
             .then(data => {
                 showMessage(data.message, data.status === 'success' ? 'success' : 'danger');
