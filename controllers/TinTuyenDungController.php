@@ -21,7 +21,68 @@ class TinTuyenDungController
 	 */
 	public function index()
 	{
-		return $this->tinTuyenDungModel->getAll();
+		$salary = $_GET['salary'] ?? '';
+
+		$filters = [
+			'keyword' => $_GET['keyword'] ?? '',
+			'location' => $_GET['location'] ?? '',
+			'capBac' => $_GET['level'] ?? '',
+			'hinhThucLamViec' => $_GET['job_type'] ?? '',
+			'soNamKinhNghiem' => $_GET['experience'] ?? '',
+			'minSalary' => '',
+			'maxSalary' => ''
+		];
+
+		switch ($salary) {
+			case 'under-10':
+				$filters['maxSalary'] = 10000000;
+				break;
+
+			case '10-15':
+				$filters['minSalary'] = 10000000;
+				$filters['maxSalary'] = 15000000;
+				break;
+
+			case '15-20':
+				$filters['minSalary'] = 15000000;
+				$filters['maxSalary'] = 20000000;
+				break;
+
+			case 'over-20':
+				$filters['minSalary'] = 20000000;
+				break;
+		}
+
+		$hasFilter = false;
+
+		foreach ($filters as $value) {
+			if ($value !== '') {
+				$hasFilter = true;
+				break;
+			}
+		}
+
+		if ($hasFilter) {
+			$result = $this->tinTuyenDungModel->filter($filters);
+		} else {
+			$result = $this->tinTuyenDungModel->getAll();
+		}
+
+		$jobs = [];
+
+		while ($row = $result->fetch_assoc()) {
+			$jobs[] = [
+				'id' => $row['MaTinTuyenDung'],
+				'title' => $row['TieuDe'],
+				'company_name' => $row['MaNhaTuyenDung'],
+				'company_logo' => '',
+				'salary_text' => $row['MucLuong'],
+				'location_text' => $row['DiaChiLamViec'],
+				'experience_text' => $row['SoNamKinhNghiem'] . ' năm kinh nghiệm'
+			];
+		}
+
+		require_once __DIR__ . '/../views/page/jobs/search.php';
 	}
 
 	/**
