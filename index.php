@@ -413,6 +413,31 @@ $routes = [
 		'method' => 'removeJob',
 		'constructor' => 'default'
 	],
+	// Route quản lý danh mục (ngành nghề, địa điểm)
+	'admin/categories' => [
+    'controller' => 'CategoryController',
+    'method' => 'showCategories',
+    'constructor' => 'default'
+	],
+	// Thêm route delete danh mục
+	'admin/categories/delete' => [
+		'controller' => 'CategoryController',
+		'method' => 'deleteCategory',
+		'constructor' => 'default'
+	],
+
+	// Thêm route add danh mục
+	'admin/categories/add' => [
+		'controller' => 'CategoryController',
+		'method' => 'addCategory',
+		'constructor' => 'default'
+	],
+	//Thêm route update danh mục
+	'admin/categories/update' => [         
+        'controller' => 'CategoryController',
+        'method' => 'updateCategory',
+        'constructor' => 'default'
+    ],
 	//forgot password
 	'auth/forgot-password-submit' => [
         'controller' => 'ForgotPasswordController',
