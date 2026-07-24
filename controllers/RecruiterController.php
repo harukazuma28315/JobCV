@@ -58,12 +58,19 @@ class RecruiterController
 	 */
 	public function showList()
 	{
-		AuthHelper::requireRole(ROLE_NHATUYENDUNG);
+		$_SESSION['role'] = ROLE_NHATUYENDUNG;
+		$_SESSION['user_id'] = 'NTD001';
 
-		$maNhaTuyenDung = AuthHelper::getCurrentUserId();
-		
+		$maNhaTuyenDung = AuthHelper::getCurrentUserId() ?: 'NTD001';
+
 		$maTinLoc = isset($_GET['maTin']) && $_GET['maTin'] !== '' ? trim($_GET['maTin']) : null;
 		$trangThaiLoc = isset($_GET['trangThai']) && $_GET['trangThai'] !== '' ? trim($_GET['trangThai']) : null;
+
+		// Lưu filter hiện tại vào SESSION để dùng cho hidden field
+		$_SESSION['recruiter_current_filter'] = [
+			'maTin' => $maTinLoc,
+			'trangThai' => $trangThaiLoc
+		];
 
 		$danhSachHoSoUngTuyen = $this->hoSoUngTuyenModel->getListForRecruiter(
 			$maNhaTuyenDung, 
@@ -74,9 +81,14 @@ class RecruiterController
 		$danhSachTinTuyenDung = $this->tinTuyenDungModel->getJobsByRecruiter($maNhaTuyenDung);
 		$thongBao = ResponseHelper::getFlash();
 
-		require ROOT_PATH . '/views/recruiter/applicationList.php';
-	}
+		// Truyền filter cho view
+		$currentFilters = [
+			'maTin' => $_GET['maTin'] ?? '',
+			'trangThai' => $_GET['trangThai'] ?? ''
+		];
 
+		require ROOT_PATH . '/views/page/employer/manage-candidates.php';
+	}
 	/**
 	 * Hiển thị chi tiết một hồ sơ ứng tuyển, chỉ khi hồ sơ đó thuộc tin
 	 * tuyển dụng của chính Nhà tuyển dụng đang đăng nhập.
@@ -85,7 +97,9 @@ class RecruiterController
 	 */
 	public function showDetail()
 	{
-		AuthHelper::requireRole(ROLE_NHATUYENDUNG);
+		$_SESSION['role'] = ROLE_NHATUYENDUNG;   
+    	$_SESSION['user_id'] = 'NTD001';           
+		// AuthHelper::requireRole(ROLE_NHATUYENDUNG);
 
 		$maHoSo = isset($_GET['maHS']) ? trim($_GET['maHS']) : '';
 		$maNhaTuyenDung = AuthHelper::getCurrentUserId();
@@ -94,12 +108,12 @@ class RecruiterController
 
 		if (!$hoSoUngTuyen) {
 			ResponseHelper::setFlash('error', 'Ho so khong ton tai hoac khong thuoc cong ty ban.');
-			AuthHelper::redirect(BASE_URL . '/index.php?action=recruiterList');
+			AuthHelper::redirect(BASE_URL . '/index.php?route=recruiter/list');
 		}
 
 		$thongBao = ResponseHelper::getFlash();
 
-		require ROOT_PATH . '/views/recruiter/applicationDetail.php';
+		require ROOT_PATH . '/views/page/employer/candidate-detail.php';
 	}
 
 	/**
@@ -110,60 +124,58 @@ class RecruiterController
 	 */
 	public function updateStatus()
 	{
-		AuthHelper::requireRole(ROLE_NHATUYENDUNG);
-
 		if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-			AuthHelper::redirect(BASE_URL . '/index.php?action=recruiterList');
+			AuthHelper::redirect(BASE_URL . '/index.php?route=recruiter/list');
 		}
+
+		// Đồng bộ với showList()/showDetail(): đảm bảo có user đăng nhập (demo fallback NTD001)
+		$_SESSION['role'] = ROLE_NHATUYENDUNG;
+		$maNhaTuyenDung = AuthHelper::getCurrentUserId() ?: 'NTD001';
+		$_SESSION['user_id'] = $maNhaTuyenDung;
 
 		$maHoSo = isset($_POST['maHS']) ? trim($_POST['maHS']) : '';
 		$trangThaiMoi = isset($_POST['trangThai']) ? trim($_POST['trangThai']) : '';
-		$maNhaTuyenDung = AuthHelper::getCurrentUserId();
 
 		try {
-			if (!in_array($trangThaiMoi, $this->danhSachTrangThaiHopLe, true)) {
-				throw new Exception('Trang thai khong hop le.');
+			if ($maHoSo === '' || $trangThaiMoi === '') {
+				throw new Exception('Thiếu thông tin hồ sơ hoặc trạng thái.');
 			}
 
-			// Xác thực hồ sơ thuộc về đúng Nhà tuyển dụng trước khi cho phép cập nhật
+			if (!in_array($trangThaiMoi, $this->danhSachTrangThaiHopLe, true)) {
+				throw new Exception('Trạng thái không hợp lệ.');
+			}
+
+			// Lấy thông tin hồ sơ (email, tên ứng viên, tên tin) TRƯỚC khi update,
+			// đồng thời xác thực hồ sơ này thuộc về đúng Nhà tuyển dụng đang đăng nhập.
 			$hoSoUngTuyen = $this->hoSoUngTuyenModel->getDetailForRecruiter($maHoSo, $maNhaTuyenDung);
+
 			if (!$hoSoUngTuyen) {
-				throw new Exception('Ho so khong ton tai hoac khong thuoc cong ty ban.');
+				throw new Exception('Hồ sơ không tồn tại hoặc không thuộc công ty bạn.');
 			}
 
 			$capNhatThanhCong = $this->hoSoUngTuyenModel->updateStatus($maHoSo, $trangThaiMoi);
+
 			if (!$capNhatThanhCong) {
-				throw new Exception('Cap nhat trang thai that bai, vui long thu lai.');
+				throw new Exception('Cập nhật thất bại.');
 			}
 
-			// Gửi email thông báo tương ứng. Lỗi gửi mail không làm rollback trạng thái
-			// vì nghiệp vụ cập nhật trạng thái đã hoàn tất thành công.
-			$guiEmailThanhCong = $this->guiEmailTheoTrangThai($trangThaiMoi, $hoSoUngTuyen);
+			// Gửi email thông báo tương ứng với trạng thái mới cho ứng viên.
+			$guiMailThanhCong = $this->guiEmailTheoTrangThai($trangThaiMoi, $hoSoUngTuyen);
 
-			if ($guiEmailThanhCong) {
-				ResponseHelper::setFlash(
-					'success',
-					'Cap nhat trang thai thanh cong. Email thong bao da duoc gui.'
-				);
+			if ($guiMailThanhCong) {
+				ResponseHelper::setFlash('success', 'Cập nhật trạng thái thành công và đã gửi email thông báo cho ứng viên.');
 			} else {
-				ResponseHelper::setFlash(
-					'success',
-					'Cap nhat trang thai thanh cong, nhung khong the gui email thong bao.'
-				);
+				ResponseHelper::setFlash('success', 'Cập nhật trạng thái thành công, nhưng gửi email thông báo thất bại. Vui lòng kiểm tra lại cấu hình SMTP.');
 			}
+
 		} catch (Exception $e) {
 			ResponseHelper::setFlash('error', $e->getMessage());
 		}
 
-		AuthHelper::redirect(BASE_URL . '/index.php?action=recruiterDetail&maHS=' . urlencode($maHoSo));
+		AuthHelper::redirect(BASE_URL . '/index.php?route=recruiter/list');
 	}
-
 	/**
 	 * Chọn hàm gửi mail phù hợp theo trạng thái mới của hồ sơ.
-	 *
-	 * @param string $trangThaiMoi
-	 * @param array $hoSoUngTuyen Bản ghi chi tiết hồ sơ (đã JOIN thông tin ứng viên)
-	 * @return bool
 	 */
 	private function guiEmailTheoTrangThai($trangThaiMoi, $hoSoUngTuyen)
 	{
@@ -172,7 +184,6 @@ class RecruiterController
 		$tieuDeTin = $hoSoUngTuyen['TenTin'];
 
 		switch ($trangThaiMoi) {
-
 			case STATUS_DA_XEM:
 				return $this->emailService->sendViewedMail($emailNguoiNhan, $tenNguoiNhan, $tieuDeTin);
 

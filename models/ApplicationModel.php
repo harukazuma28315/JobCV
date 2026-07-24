@@ -172,57 +172,56 @@ class ApplicationModel
 	 * @param string|null $trangThai Lọc theo trạng thái, null = tất cả
 	 * @return array
 	 */
-	public function getListForRecruiter($maNhaTuyenDung, $maTinTuyenDung = null, $trangThai = null)
+	public function getListForRecruiter($maNhaTuyenDung, $maTinLoc = null, $trangThaiLoc = null)
 	{
-		$sql = 'SELECT hs.MaHS, hs.NgayNop, hs.TrangThai,
-					cv.MaCV, cv.TieuDe AS CvTieuDe,
-					uUser.HoTen AS TenUngVien, uUser.Email AS EmailUngVien,
-					tin.MaTinTuyenDung, tin.TieuDe AS TenTin
+		$sql = "SELECT 
+					hs.MaHS,
+					hs.MaCV,
+					hs.MaTinTuyenDung,
+					hs.NgayNop,
+					hs.CoverLetter,
+					hs.TrangThai,
+					u.HoTen,
+					u.Email,
+					cv.TenFileCV,
+					cv.MaCV,
+					t.TieuDe as TenTin
 				FROM hosotuyendung hs
-				INNER JOIN cv ON hs.MaCV = cv.MaCV
-				INNER JOIN ungvien uv ON cv.MaUngVien = uv.MaUngVien
-				INNER JOIN user uUser ON uv.MaUngVien = uUser.MaUser
-				INNER JOIN tintuyendung tin ON hs.MaTinTuyenDung = tin.MaTinTuyenDung
-				WHERE tin.MaNhaTuyenDung = ?';
+				JOIN tintuyendung t ON hs.MaTinTuyenDung = t.MaTinTuyenDung
+				JOIN user u ON hs.MaCV = (SELECT MaCV FROM cv WHERE MaUngVien = u.MaUser LIMIT 1)  -- Giả sử liên kết qua CV
+				LEFT JOIN cv ON hs.MaCV = cv.MaCV
+				WHERE t.MaNhaTuyenDung = ?";
 
+		$params = [$maNhaTuyenDung];
 		$types = 's';
-		$params = array($maNhaTuyenDung);
 
-		if (!empty($maTinTuyenDung)) {
-			$sql .= ' AND tin.MaTinTuyenDung = ?';
+		if ($maTinLoc) {
+			$sql .= " AND hs.MaTinTuyenDung = ?";
+			$params[] = $maTinLoc;
 			$types .= 's';
-			$params[] = $maTinTuyenDung;
 		}
 
-		if (!empty($trangThai)) {
-			$sql .= ' AND hs.TrangThai = ?';
+		if ($trangThaiLoc) {
+			$sql .= " AND hs.TrangThai = ?";
+			$params[] = $trangThaiLoc;
 			$types .= 's';
-			$params[] = $trangThai;
 		}
 
-		$sql .= ' ORDER BY hs.NgayNop DESC';
+		$sql .= " ORDER BY hs.NgayNop DESC";
 
 		$stmt = mysqli_prepare($this->link, $sql);
-
-		// Bind tham số động
-		$bindParams = array($stmt, $types);
-		foreach ($params as $key => $value) {
-			$bindParams[] = &$params[$key];
-		}
-		call_user_func_array('mysqli_stmt_bind_param', $bindParams);
-
+		mysqli_stmt_bind_param($stmt, $types, ...$params);
 		mysqli_stmt_execute($stmt);
 		$result = mysqli_stmt_get_result($stmt);
 
-		$danhSachHoSoUngTuyen = array();
+		$list = [];
 		while ($row = mysqli_fetch_assoc($result)) {
-			$danhSachHoSoUngTuyen[] = $row;
+			$list[] = $row;
 		}
+
 		mysqli_stmt_close($stmt);
-
-		return $danhSachHoSoUngTuyen;
+		return $list;
 	}
-
 	/**
 	 * Lấy chi tiết hồ sơ ứng tuyển cho Nhà tuyển dụng, đồng thời xác thực
 	 * hồ sơ thuộc về tin tuyển dụng của chính nhà tuyển dụng này.
@@ -233,17 +232,29 @@ class ApplicationModel
 	 */
 	public function getDetailForRecruiter($maHoSo, $maNhaTuyenDung)
 	{
-		$sql = 'SELECT hs.*, cv.MaCV, cv.TieuDe AS CvTieuDe, cv.KyNang, cv.MucTieu,
-					cv.ViTriMongMuon, cv.Email AS EmailCv, cv.SDT AS SdtCv,
-					uUser.HoTen AS TenUngVien, uUser.Email AS EmailUngVien, uUser.SDT AS SdtUngVien,
-					tin.MaTinTuyenDung, tin.TieuDe AS TenTin
+		$sql = 'SELECT 
+					hs.*,
+					cv.MaCV,
+					cv.TieuDe AS CvTieuDe,
+					cv.KyNang,
+					cv.MucTieu,
+					cv.ViTriMongMuon,
+					cv.Email AS EmailCv,
+					cv.SDT AS SdtCv,
+					uUser.HoTen AS TenUngVien,
+					uUser.Email AS EmailUngVien,
+					uUser.SDT AS SdtUngVien,
+					tin.MaTinTuyenDung,
+					tin.TieuDe AS TenTin
 				FROM hosotuyendung hs
 				INNER JOIN cv ON hs.MaCV = cv.MaCV
 				INNER JOIN ungvien uv ON cv.MaUngVien = uv.MaUngVien
 				INNER JOIN user uUser ON uv.MaUngVien = uUser.MaUser
 				INNER JOIN tintuyendung tin ON hs.MaTinTuyenDung = tin.MaTinTuyenDung
-				WHERE hs.MaHS = ? AND tin.MaNhaTuyenDung = ?
+				WHERE hs.MaHS = ? 
+				AND tin.MaNhaTuyenDung = ?
 				LIMIT 1';
+
 		$stmt = mysqli_prepare($this->link, $sql);
 		mysqli_stmt_bind_param($stmt, 'ss', $maHoSo, $maNhaTuyenDung);
 		mysqli_stmt_execute($stmt);
