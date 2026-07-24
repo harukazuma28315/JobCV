@@ -29,7 +29,7 @@ $resetEmail = $_SESSION['user_email'] ?? $profileData['email'] ?? '';
         <div class="col-12 col-lg-4">
             <div class="card border-0 shadow-sm p-4 text-center bg-white mb-4">
                 <div class="position-relative d-inline-block mx-auto mb-3" style="width: 110px; height: 110px;">
-                    <img src="https://api.dicebear.com/7.x/adventurer/svg?seed=<?php echo htmlspecialchars($user['username'] ?? 'default'); ?>" alt="Avatar" class="rounded-circle border border-3 border-primary" style="width: 100%; height: 100%; object-fit: cover;">
+                    <img src="https://api.dicebear.com/7.x/adventurer/svg?seed=ntl" alt="Avatar" class="rounded-circle border border-3 border-primary" style="width: 100%; height: 100%; object-fit: cover;">
                     
                     <span class="position-absolute bottom-0 end-0 bg-primary text-white shadow-sm d-flex align-items-center justify-content-center" 
                           style="cursor: pointer; width: 32px; height: 32px; border-radius: 50%; padding: 0; margin: 0; border: 2px solid #fff;" 
@@ -46,7 +46,7 @@ $resetEmail = $_SESSION['user_email'] ?? $profileData['email'] ?? '';
                         <i class="fa-solid fa-file-pdf text-danger fs-5"></i>
                         <span>Quản lý hồ sơ & CV</span>
                     </a>
-                    <a href="applied-jobs.php" class="nav-link py-3 px-3 d-flex align-items-center gap-3 border-0 text-decoration-none">
+                    <a href="index.php?route=applications/applied" class="nav-link py-3 px-3 d-flex align-items-center gap-3 border-0 text-decoration-none">
                         <i class="fa-solid fa-paper-plane text-success fs-5"></i>
                         <span>Việc làm đã ứng tuyển</span>
                     </a>

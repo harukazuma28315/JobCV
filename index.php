@@ -169,6 +169,11 @@ $routes = [
 			'file'
 		]
 	],
+	'applications/applied' => [
+		'controller' => 'JobApplyController',
+		'method' => 'appliedJobs',
+		'constructor' => 'default'
+	],
 
 	// =========================
 	// TIN TUYỂN DỤNG

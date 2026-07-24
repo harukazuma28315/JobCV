@@ -49,7 +49,7 @@ require_once __DIR__ . '/../layouts/header.php';
                 </div>
             </div>
             
-            <!-- phải: tương tác nhanh -->
+            
             <div class="col-12 col-md-4 text-md-end">
                 <?php if ($hasApplied): ?>
 
@@ -72,9 +72,6 @@ require_once __DIR__ . '/../layouts/header.php';
                     </a>
 
                 <?php endif; ?>
-                <button class="btn btn-outline-light px-3 py-2" title="Lưu việc làm">
-                    <i class="fa-regular fa-bookmark"></i>
-                </button>
             </div>
         </div>
     </div>

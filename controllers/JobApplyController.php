@@ -81,7 +81,7 @@ class JobApplyController
         }
 
         // Hiển thị trang ứng tuyển
-        require_once __DIR__ . '/../views/page/jobs/apply.php';
+        require_once __DIR__ . '/../views/applicant/applyJob.php';
     }
 
     /**
@@ -155,5 +155,35 @@ class JobApplyController
                 </script>
             ";
         }
+    }
+    public function appliedJobs()
+    {
+        if (!isset($_SESSION['user_id'])) {
+            header("Location: /JobCV/index.php?route=auth/login");
+            exit;
+        }
+
+        $maUngVien = $_SESSION['user_id'];
+
+        $applications =
+            $this->jobApplyModel
+            ->getApplicationsByCandidate($maUngVien);
+
+        $totalApplications = count($applications);
+
+        $interviewApplications = 0;
+
+        foreach ($applications as $application) {
+            if ($application['TrangThai'] === 'HenPhongVan') {
+                $interviewApplications++;
+            }
+        }
+
+        $userName = $_SESSION['user_name'] ?? 'Ứng viên';
+
+        $baseUrl = '/JobCV';
+
+        require_once __DIR__ .
+            '/../views/page/candidate/applied-jobs.php';
     }
 }

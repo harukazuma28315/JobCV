@@ -80,7 +80,7 @@ class CVController
 
         $cv = $this->cvModel->getByUngVien($maUngVien);
 
-        require_once __DIR__ . '/../views/page/layouts/createcv.php';
+        require_once __DIR__ . '/../views/page/candidate/cv-builder.php';
     }
 
     /**

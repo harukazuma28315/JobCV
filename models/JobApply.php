@@ -105,4 +105,50 @@ class JobApply
 
         return 'HS' . str_pad($number, 3, '0', STR_PAD_LEFT);
     }
+    public function getApplicationsByCandidate($maUngVien)
+    {
+        $sql = "
+            SELECT
+                hs.MaHS,
+                hs.MaCV,
+                hs.MaTinTuyenDung,
+                hs.NgayNop,
+                hs.CoverLetter,
+                hs.TrangThai,
+
+                cv.TenFileCV,
+                cv.DuongDanFileCV,
+
+                ttd.TieuDe,
+
+                ntd.TenCongTy
+
+            FROM hosotuyendung hs
+
+            INNER JOIN cv
+                ON hs.MaCV = cv.MaCV
+
+            INNER JOIN tintuyendung ttd
+                ON hs.MaTinTuyenDung = ttd.MaTinTuyenDung
+
+            INNER JOIN nhatuyendung ntd
+                ON ttd.MaNhaTuyenDung = ntd.MaNhaTuyenDung
+
+            WHERE cv.MaUngVien = ?
+
+            ORDER BY hs.NgayNop DESC
+        ";
+
+        $stmt = $this->conn->prepare($sql);
+
+        if (!$stmt) {
+            die("Lỗi prepare: " . $this->conn->error);
+        }
+
+        $stmt->bind_param("s", $maUngVien);
+
+        $stmt->execute();
+
+        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+    }
 }

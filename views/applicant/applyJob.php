@@ -6,73 +6,146 @@
  *            Dữ liệu ($tinTuyenDung, $danhSachCv, $thongBao) được truyền từ ApplicationController.
  */
 ?>
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-	<meta charset="UTF-8">
-	<title>Nộp hồ sơ ứng tuyển</title>
-	<link rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/css/style.css">
-</head>
-<body>
-	<div class="container">
-		<h1>Nộp hồ sơ ứng tuyển</h1>
-		<h2><?php echo htmlspecialchars($tinTuyenDung['TieuDe']); ?></h2>
+<?php
+$baseUrl = '/JobCV';
 
-		<?php if ($thongBao): ?>
-			<div class="flash flash-<?php echo htmlspecialchars($thongBao['type']); ?>">
-				<?php echo htmlspecialchars($thongBao['message']); ?>
-			</div>
-		<?php endif; ?>
+require_once __DIR__ . '/../page/layouts/header.php';
+?>
 
-		<?php if (empty($danhSachCv)): ?>
-			<p>Bạn chưa có CV nào đang hoạt động. Vui lòng tạo CV trước khi ứng tuyển.</p>
-		<?php else: ?>
-			<form action="<?php echo BASE_URL; ?>/index.php?action=submitApplication"
-				method="POST"
-				enctype="multipart/form-data">
+<section class="py-5 bg-light">
+    <div class="container">
 
-				<input type="hidden" name="maTinTuyenDung" value="<?php echo htmlspecialchars($tinTuyenDung['MaTinTuyenDung']); ?>">
+        <div class="row justify-content-center">
 
-				<div class="form-group">
-					<label for="maCV">Chọn CV</label>
-					<select name="maCV" id="maCV" required>
-						<option value="">-- Chọn CV --</option>
-						<?php foreach ($danhSachCv as $cv): ?>
-							<option value="<?php echo htmlspecialchars($cv['MaCV']); ?>">
-								<?php echo htmlspecialchars($cv['TieuDe']); ?>
-								<?php if (!empty($cv['ViTriMongMuon'])): ?>
-									(<?php echo htmlspecialchars($cv['ViTriMongMuon']); ?>)
-								<?php endif; ?>
-							</option>
-						<?php endforeach; ?>
-					</select>
-				</div>
+            <div class="col-lg-8">
 
-				<div class="form-group">
-					<label for="coverLetter">Cover Letter (văn bản, tối đa <?php echo MAX_COVER_LETTER_TEXT_LENGTH; ?> ký tự)</label>
-					<textarea
-						name="coverLetter"
-						id="coverLetter"
-						maxlength="<?php echo MAX_COVER_LETTER_TEXT_LENGTH; ?>">
-					</textarea>
-					<div id="coverLetterCounter" style="font-size:12px;color:#6b7280;margin-top:4px;">0 / <?php echo MAX_COVER_LETTER_TEXT_LENGTH; ?> ký tự</div>
-				</div>
+                <div class="card border-0 shadow-sm">
 
-				<div class="form-group">
-					<label for="coverLetterFile">File Cover Letter (PDF/DOC/DOCX, tối đa 5MB - không bắt buộc)</label>
-					<input type="file" name="coverLetterFile" id="coverLetterFile" accept=".pdf,.doc,.docx">
-				</div>
+                    <div class="card-body p-4">
 
-				<button type="submit" class="btn">Nộp hồ sơ</button>
-				<a href="<?php echo BASE_URL; ?>/index.php?action=history" 
-				   class="btn" 
-				   style="background-color:#6b7280;">
-					Hủy
-				</a>
-			</form>
-		<?php endif; ?>
-	</div>
+                        <h3 class="fw-bold mb-4">
+                            <i class="fa-solid fa-paper-plane text-primary me-2"></i>
+                            Ứng tuyển công việc
+                        </h3>
 
-<!-- validate.js tạm thời bỏ để test backend -->
-</body>
-</html>
+                        <!-- Thông tin công việc -->
+                        <div class="border rounded p-3 mb-4 bg-light">
+
+                            <h5 class="fw-bold mb-2">
+                                <?= htmlspecialchars($job['TieuDe']) ?>
+                            </h5>
+
+                            <p class="mb-1">
+                                <i class="fa-solid fa-location-dot text-danger me-2"></i>
+                                <?= htmlspecialchars($job['DiaChiLamViec']) ?>
+                            </p>
+
+                            <p class="mb-0">
+                                <i class="fa-solid fa-money-bill-wave text-success me-2"></i>
+                                <?= number_format($job['MucLuong'], 0, ',', '.') ?> VNĐ
+                            </p>
+
+                        </div>
+
+                        <!-- CV được sử dụng -->
+                        <div class="mb-4">
+
+                            <h5 class="fw-bold mb-3">
+                                CV ứng tuyển
+                            </h5>
+
+                            <div class="border rounded p-3">
+
+                                <div class="d-flex justify-content-between align-items-center">
+
+                                    <div>
+                                        <i class="fa-solid fa-file-lines text-primary fs-3 me-2"></i>
+
+                                        <strong>
+                                            <?= htmlspecialchars($cv['TieuDe']) ?>
+                                        </strong>
+
+                                        <br>
+
+                                        <small class="text-muted">
+                                            Vị trí mong muốn:
+                                            <?= htmlspecialchars($cv['ViTriMongMuon']) ?>
+                                        </small>
+                                    </div>
+
+                                    <a
+                                        href="/JobCV/index.php?route=cv/create"
+                                        class="btn btn-outline-primary btn-sm"
+                                    >
+                                        Xem CV
+                                    </a>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <!-- Form ứng tuyển -->
+                        <form
+                            method="POST"
+                            action="/JobCV/index.php?route=jobs/apply-submit"
+                        >
+
+                            <input
+                                type="hidden"
+                                name="maTinTuyenDung"
+                                value="<?= htmlspecialchars($job['MaTinTuyenDung']) ?>"
+                            >
+
+                            <div class="mb-4">
+
+                                <label class="form-label fw-bold">
+                                    Thư giới thiệu
+                                    <span class="text-muted fw-normal">
+                                        (Không bắt buộc)
+                                    </span>
+                                </label>
+
+                                <textarea
+                                    name="coverLetter"
+                                    class="form-control"
+                                    rows="7"
+                                    placeholder="Giới thiệu ngắn gọn về bản thân và lý do bạn phù hợp với vị trí này..."
+                                ></textarea>
+
+                            </div>
+
+                            <div class="d-flex justify-content-between">
+
+                                <a
+                                    href="/JobCV/index.php?route=jobs/detail&maTinTuyenDung=<?= urlencode($job['MaTinTuyenDung']) ?>"
+                                    class="btn btn-secondary"
+                                >
+                                    Quay lại
+                                </a>
+
+                                <button
+                                    type="submit"
+                                    class="btn btn-primary px-4"
+                                >
+                                    <i class="fa-solid fa-paper-plane me-2"></i>
+                                    Gửi hồ sơ ứng tuyển
+                                </button>
+
+                            </div>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+</section>
+
+<?php include_once __DIR__ . '/../page/layouts/footer.php'; ?>
