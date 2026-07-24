@@ -72,7 +72,7 @@ $profilePage = $baseUrl . '/index.php?route=profile';
                 <a class="nav-link" href="<?= $baseUrl ?>/index.php?route=jobs/list">Tìm việc làm</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="<?= $baseUrl ?>/index.php?route=cv/list">Dịch vụ CV</a>
+                <a class="nav-link" href="<?= $baseUrl ?>/index.php?route=cv/create">Dịch vụ CV</a>
             </li>
         </ul>
         

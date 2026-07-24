@@ -302,6 +302,26 @@ class TinTuyenDung
 
 		return $statement->get_result();
 	}
+
+	public function getLocations()
+	{
+		$sql = "SELECT DISTINCT DiaChiLamViec
+				FROM tintuyendung
+				WHERE DiaChiLamViec IS NOT NULL
+				AND DiaChiLamViec != ''
+				ORDER BY DiaChiLamViec ASC";
+
+		$result = $this->conn->query($sql);
+
+		$locations = [];
+
+		while ($row = $result->fetch_assoc()) {
+			$locations[] = $row['DiaChiLamViec'];
+		}
+
+		return $locations;
+	}
+
 	/**
 	 * Lọc theo địa điểm.
 	 *
@@ -570,5 +590,85 @@ class TinTuyenDung
 		}
 
 		return $positions;
+	}
+	public function getFeaturedJobs($limit = 8)
+	{
+		$limit = (int) $limit;
+
+		$sql = "
+			SELECT 
+				t.MaTinTuyenDung,
+				t.TieuDe,
+				t.MucLuong,
+				t.DiaChiLamViec,
+				t.MoTaCongViec,
+				t.NgayDang,
+				t.SoNamKinhNghiem,
+				t.ViTriTuyenDung,
+				n.MaNhaTuyenDung,
+				n.TenCongTy,
+				n.Logo
+			FROM tintuyendung t
+			INNER JOIN nhatuyendung n
+				ON t.MaNhaTuyenDung = n.MaNhaTuyenDung
+			WHERE t.TrangThai = 'DangMo'
+			ORDER BY t.NgayDang DESC
+			LIMIT $limit
+		";
+
+		return $this->conn->query($sql);
+	}
+	public function getTopCompanies($limit = 4)
+	{
+		$limit = (int) $limit;
+
+		$sql = "
+			SELECT 
+				n.MaNhaTuyenDung,
+				n.TenCongTy,
+				n.LinhVuc,
+				n.MoTa,
+				n.Logo,
+				COUNT(t.MaTinTuyenDung) AS SoLuongTin
+			FROM nhatuyendung n
+			LEFT JOIN tintuyendung t
+				ON n.MaNhaTuyenDung = t.MaNhaTuyenDung
+				AND t.TrangThai = 'DangMo'
+			GROUP BY 
+				n.MaNhaTuyenDung,
+				n.TenCongTy,
+				n.LinhVuc,
+				n.MoTa,
+				n.Logo
+			ORDER BY SoLuongTin DESC
+			LIMIT $limit
+		";
+
+		return $this->conn->query($sql);
+	}
+	public function getPopularCategories($limit = 8)
+	{
+		$limit = (int) $limit;
+
+		$sql = "
+			SELECT 
+				dm.MaDanhMuc,
+				dm.TenDanhMuc,
+				COUNT(ctdm.MaTinTuyenDung) AS SoLuongTin
+			FROM danhmuc dm
+			LEFT JOIN chitietdanhmuc ctdm
+				ON dm.MaDanhMuc = ctdm.MaDanhMuc
+			LEFT JOIN tintuyendung t
+				ON ctdm.MaTinTuyenDung = t.MaTinTuyenDung
+				AND t.TrangThai = 'DangMo'
+			WHERE dm.LoaiDanhMuc = 'NganhNghe'
+			GROUP BY 
+				dm.MaDanhMuc,
+				dm.TenDanhMuc
+			ORDER BY SoLuongTin DESC
+			LIMIT $limit
+		";
+
+		return $this->conn->query($sql);
 	}
 }

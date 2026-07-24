@@ -141,8 +141,26 @@ $routes = [
 			'post'
 		]
 	],
-	
 
+	'cv/download' => [
+		'controller' => 'CVController',
+		'method' => 'downloadCV',
+		'constructor' => 'default',
+		'parameters' => [
+			'maCV'
+		]
+	],
+
+	'cv/change-file' => [
+		'controller' => 'CVController',
+		'method' => 'changeFile',
+		'constructor' => 'default',
+		'parameters' => [
+			'maCV',
+			'file'
+		]
+	],
+	
 	'cv/upload-submit' => [
 		'controller' => 'CVController',
 		'method' => 'uploadSubmit',

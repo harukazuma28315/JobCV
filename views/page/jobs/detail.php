@@ -51,13 +51,27 @@ require_once __DIR__ . '/../layouts/header.php';
             
             <!-- phải: tương tác nhanh -->
             <div class="col-12 col-md-4 text-md-end">
-                <a 
-                    href="/JobCV/index.php?route=jobs/apply&maTinTuyenDung=<?= urlencode($job['MaTinTuyenDung']) ?>"
-                    class="btn btn-warning fw-bold text-dark px-4 py-2"
-                >
-                    <i class="fa-solid fa-paper-plane me-2"></i>
-                    Ứng Tuyển Ngay
-                </a>
+                <?php if ($hasApplied): ?>
+
+                    <button 
+                        class="btn btn-success fw-bold px-4 py-2"
+                        disabled
+                    >
+                        <i class="fa-solid fa-check me-2"></i>
+                        Đã ứng tuyển
+                    </button>
+
+                <?php else: ?>
+
+                    <a 
+                        href="/JobCV/index.php?route=jobs/apply&maTinTuyenDung=<?= urlencode($job['MaTinTuyenDung']) ?>"
+                        class="btn btn-warning fw-bold text-dark px-4 py-2"
+                    >
+                        <i class="fa-solid fa-paper-plane me-2"></i>
+                        Ứng Tuyển Ngay
+                    </a>
+
+                <?php endif; ?>
                 <button class="btn btn-outline-light px-3 py-2" title="Lưu việc làm">
                     <i class="fa-regular fa-bookmark"></i>
                 </button>

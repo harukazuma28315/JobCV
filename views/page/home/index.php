@@ -5,7 +5,6 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 $baseUrl = '/JobCV';
-
 include_once __DIR__ . '/../layouts/header.php';
 ?>
 
@@ -28,13 +27,11 @@ include_once __DIR__ . '/../layouts/header.php';
         <div class="row justify-content-center">
             <div class="col-12 col-lg-10">
 
-                <form action="<?= $baseUrl ?>/views/jobs/search.php"
-                      method="GET"
-                      class="p-4 bg-primary-blue rounded-4 shadow-lg">
+                <form action="<?= $baseUrl ?>/index.php"
+                    method="GET"
+                    class="p-4 bg-primary-blue rounded-4 shadow-lg">
 
-                    <!-- 2 dòng input để test dl giả lập -->
-                    <input type="hidden" name="controller" value="job">
-                    <input type="hidden" name="action" value="search">
+                    <input type="hidden" name="route" value="jobs/list">
 
                     <!-- 1: NHẬP TỪ KHÓA  -->
                     <div class="row mb-3 justify-content-center">
@@ -47,7 +44,8 @@ include_once __DIR__ . '/../layouts/header.php';
                                 <input type="text"
                                        name="keyword"
                                        class="form-control border-0 py-2 text-center"
-                                       placeholder="Nhập từ khóa (Vị trí, kỹ năng, tên công ty...)">
+                                       placeholder="Nhập từ khóa (Vị trí, kỹ năng, tên công ty...)"
+                                       value="<?= htmlspecialchars($_GET['keyword'] ?? '', ENT_QUOTES, 'UTF-8') ?>">
                             </div>
                         </div>
                     </div>
@@ -56,29 +54,73 @@ include_once __DIR__ . '/../layouts/header.php';
                     <div class="row g-3 mb-3">
 
                         <!-- Chọn địa điểm -->
-                        <div class="col-12 col-md-6">
+                        <div class="col-12 col-md-4">
                             <select name="location"
                                     class="form-select border-0 py-2 fw-semibold">
-
-                                <option value="" selected>Chọn Địa Điểm</option>
-                                <option value="can-tho">Cần Thơ</option>
-                                <option value="hcm">TP. Hồ Chí Minh</option>
-                                <option value="ha-noi">Hà Nội</option>
-                                <option value="da-nang">Đà Nẵng</option>
-
+                                <option value="">Chọn Địa Điểm</option>
+                                <?php if (!empty($locations)): ?>
+                                    <?php foreach ($locations as $location): ?>
+                                        <?php 
+                                            $selected = (($_GET['location'] ?? '') === $location) ? 'selected' : '';
+                                        ?>
+                                        <option value="<?= htmlspecialchars($location) ?>" <?= $selected ?>>
+                                            <?= htmlspecialchars($location) ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                <?php endif; ?>
                             </select>
                         </div>
 
                         <!-- Chọn ngành nghề -->
-                        <div class="col-12 col-md-6">
+                        <div class="col-12 col-md-4">
                             <select name="category"
                                     class="form-select border-0 py-2 fw-semibold">
+                                <option value="">Chọn Ngành Nghề</option>
+                                <?php if (!empty($categories)): ?>
+                                    <?php foreach ($categories as $category): ?>
 
-                                <option value="" selected>Chọn Ngành Nghề</option>
-                                <option value="it">Công nghệ thông tin</option>
-                                <option value="marketing">Marketing</option>
-                                <option value="finance">Tài chính / Kế toán</option>
-                                <option value="sales">Kinh doanh / Bán hàng</option>
+                                        <?php 
+                                        $selected = (($_GET['category'] ?? '') === $category['MaDanhMuc'])
+                                            ? 'selected'
+                                            : '';
+                                        ?>
+
+                                        <option 
+                                            value="<?= htmlspecialchars($category['MaDanhMuc']) ?>"
+                                            <?= $selected ?>
+                                        >
+                                            <?= htmlspecialchars($category['TenDanhMuc']) ?>
+                                        </option>
+
+                                    <?php endforeach; ?>
+                                <?php endif; ?>
+
+                            </select>
+                        </div>
+                        <!-- Chọn vị trí tuyển dụng -->
+                        <div class="col-12 col-md-4">
+                            <select name="position" class="form-select border-0 py-2 fw-semibold">
+
+                                <option value="">Chọn Vị Trí Tuyển Dụng</option>
+
+                                <?php if (!empty($positions)): ?>
+                                    <?php foreach ($positions as $position): ?>
+
+                                        <?php 
+                                        $selected = (($_GET['position'] ?? '') === $position)
+                                            ? 'selected'
+                                            : '';
+                                        ?>
+
+                                        <option 
+                                            value="<?= htmlspecialchars($position) ?>"
+                                            <?= $selected ?>
+                                        >
+                                            <?= htmlspecialchars($position) ?>
+                                        </option>
+
+                                    <?php endforeach; ?>
+                                <?php endif; ?>
 
                             </select>
                         </div>
@@ -122,13 +164,11 @@ include_once __DIR__ . '/../layouts/header.php';
 
                                 <select name="salary"
                                         class="form-select border-0 py-2 small text-dark fw-semibold">
-
-                                    <option value="" selected>Tất cả mức lương</option>
-                                    <option value="under-10">Dưới 10 triệu</option>
-                                    <option value="10-15">10 - 15 triệu</option>
-                                    <option value="15-20">15 - 20 triệu</option>
-                                    <option value="over-20">Trên 20 triệu</option>
-                                    <option value="negotiable">Thỏa thuận</option>
+                                    <option value="">Tất cả mức lương</option>
+                                    <option value="under-10" <?= (isset($_GET['salary']) && $_GET['salary'] == 'under-10') ? 'selected' : '' ?>>Dưới 10 triệu</option>
+                                    <option value="10-15" <?= (isset($_GET['salary']) && $_GET['salary'] == '10-15') ? 'selected' : '' ?>>10 - 15 triệu</option>
+                                    <option value="15-20" <?= (isset($_GET['salary']) && $_GET['salary'] == '15-20') ? 'selected' : '' ?>>15 - 20 triệu</option>
+                                    <option value="over-20" <?= (isset($_GET['salary']) && $_GET['salary'] == 'over-20') ? 'selected' : '' ?>>Trên 20 triệu</option>
 
                                 </select>
 
@@ -143,13 +183,22 @@ include_once __DIR__ . '/../layouts/header.php';
 
                                 <select name="level"
                                         class="form-select border-0 py-2 small text-dark fw-semibold">
+                                    <option value="">Tất cả cấp bậc</option>
+                                    <option value="Fresher" <?= ($_GET['level'] ?? '') == 'Fresher' ? 'selected' : '' ?>>
+                                        Fresher
+                                    </option>
 
-                                    <option value="" selected>Tất cả cấp bậc</option>
-                                    <option value="intern">Thực tập sinh</option>
-                                    <option value="fresher">Mới tốt nghiệp</option>
-                                    <option value="junior">Nhân viên</option>
-                                    <option value="senior">Trưởng nhóm</option>
-                                    <option value="manager">Quản lý / Giám đốc</option>
+                                    <option value="Junior" <?= ($_GET['level'] ?? '') == 'Junior' ? 'selected' : '' ?>>
+                                        Junior
+                                    </option>
+
+                                    <option value="Middle" <?= ($_GET['level'] ?? '') == 'Middle' ? 'selected' : '' ?>>
+                                        Middle
+                                    </option>
+
+                                    <option value="Senior" <?= ($_GET['level'] ?? '') == 'Senior' ? 'selected' : '' ?>>
+                                        Senior
+                                    </option>
 
                                 </select>
 
@@ -164,12 +213,22 @@ include_once __DIR__ . '/../layouts/header.php';
 
                                 <select name="job_type"
                                         class="form-select border-0 py-2 small text-dark fw-semibold">
+                                    <option value="">Tất cả hình thức</option>
+                                    <option value="Full-time" <?= ($_GET['job_type'] ?? '') == 'Full-time' ? 'selected' : '' ?>>
+                                        Full-time
+                                    </option>
 
-                                    <option value="" selected>Tất cả hình thức</option>
-                                    <option value="onsite">Tại văn phòng</option>
-                                    <option value="remote">Từ xa (Remote)</option>
-                                    <option value="hybrid">Linh hoạt (Hybrid)</option>
-                                    <option value="parttime">Bán thời gian</option>
+                                    <option value="Remote" <?= ($_GET['job_type'] ?? '') == 'Remote' ? 'selected' : '' ?>>
+                                        Remote
+                                    </option>
+
+                                    <option value="Hybrid" <?= ($_GET['job_type'] ?? '') == 'Hybrid' ? 'selected' : '' ?>>
+                                        Hybrid
+                                    </option>
+
+                                    <option value="Part-time" <?= ($_GET['job_type'] ?? '') == 'Part-time' ? 'selected' : '' ?>>
+                                        Part-time
+                                    </option>
 
                                 </select>
 
@@ -184,13 +243,23 @@ include_once __DIR__ . '/../layouts/header.php';
 
                                 <select name="experience"
                                         class="form-select border-0 py-2 small text-dark fw-semibold">
+                                    <option value="">Tất cả kinh nghiệm</option>
 
-                                    <option value="" selected>Tất cả kinh nghiệm</option>
-                                    <option value="no-experience">Không yêu cầu</option>
-                                    <option value="under-1">Dưới 1 năm</option>
-                                    <option value="1-3">1 - 3 năm</option>
-                                    <option value="3-5">3 - 5 năm</option>
-                                    <option value="over-5">Trên 5 năm</option>
+                                    <option value="0" <?= ($_GET['experience'] ?? '') === '0' ? 'selected' : '' ?>>
+                                        Không yêu cầu kinh nghiệm
+                                    </option>
+
+                                    <option value="1-3" <?= ($_GET['experience'] ?? '') === '1-3' ? 'selected' : '' ?>>
+                                        1 - 3 năm
+                                    </option>
+
+                                    <option value="3-5" <?= ($_GET['experience'] ?? '') === '3-5' ? 'selected' : '' ?>>
+                                        3 - 5 năm
+                                    </option>
+
+                                    <option value="5+" <?= ($_GET['experience'] ?? '') === '5+' ? 'selected' : '' ?>>
+                                        Trên 5 năm
+                                    </option>
 
                                 </select>
 
@@ -205,11 +274,9 @@ include_once __DIR__ . '/../layouts/header.php';
 
                                 <select name="posted_date"
                                         class="form-select border-0 py-2 small text-dark fw-semibold">
-
-                                    <option value="" selected>Mọi thời gian</option>
-                                    <option value="24h">Trong 24 giờ</option>
-                                    <option value="1week">Trong 1 tuần</option>
-                                    <option value="1month">Trong 1 tháng</option>
+                                    <option value="">Mọi thời gian</option>
+                                    <option value="24h" <?= (isset($_GET['posted_date']) && $_GET['posted_date'] == '24h') ? 'selected' : '' ?>>Trong 24 giờ</option>
+                                    <option value="1week" <?= (isset($_GET['posted_date']) && $_GET['posted_date'] == '1week') ? 'selected' : '' ?>>Trong 1 tuần</option>
 
                                 </select>
 
@@ -251,82 +318,6 @@ include_once __DIR__ . '/../layouts/header.php';
 
             <?php
 
-            $jobs = [
-
-                [
-                    'title' => 'Senior Software Engineer',
-                    'company' => 'VNG Corporation',
-                    'logo' => 'vng-logo.png',
-                    'loc' => 'Hồ Chí Minh',
-                    'salary' => '1,500 - 2,500 USD',
-                    'desc' => 'Yêu cầu kinh nghiệm Node.js, ReactJS, tư duy lập trình hệ thống tốt...'
-                ],
-
-                [
-                    'title' => 'Marketing Manager',
-                    'company' => 'Google Vietnam',
-                    'logo' => 'google-logo.png',
-                    'loc' => 'Hà Nội',
-                    'salary' => '2,000 - 3,500 USD',
-                    'desc' => 'Lên kế hoạch và thực thi chiến dịch marketing số cho các dòng sản phẩm mới...'
-                ],
-
-                [
-                    'title' => 'Senior Software Engineer',
-                    'company' => 'FPT Software',
-                    'logo' => 'fpt-logo.png',
-                    'loc' => 'Cần Thơ',
-                    'salary' => '1,200 - 2,200 USD',
-                    'desc' => 'Tham gia phát triển các dự án lớn cho đối tác Nhật Bản và Âu Mỹ...'
-                ],
-
-                [
-                    'title' => 'Marketing Manager',
-                    'company' => 'Shopee Vietnam',
-                    'logo' => 'shopee-logo.png',
-                    'loc' => 'Hồ Chí Minh',
-                    'salary' => '1,500 - 2,500 USD',
-                    'desc' => 'Quản lý nhóm vận hành chiến dịch sale lớn hàng tháng trên sàn thương mại điện tử...'
-                ],
-
-                [
-                    'title' => 'UI/UX Designer',
-                    'company' => 'VNG Corporation',
-                    'logo' => 'vng-logo.png',
-                    'loc' => 'Hồ Chí Minh',
-                    'salary' => '1,000 - 1,800 USD',
-                    'desc' => 'Thiết kế trải nghiệm người dùng tối ưu cho các sản phẩm web và di động...'
-                ],
-
-                [
-                    'title' => 'Project Manager',
-                    'company' => 'FPT Software',
-                    'logo' => 'fpt-logo.png',
-                    'loc' => 'Đà Nẵng',
-                    'salary' => '2,500 - 4,000 USD',
-                    'desc' => 'Quản lý tiến độ dự án phát triển phần mềm, chịu trách nhiệm chất lượng bàn giao...'
-                ],
-
-                [
-                    'title' => 'Content Creator',
-                    'company' => 'Shopee Vietnam',
-                    'logo' => 'shopee-logo.png',
-                    'loc' => 'Hà Nội',
-                    'salary' => '800 - 1,500 USD',
-                    'desc' => 'Sáng tạo nội dung video ngắn, kịch bản thu hút phân khúc người dùng trẻ...'
-                ],
-
-                [
-                    'title' => 'Data Analyst',
-                    'company' => 'Google Vietnam',
-                    'logo' => 'google-logo.png',
-                    'loc' => 'Hồ Chí Minh',
-                    'salary' => '1,800 - 3,000 USD',
-                    'desc' => 'Phân tích hành vi người dùng, dự đoán xu hướng tìm kiếm để đề xuất giải pháp...'
-                ]
-
-            ];
-
             foreach ($jobs as $job):
 
             ?>
@@ -351,11 +342,11 @@ include_once __DIR__ . '/../layouts/header.php';
                             <div class="overflow-hidden">
 
                                 <h6 class="fw-bold mb-0 text-truncate">
-                                    <?= $job['title'] ?>
+                                    <?= htmlspecialchars($job['TieuDe']) ?>
                                 </h6>
 
                                 <small class="text-muted text-truncate d-block">
-                                    <?= $job['company'] ?>
+                                    <?= htmlspecialchars($job['TenCongTy']) ?>
                                 </small>
 
                             </div>
@@ -368,18 +359,18 @@ include_once __DIR__ . '/../layouts/header.php';
 
                             <div class="small text-secondary mb-1">
                                 <i class="fa-solid fa-location-dot me-2 text-primary-blue"></i>
-                                <?= $job['loc'] ?>
+                                <?= htmlspecialchars($job['DiaChiLamViec']) ?>
                             </div>
 
                             <div class="small fw-semibold text-success">
                                 <i class="fa-solid fa-money-bill-wave me-2"></i>
-                                <?= $job['salary'] ?>
+                                <?= number_format($job['MucLuong'], 0, ',', '.') ?> VNĐ
                             </div>
 
                         </div>
 
                         <p class="small text-muted mb-4 line-clamp-3">
-                            <?= $job['desc'] ?>
+                            <?= htmlspecialchars($job['MoTaCongViec']) ?>
                         </p>
 
                     </div>
@@ -390,7 +381,7 @@ include_once __DIR__ . '/../layouts/header.php';
 
                         <div class="col-6">
 
-                            <a href="<?= $baseUrl ?>/views/jobs/detail.php"
+                            <a href="<?= $baseUrl ?>/index.php?route=jobs/detail&maTinTuyenDung=<?= urlencode($job['MaTinTuyenDung']) ?>"
                                class="btn btn-outline-primary btn-sm w-100 py-2">
 
                                 Chi Tiết
@@ -402,13 +393,21 @@ include_once __DIR__ . '/../layouts/header.php';
                         <div class="col-6">
 
                             <!-- Gọi hàm kiểm tra quyền khi ứng tuyển -->
+                            <?php if (isset($_SESSION['user_id'])): ?>
 
-                            <button type="button"
-                                    class="btn btn-primary-blue btn-sm w-100 py-2 btn-apply">
+                                <a href="<?= $baseUrl ?>/index.php?route=jobs/apply&maTinTuyenDung=<?= urlencode($job['MaTinTuyenDung']) ?>"
+                                class="btn btn-primary-blue btn-sm w-100 py-2">
+                                    Ứng Tuyển
+                                </a>
 
-                                Ứng Tuyển
+                            <?php else: ?>
 
-                            </button>
+                                <button type="button"
+                                        class="btn btn-primary-blue btn-sm w-100 py-2 btn-apply">
+                                    Ứng Tuyển
+                                </button>
+
+                            <?php endif; ?>
 
                         </div>
 
@@ -419,16 +418,6 @@ include_once __DIR__ . '/../layouts/header.php';
             </div>
 
             <?php endforeach; ?>
-
-        </div>
-
-        <!-- Nút xem thêm -->
-
-        <div class="text-center mt-5">
-
-            <button class="btn btn-primary-blue px-4 py-2 fw-semibold shadow-sm">
-                Xem Thêm Việc Làm
-            </button>
 
         </div>
 
@@ -443,31 +432,35 @@ include_once __DIR__ . '/../layouts/header.php';
 
     <div class="container">
 
-        <!-- Banner đăng ký nhanh -->
+        <?php if (!isset($_SESSION['user_id'])): ?>
 
-        <div class="p-5 rounded-4 text-white mb-5 d-flex align-items-center justify-content-between flex-wrap gap-4"
-             style="background: linear-gradient(135deg, #0b2239 0%, #1a3c5c 100%);">
+            <!-- Banner đăng ký nhanh -->
 
-            <div>
+            <div class="p-5 rounded-4 text-white mb-5 d-flex align-items-center justify-content-between flex-wrap gap-4"
+                style="background: linear-gradient(135deg, #0b2239 0%, #1a3c5c 100%);">
 
-                <h3 class="fw-bold mb-2">
-                    Bạn Đã Sẵn Sàng Nâng Tầm Sự Nghiệp?
-                </h3>
+                <div>
 
-                <p class="mb-0 text-white-50">
-                    Tạo tài khoản ngay hôm nay để nhận thông báo từ nhà tuyển dụng tốt nhất!
-                </p>
+                    <h3 class="fw-bold mb-2">
+                        Bạn Đã Sẵn Sàng Nâng Tầm Sự Nghiệp?
+                    </h3>
+
+                    <p class="mb-0 text-white-50">
+                        Tạo tài khoản ngay hôm nay để nhận thông báo từ nhà tuyển dụng tốt nhất!
+                    </p>
+
+                </div>
+
+                <a href="<?= $baseUrl ?>/index.php?route=auth/register"
+                class="btn btn-warning fw-bold px-4 py-3 text-dark shadow">
+
+                    Đăng Ký Ngay
+
+                </a>
 
             </div>
 
-            <a href="<?= $baseUrl ?>/index.php?route=auth/register"
-               class="btn btn-warning fw-bold px-4 py-3 text-dark shadow">
-
-                Đăng Ký Ngay
-
-            </a>
-
-        </div>
+        <?php endif; ?>
 
         <div class="mb-4 text-center text-md-start">
 
@@ -487,34 +480,6 @@ include_once __DIR__ . '/../layouts/header.php';
 
             <?php
 
-            $companies = [
-
-                [
-                    'name' => 'VNG Corporation',
-                    'sector' => 'Công nghệ hàng đầu',
-                    'desc' => 'Dẫn đầu công nghệ số'
-                ],
-
-                [
-                    'name' => 'Vinamilk',
-                    'sector' => 'Sản xuất sữa',
-                    'desc' => 'Thương hiệu sữa quốc gia'
-                ],
-
-                [
-                    'name' => 'FPT Software',
-                    'sector' => 'Công nghệ số',
-                    'desc' => 'Phần mềm xuất khẩu số 1'
-                ],
-
-                [
-                    'name' => 'Shopee',
-                    'sector' => 'Thương mại điện tử',
-                    'desc' => 'Chợ mua sắm lớn nhất'
-                ]
-
-            ];
-
             foreach ($companies as $comp):
 
             ?>
@@ -531,16 +496,19 @@ include_once __DIR__ . '/../layouts/header.php';
                     </div>
 
                     <h5 class="fw-bold mb-1">
-                        <?= $comp['name'] ?>
+                        <?= htmlspecialchars($comp['TenCongTy']) ?>
                     </h5>
 
                     <span class="badge bg-light text-primary-blue mb-2">
-                        <?= $comp['sector'] ?>
+                        <?= htmlspecialchars($comp['LinhVuc']) ?>
                     </span>
 
                     <p class="small text-muted mb-0">
-                        <?= $comp['desc'] ?>
+                        <?= htmlspecialchars($comp['MoTa']) ?>
                     </p>
+                    <small class="text-muted">
+                        <?= $comp['SoLuongTin'] ?> tin tuyển dụng
+                    </small>
 
                 </div>
 
@@ -576,61 +544,22 @@ include_once __DIR__ . '/../layouts/header.php';
         <div class="row g-3">
 
             <?php
-
-            $cats = [
-
-                [
-                    'icon' => 'fa-laptop-code',
-                    'name' => 'IT / Phần mềm',
-                    'jobs' => '500+ Jobs'
-                ],
-
-                [
-                    'icon' => 'fa-bullhorn',
-                    'name' => 'Marketing',
-                    'jobs' => '300+ Jobs'
-                ],
-
-                [
-                    'icon' => 'fa-coins',
-                    'name' => 'Tài chính / Kế toán',
-                    'jobs' => '200+ Jobs'
-                ],
-
-                [
-                    'icon' => 'fa-chart-simple',
-                    'name' => 'Phân tích dữ liệu',
-                    'jobs' => '150+ Jobs'
-                ],
-
-                [
-                    'icon' => 'fa-handshake',
-                    'name' => 'Chăm sóc khách hàng',
-                    'jobs' => '250+ Jobs'
-                ],
-
-                [
-                    'icon' => 'fa-pen-nib',
-                    'name' => 'Thiết kế đồ họa',
-                    'jobs' => '280+ Jobs'
-                ],
-
-                [
-                    'icon' => 'fa-box-open',
-                    'name' => 'Logistics / Vận chuyển',
-                    'jobs' => '230+ Jobs'
-                ],
-
-                [
-                    'icon' => 'fa-hotel',
-                    'name' => 'Du lịch / Khách sạn',
-                    'jobs' => '210+ Jobs'
-                ]
-
+            $icons = [
+                'Công nghệ thông tin' => 'fa-laptop-code',
+                'Marketing' => 'fa-bullhorn',
+                'Tài chính / Kế toán' => 'fa-coins',
+                'Kinh doanh / Bán hàng' => 'fa-handshake',
+                'Thiết kế' => 'fa-pen-nib',
+                'Nhân sự' => 'fa-users',
+                'Chăm sóc khách hàng' => 'fa-headset',
+                'Logistics / Xuất nhập khẩu' => 'fa-truck-fast',
+                'Kỹ thuật / Cơ khí' => 'fa-gears',
+                'Y tế / Dược' => 'fa-kit-medical'
             ];
+                
+            foreach ($categories as $cat):
 
-            foreach ($cats as $cat):
-
+                            $icon = $icons[$cat['TenDanhMuc']] ?? 'fa-briefcase';
             ?>
 
             <div class="col-12 col-sm-6 col-md-4 col-lg-3">
@@ -639,18 +568,18 @@ include_once __DIR__ . '/../layouts/header.php';
 
                     <div class="bg-primary-blue text-white rounded p-3 me-3">
 
-                        <i class="fa-solid <?= $cat['icon'] ?> fs-4"></i>
+                        <i class="fa-solid <?= $icon ?> fs-4"></i>
 
                     </div>
 
                     <div>
 
                         <h6 class="fw-bold mb-0">
-                            <?= $cat['name'] ?>
+                            <?= htmlspecialchars($cat['TenDanhMuc']) ?>
                         </h6>
 
                         <small class="text-muted">
-                            <?= $cat['jobs'] ?>
+                            <?= $cat['SoLuongTin'] ?> việc làm
                         </small>
 
                     </div>

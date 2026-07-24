@@ -606,13 +606,123 @@ require_once __DIR__ . '/header.php';
 
                         <hr>
 
-                        <div class="alert alert-success">
+                        <div class="card border-success">
 
-                            <i class="fa-solid fa-file-pdf me-2"></i>
+                            <div class="card-body">
 
-                            <strong>File CV:</strong>
+                                <h5 class="fw-bold text-success mb-3">
 
-                            <?= htmlspecialchars($cv['TenFileCV']) ?>
+                                    <i class="fa-solid fa-file-circle-check me-2"></i>
+
+                                    File CV đã tải lên
+
+                                </h5>
+
+                                <p class="mb-3">
+
+                                    <i class="fa-solid fa-file me-2"></i>
+
+                                    <?= htmlspecialchars($cv['TenFileCV']) ?>
+
+                                </p>
+
+                                <div class="d-flex gap-2 flex-wrap">
+
+                                    <!-- TẢI FILE XUỐNG -->
+
+                                    <a
+                                        href="<?= $baseUrl ?>/index.php?route=cv/download&maCV=<?= urlencode($cv['MaCV']) ?>"
+                                        class="btn btn-primary"
+                                    >
+
+                                        <i class="fa-solid fa-download me-2"></i>
+
+                                        Tải CV xuống
+
+                                    </a>
+
+
+                                    <!-- THAY FILE -->
+
+                                    <button
+                                        type="button"
+                                        class="btn btn-warning"
+                                        onclick="document.getElementById('changeFileForm').style.display='block'"
+                                    >
+
+                                        <i class="fa-solid fa-rotate me-2"></i>
+
+                                        Thay đổi file
+
+                                    </button>
+
+                                </div>
+
+
+                                <!-- FORM THAY FILE -->
+
+                                <div
+                                    id="changeFileForm"
+                                    class="mt-4"
+                                    style="display: none;"
+                                >
+
+                                    <form
+                                        action="<?= $baseUrl ?>/index.php?route=cv/change-file"
+                                        method="POST"
+                                        enctype="multipart/form-data"
+                                    >
+
+                                        <input
+                                            type="hidden"
+                                            name="maCV"
+                                            value="<?= htmlspecialchars($cv['MaCV']) ?>"
+                                        >
+
+                                        <label class="form-label fw-bold">
+
+                                            Chọn file CV mới
+
+                                        </label>
+
+                                        <input
+                                            type="file"
+                                            name="file"
+                                            class="form-control mb-3"
+                                            accept=".pdf,.doc,.docx"
+                                            required
+                                        >
+
+                                        <div class="d-flex gap-2">
+
+                                            <button
+                                                type="submit"
+                                                class="btn btn-success"
+                                            >
+
+                                                <i class="fa-solid fa-upload me-2"></i>
+
+                                                Upload file mới
+
+                                            </button>
+
+                                            <button
+                                                type="button"
+                                                class="btn btn-secondary"
+                                                onclick="document.getElementById('changeFileForm').style.display='none'"
+                                            >
+
+                                                Hủy
+
+                                            </button>
+
+                                        </div>
+
+                                    </form>
+
+                                </div>
+
+                            </div>
 
                         </div>
 

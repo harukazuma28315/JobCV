@@ -119,17 +119,6 @@ class CVController
 
         ];
 
-        if (!$this->validateCVData($cvData)) {
-
-            echo "
-                <script>
-                    alert('Dữ liệu CV không hợp lệ.');
-                    window.history.back();
-                </script>
-            ";
-
-            exit;
-        }
 
         $success = $this->cvModel->create($cvData);
 
@@ -167,9 +156,30 @@ class CVController
             exit;
         }
 
+        // Lấy mã CV từ form
+        $maCV = trim($post['maCV'] ?? '');
+
+        if (empty($maCV)) {
+            exit('Mã CV không hợp lệ.');
+        }
+
+        // Lấy CV trong database
+        $cv = $this->cvModel->getById($maCV);
+
+        if (!$cv) {
+            exit('Không tìm thấy CV.');
+        }
+
+        // Kiểm tra CV có đúng của user đang đăng nhập không
+        if ($cv['MaUngVien'] != $_SESSION['user_id']) {
+            exit('Bạn không có quyền chỉnh sửa CV này.');
+        }
+
         $cvData = [
 
-            'maCV' => $post['maCV'] ?? '',
+            'maCV' => $maCV,
+
+            'maUngVien' => $_SESSION['user_id'],
 
             'tieuDe' => trim($post['tieuDe'] ?? ''),
 
@@ -211,6 +221,113 @@ class CVController
                 <script>
 
                     alert('Không thể cập nhật CV.');
+
+                    window.history.back();
+
+                </script>
+            ";
+        }
+    }
+
+    public function changeFile($maCV, $file)
+    {
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: /JobCV/index.php?route=auth/login');
+            exit;
+        }
+
+        if (!$file || $file['error'] !== 0) {
+            exit('File không hợp lệ.');
+        }
+
+        $cv = $this->cvModel->getById($maCV);
+
+        if (!$cv) {
+            exit('Không tìm thấy CV.');
+        }
+
+        // Kiểm tra CV có đúng user đang đăng nhập không
+        if ($cv['MaUngVien'] != $_SESSION['user_id']) {
+            exit('Bạn không có quyền chỉnh sửa CV này.');
+        }
+
+        $extension = strtolower(
+            pathinfo($file['name'], PATHINFO_EXTENSION)
+        );
+
+        $allowedExtensions = [
+            'pdf',
+            'doc',
+            'docx'
+        ];
+
+        if (!in_array($extension, $allowedExtensions)) {
+            exit('Chỉ hỗ trợ file PDF, DOC hoặc DOCX.');
+        }
+
+
+        $oldPath = null;
+
+        if (!empty($cv['DuongDanFileCV'])) {
+            $oldPath = __DIR__ . '/../' . $cv['DuongDanFileCV'];
+        }
+
+
+        $fileName = $maCV . '_' . time() . '.' . $extension;
+
+        $uploadPath = __DIR__ . '/../uploads/' . $fileName;
+
+
+
+        if (!move_uploaded_file($file['tmp_name'], $uploadPath)) {
+            exit('Không thể upload file mới.');
+        }
+
+
+
+        $fileData = [
+
+            'maCV' => $maCV,
+
+            'tenFileCV' => $fileName,
+
+            'duongDanFileCV' => 'uploads/' . $fileName,
+
+            'loaiFile' => $extension
+
+        ];
+
+        $success = $this->cvModel->updateFile($fileData);
+
+        if ($success) {
+
+
+            if ($oldPath && file_exists($oldPath)) {
+                unlink($oldPath);
+            }
+
+            echo "
+                <script>
+
+                    alert('Thay đổi file CV thành công!');
+
+                    window.location.href =
+                        '/JobCV/index.php?route=cv/create';
+
+                </script>
+            ";
+
+        } else {
+
+
+            if (file_exists($uploadPath)) {
+                unlink($uploadPath);
+            }
+
+            echo "
+                <script>
+
+                    alert('Không thể cập nhật file CV.');
 
                     window.history.back();
 
@@ -338,7 +455,7 @@ class CVController
                     alert('Tải CV lên thành công!');
 
                     window.location.href =
-                        '/JobCV/index.php?route=cv/detail&maCV={$maCV}';
+                        '/JobCV/index.php?route=cv/create';
 
                 </script>
             ";

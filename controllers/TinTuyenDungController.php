@@ -1,6 +1,8 @@
 <?php
 
 require_once __DIR__ . "/../models/TinTuyenDung.php";
+require_once __DIR__ . '/../models/JobApply.php';
+require_once __DIR__ . '/../models/CV.php';
 
 /**
  * Controller quản lý tin tuyển dụng.
@@ -8,11 +10,16 @@ require_once __DIR__ . "/../models/TinTuyenDung.php";
 class TinTuyenDungController
 {
 	private $tinTuyenDungModel;
+	private $jobApplyModel;
+	private $cvModel;
 
 	public function __construct()
 	{
 		$this->tinTuyenDungModel = new TinTuyenDung();
+		$this->jobApplyModel = new JobApply();
+		$this->cvModel = new CV();
 	}
+	
 
 	/**
 	 * Lấy danh sách tin tuyển dụng.
@@ -35,11 +42,13 @@ class TinTuyenDungController
 			'minSalary' => '',
 			'maxSalary' => ''
 		];
-
 		$categories = $this->tinTuyenDungModel->getCategories();
 
 		// Lấy danh sách vị trí duy nhất từ database
 		$positions = $this->tinTuyenDungModel->getPositions();
+
+		// Lấy danh sách địa điểm duy nhất từ database
+		$locations = $this->tinTuyenDungModel->getLocations();
 
 		switch ($salary) {
 			case 'under-10':
@@ -109,6 +118,19 @@ class TinTuyenDungController
 			http_response_code(404);
 			echo "404 - Không tìm thấy tin tuyển dụng.";
 			exit;
+		}
+		$hasApplied = false;
+
+		if (isset($_SESSION['user_id'])) {
+
+			$cv = $this->cvModel->getByUngVien($_SESSION['user_id']);
+
+			if ($cv) {
+				$hasApplied = $this->jobApplyModel->hasApplied(
+					$cv['MaCV'],
+					$maTinTuyenDung
+				);
+			}
 		}
 
 		// Nạp giao diện chi tiết

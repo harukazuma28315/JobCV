@@ -66,7 +66,7 @@ require_once __DIR__ . '/../layouts/header.php';
                                     </div>
 
                                     <a
-                                        href="/JobCV/index.php?route=cv/detail&maCV=<?= urlencode($cv['MaCV']) ?>"
+                                        href="/JobCV/index.php?route=cv/create"
                                         class="btn btn-outline-primary btn-sm"
                                     >
                                         Xem CV

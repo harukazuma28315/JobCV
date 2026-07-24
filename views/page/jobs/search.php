@@ -1,6 +1,16 @@
 <!-- views/jobs/search.php -->
 <?php
 $baseUrl = '/JobCV';
+
+$keyword = $_GET['keyword'] ?? '';
+$location = $_GET['location'] ?? '';
+$category = $_GET['category'] ?? '';
+$salary = $_GET['salary'] ?? '';
+$level = $_GET['level'] ?? '';
+$jobType = $_GET['job_type'] ?? '';
+$experience = $_GET['experience'] ?? '';
+$postedDate = $_GET['posted_date'] ?? '';
+
 include_once __DIR__ . '/../layouts/header.php';
 ?>
 
@@ -33,21 +43,19 @@ include_once __DIR__ . '/../layouts/header.php';
                         <select name="location" class="form-select border-0 py-2 fw-semibold">
                             <option value="">Chọn Địa Điểm</option>
 
-                            <?php 
-                            $locations = [
-                                'Cần Thơ' => 'Cần Thơ',
-                                'Hồ Chí Minh' => 'Hồ Chí Minh',
-                                'Hà Nội' => 'Hà Nội',
-                                'Đà Nẵng' => 'Đà Nẵng'
-                            ];
+                            <?php if (!empty($locations)): ?>
+                                <?php foreach ($locations as $location): ?>
+                                    <?php 
+                                        $selected = (($_GET['location'] ?? '') === $location) ? 'selected' : '';
+                                    ?>
+                                    <option value="<?= htmlspecialchars($location) ?>" <?= $selected ?>>
+                                        <?= htmlspecialchars($location) ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
 
-                            foreach ($locations as $val => $lbl): 
-                                $selected = (($_GET['location'] ?? '') === $val) ? 'selected' : '';
-                            ?>
-                                <option value="<?= htmlspecialchars($val) ?>" <?= $selected ?>>
-                                    <?= htmlspecialchars($lbl) ?>
-                                </option>
-                            <?php endforeach; ?>
+                            </select>
+
                         </select>
                     </div>
 
