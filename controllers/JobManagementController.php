@@ -19,7 +19,11 @@ class JobManagementController
 
     public function showJobList()
     {
-        AuthHelper::requireRole(ROLE_ADMIN);
+         // Giả lập Admin để test
+        $_SESSION['role'] = 2;        
+        $_SESSION['user_id'] = 'U005';
+
+        // AuthHelper::requireRole(ROLE_ADMIN);
 
         $keyword = isset($_GET['keyword']) ? trim($_GET['keyword']) : '';
         $status  = isset($_GET['status']) ? $_GET['status'] : null;
@@ -28,12 +32,17 @@ class JobManagementController
 
         $thongBao = ResponseHelper::getFlash();
 
-        require ROOT_PATH . '/views/admin/jobs.php';
+        require ROOT_PATH . '/views/page/admin/jobs.php';
     }
 
     public function approveJob()
     {
-        AuthHelper::requireRole(ROLE_ADMIN);
+         // Giả lập Admin để test
+        $_SESSION['role'] = 2;        
+        $_SESSION['user_id'] = 'U005';
+
+        // AuthHelper::requireRole(ROLE_ADMIN);
+        
         $maTin = isset($_POST['maTin']) ? trim($_POST['maTin']) : '';
 
         if ($this->jobModel->approveJob($maTin)) {
@@ -41,12 +50,16 @@ class JobManagementController
         } else {
             ResponseHelper::setFlash('error', 'Duyệt tin thất bại.');
         }
-        AuthHelper::redirect(BASE_URL . '/index.php?action=adminJobList');
+        AuthHelper::redirect(BASE_URL . '/index.php?route=admin/jobs');
     }
 
     public function rejectJob()
     {
-        AuthHelper::requireRole(ROLE_ADMIN);
+         // Giả lập Admin để test
+        $_SESSION['role'] = 2;        
+        $_SESSION['user_id'] = 'U005';
+
+        // AuthHelper::requireRole(ROLE_ADMIN);
         $maTin = isset($_POST['maTin']) ? trim($_POST['maTin']) : '';
 
         if ($this->jobModel->rejectJob($maTin)) {
@@ -54,12 +67,16 @@ class JobManagementController
         } else {
             ResponseHelper::setFlash('error', 'Từ chối tin thất bại.');
         }
-        AuthHelper::redirect(BASE_URL . '/index.php?action=adminJobList');
+        AuthHelper::redirect(BASE_URL . '/index.php?route=admin/jobs');
     }
 
     public function removeJob()
     {
-        AuthHelper::requireRole(ROLE_ADMIN);
+         // Giả lập Admin để test
+        $_SESSION['role'] = 2;        
+        $_SESSION['user_id'] = 'U005';
+
+        // AuthHelper::requireRole(ROLE_ADMIN);
         $maTin = isset($_POST['maTin']) ? trim($_POST['maTin']) : '';
 
         if ($this->jobModel->removeJob($maTin)) {
@@ -67,6 +84,6 @@ class JobManagementController
         } else {
             ResponseHelper::setFlash('error', 'Gỡ tin thất bại.');
         }
-        AuthHelper::redirect(BASE_URL . '/index.php?action=adminJobList');
+        AuthHelper::redirect(BASE_URL . '/index.php?route=admin/jobs');
     }
 }

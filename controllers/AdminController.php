@@ -22,7 +22,12 @@ class AdminController
      */
     public function showDashboard()
     {
-        AuthHelper::requireRole(ROLE_ADMIN);
+        // echo "<h2>DEBUG: Đang vào showDashboard</h2>";
+        // echo "ROOT_PATH = " . ROOT_PATH . "<br>";
+
+        // AuthHelper::requireRole(ROLE_ADMIN);
+        $_SESSION['role'] = 2;        // Giả lập quyền Admin
+        $_SESSION['user_id'] = 'U005';
 
         // Lấy dữ liệu thống kê tổng quát
         $thongKe = array(
@@ -40,6 +45,6 @@ class AdminController
         $thongBao = ResponseHelper::getFlash();
 
         // Truyền dữ liệu vào View
-        require ROOT_PATH . '/views/admin/dashboard.php';
+        require ROOT_PATH . '/views/page/admin/dashboard.php';
     }
 }

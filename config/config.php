@@ -25,7 +25,7 @@ define('ROOT_PATH', dirname(__DIR__));
 
 // Đường dẫn URL gốc trên trình duyệt. 
 // TODO: Sửa lại cho đúng tên thư mục khi triển khai project thật.
-define('BASE_URL', '/test/Module5_UngTuyenVaQuanLyHoSo');
+define('BASE_URL', '/JobCV');
 
 // ---------- Cấu hình upload Cover Letter ----------
 define('UPLOAD_COVER_LETTER_DIR', ROOT_PATH . '/uploads/coverLetter/');

@@ -9,6 +9,7 @@ require_once __DIR__ . '/config/config.php';
 require_once __DIR__ . '/config/db.php';
 
 require_once __DIR__ . '/controllers/AdminController.php';
+require_once __DIR__ . '/controllers/CategoryController.php';
 require_once __DIR__ . '/controllers/ApplicationController.php';
 require_once __DIR__ . '/controllers/CVController.php';
 require_once __DIR__ . '/controllers/GoogleAuthController.php';
@@ -197,6 +198,102 @@ $routes = [
 	// ADMIN
 	// =========================
 
+<<<<<<< HEAD
+	'admin/dashboard' => [
+		'controller' => 'AdminController',
+		'method' => 'showDashboard',
+		'constructor' => 'default'
+	],
+
+	'admin/users' => [
+		'controller' => 'UserManagementController',
+		'method' => 'showUserList',
+		'constructor' => 'default'
+	],
+
+	'admin/users/lock' => [
+		'controller' => 'UserManagementController',
+		'method' => 'lockUser',
+		'constructor' => 'default'
+	],
+
+	'admin/users/unlock' => [
+		'controller' => 'UserManagementController',
+		'method' => 'unlockUser',
+		'constructor' => 'default'
+	],
+
+	'admin/users/approve' => [
+		'controller' => 'UserManagementController',
+		'method' => 'approveUser',
+		'constructor' => 'default'
+	],
+
+	'admin/jobs' => [
+		'controller' => 'JobManagementController',
+		'method' => 'showJobList',
+		'constructor' => 'default'
+	],
+
+	'admin/jobs/approve' => [
+		'controller' => 'JobManagementController',
+		'method' => 'approveJob',
+		'constructor' => 'default'
+	],
+
+	'admin/jobs/reject' => [
+		'controller' => 'JobManagementController',
+		'method' => 'rejectJob',
+		'constructor' => 'default'
+	],
+
+	'admin/jobs/remove' => [
+		'controller' => 'JobManagementController',
+		'method' => 'removeJob',
+		'constructor' => 'default'
+	],
+	// Route quản lý danh mục (ngành nghề, địa điểm)
+	'admin/categories' => [
+    'controller' => 'CategoryController',
+    'method' => 'showCategories',
+    'constructor' => 'default'
+	],
+	// Thêm route delete danh mục
+	'admin/categories/delete' => [
+		'controller' => 'CategoryController',
+		'method' => 'deleteCategory',
+		'constructor' => 'default'
+	],
+
+	// Thêm route add danh mục
+	'admin/categories/add' => [
+		'controller' => 'CategoryController',
+		'method' => 'addCategory',
+		'constructor' => 'default'
+	],
+	//Thêm route update danh mục
+	'admin/categories/update' => [         
+        'controller' => 'CategoryController',
+        'method' => 'updateCategory',
+        'constructor' => 'default'
+    ],
+	//forgot password
+	'auth/forgot-password-submit' => [
+        'controller' => 'ForgotPasswordController',
+        'method' => 'handleRequest',
+        'constructor' => 'database'
+    ],
+
+	// =========================
+    // XÁC THỰC OTP ĐĂNG KÝ
+    // =========================
+	'auth/send-otp' => [
+        'controller' => 'OtpController',
+        'method' => 'handleRequest',
+        'constructor' => 'database'
+    ],
+=======
+>>>>>>> 6314ee3af0627145a0073db051b45661dea19941
 ];
 
 // ==========================================================
