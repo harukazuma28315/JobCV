@@ -42,7 +42,7 @@ $resetEmail = $_SESSION['user_email'] ?? $profileData['email'] ?? '';
                 <span class="badge bg-light text-primary-blue border fw-semibold px-3 py-2 mb-4">Ứng viên</span>
 
                 <div class="nav flex-column nav-pills text-start gap-2" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-                    <a href="list_cv.php" class="nav-link py-3 px-3 d-flex align-items-center gap-3 border-0 text-decoration-none">
+                    <a href="index.php?route=cv/create" class="nav-link py-3 px-3 d-flex align-items-center gap-3 border-0 text-decoration-none">
                         <i class="fa-solid fa-file-pdf text-danger fs-5"></i>
                         <span>Quản lý hồ sơ & CV</span>
                     </a>

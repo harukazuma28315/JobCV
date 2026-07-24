@@ -118,6 +118,29 @@ $routes = [
 		'method' => 'handleUpdateProfile',
 		'constructor' => 'database'
 	],
+	'cv/create' => [
+		'controller' => 'CVController',
+		'method' => 'createPage',
+		'constructor' => 'default'
+	],
+
+	'cv/create-submit' => [
+		'controller' => 'CVController',
+		'method' => 'createSubmit',
+		'constructor' => 'default',
+		'parameters' => [
+			'post'
+		]
+	],
+
+	'cv/upload-submit' => [
+		'controller' => 'CVController',
+		'method' => 'uploadSubmit',
+		'constructor' => 'default',
+		'parameters' => [
+			'file'
+		]
+	],
 
 	// =========================
 	// TIN TUYỂN DỤNG

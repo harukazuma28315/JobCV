@@ -67,6 +67,243 @@ class CVController
         return $this->cvModel->create($cvData);
     }
     /**
+     * Hiển thị trang tạo CV
+     */
+    public function createPage()
+    {
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: /JobCV/index.php?route=auth/login');
+            exit;
+        }
+
+        $maUngVien = $_SESSION['user_id'];
+
+        $cv = $this->cvModel->getByUngVien($maUngVien);
+
+        require_once __DIR__ . '/../views/page/layouts/createcv.php';
+    }
+
+    /**
+     * Lưu CV nhập thủ công
+     */
+    public function createSubmit($post)
+    {
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: /JobCV/index.php?route=auth/login');
+            exit;
+        }
+
+        $maUngVien = $_SESSION['user_id'];
+
+        $cvData = [
+
+            'maCV' => 'CV' . time(),
+
+            'maUngVien' => $maUngVien,
+
+            'tieuDe' => trim($post['tieuDe'] ?? ''),
+
+            'kyNang' => trim($post['kyNang'] ?? ''),
+
+            'soThich' => trim($post['soThich'] ?? ''),
+
+            'mucTieu' => trim($post['mucTieu'] ?? ''),
+
+            'trangThai' => 1,
+
+            'viTriMongMuon' => trim($post['viTriMongMuon'] ?? ''),
+
+            'email' => trim($post['email'] ?? ''),
+
+            'sdt' => trim($post['sdt'] ?? '')
+
+        ];
+
+        if (!$this->validateCVData($cvData)) {
+
+            echo "
+                <script>
+                    alert('Dữ liệu CV không hợp lệ.');
+                    window.history.back();
+                </script>
+            ";
+
+            exit;
+        }
+
+        $success = $this->cvModel->create($cvData);
+
+        if ($success) {
+
+            echo "
+                <script>
+
+                    alert('Tạo CV thành công!');
+
+                    window.location.href =
+                        '/JobCV/index.php?route=cv/create';
+
+                </script>
+            ";
+
+        } else {
+
+            echo "
+                <script>
+
+                    alert('Không thể tạo CV.');
+
+                    window.history.back();
+
+                </script>
+            ";
+
+        }
+    }
+
+    /**
+     * Upload CV cá nhân
+     */
+    public function uploadSubmit($file)
+    {
+        if (!isset($_SESSION['user_id'])) {
+
+            header(
+                'Location: /JobCV/index.php?route=auth/login'
+            );
+
+            exit;
+        }
+
+
+        if (!$file || $file['error'] !== 0) {
+
+            echo "
+                <script>
+
+                    alert('File upload không hợp lệ.');
+
+                    window.history.back();
+
+                </script>
+            ";
+
+            exit;
+        }
+
+
+        $extension = strtolower(
+            pathinfo(
+                $file['name'],
+                PATHINFO_EXTENSION
+            )
+        );
+
+
+        $allowed = [
+
+            'pdf',
+            'doc',
+            'docx'
+
+        ];
+
+
+        if (!in_array($extension, $allowed)) {
+
+            echo "
+                <script>
+
+                    alert('Chỉ hỗ trợ file PDF, DOC hoặc DOCX.');
+
+                    window.history.back();
+
+                </script>
+            ";
+
+            exit;
+        }
+
+
+        $maCV = 'CV' . time();
+
+
+        $cvData = [
+
+            'maCV' => $maCV,
+
+            'maUngVien' => $_SESSION['user_id'],
+
+            'tieuDe' => 'CV cá nhân - ' . $_SESSION['user_name'],
+
+            'kyNang' => '',
+
+            'soThich' => '',
+
+            'mucTieu' => '',
+
+            'trangThai' => 1,
+
+            'viTriMongMuon' => '',
+
+            'email' => $_SESSION['user_email'],
+
+            'sdt' => ''
+
+        ];
+
+
+        $created = $this->cvModel->create($cvData);
+
+
+        if (!$created) {
+
+            die('Không thể tạo CV.');
+
+        }
+
+
+        $success = $this->uploadCV(
+
+            $maCV,
+
+            $file
+
+        );
+
+
+        if ($success) {
+
+            echo "
+                <script>
+
+                    alert('Tải CV lên thành công!');
+
+                    window.location.href =
+                        '/JobCV/index.php?route=cv/detail&maCV={$maCV}';
+
+                </script>
+            ";
+
+        } else {
+
+            $this->cvModel->delete($maCV);
+
+
+            echo "
+                <script>
+
+                    alert('Không thể tải file lên.');
+
+                    window.history.back();
+
+                </script>
+            ";
+
+        }
+    }
+
+    /**
      * Cập nhật CV.
      *
      * @param array $cvData
