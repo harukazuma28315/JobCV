@@ -24,7 +24,7 @@ class AuthHelper
 			session_start();
 		}
 
-		if (empty($_SESSION['MaUser'])) {
+		if (empty($_SESSION['user_id'])) {
 			ResponseHelper::setFlash('error', 'Vui long dang nhap de tiep tuc.');
 			self::redirect(BASE_URL . '/login.php');
 		}
@@ -42,7 +42,7 @@ class AuthHelper
 
 		$allowedRoles = is_array($roles) ? $roles : array($roles);
 
-		if (!in_array((int) $_SESSION['Role'], $allowedRoles, true)) {
+		if (!in_array((int) $_SESSION['role'], $allowedRoles, true)) {
 			ResponseHelper::setFlash('error', 'Ban khong co quyen truy cap chuc nang nay.');
 			self::redirect(BASE_URL . '/index.php');
 		}
@@ -67,7 +67,7 @@ class AuthHelper
 	 */
 	public static function getCurrentUserId()
 	{
-		return isset($_SESSION['MaUser']) ? $_SESSION['MaUser'] : null;
+		return isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
 	}
 
 	/**
@@ -77,6 +77,6 @@ class AuthHelper
 	 */
 	public static function getCurrentRole()
 	{
-		return isset($_SESSION['Role']) ? (int) $_SESSION['Role'] : null;
+		return isset($_SESSION['role']) ? (int) $_SESSION['role'] : null;
 	}
 }

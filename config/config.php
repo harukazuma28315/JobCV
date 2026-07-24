@@ -43,12 +43,22 @@ $GLOBALS['ALLOWED_COVER_LETTER_MIME'] = array(
 
 // ---------- Cấu hình gửi mail (PHPMailer - SMTP) ----------
 // TODO: Thay thông tin SMTP thật của nhóm (Gmail + App Password)
+// ---------- Cấu hình gửi mail (PHPMailer - SMTP) ----------
 define('MAIL_SMTP_HOST', 'smtp.gmail.com');
 define('MAIL_SMTP_PORT', 587);
 define('MAIL_SMTP_USERNAME', 'mailnhomjobcv2005@gmail.com');
-define('MAIL_SMTP_PASSWORD', 'uyux pvvd htlx lquv');
+define('MAIL_SMTP_PASSWORD', 'uyux pvvd htlx lquv');   // App Password
 define('MAIL_FROM_ADDRESS', 'mailnhomjobcv2005@gmail.com');
 define('MAIL_FROM_NAME', 'Hệ Thống Tuyển Dụng');
+
+// Tùy chọn bổ sung (giúp debug và tránh lỗi TLS)
+define('MAIL_SMTP_OPTIONS', [
+    'ssl' => [
+        'verify_peer' => false,
+        'verify_peer_name' => false,
+        'allow_self_signed' => true
+    ]
+]);
 
 // ---------- Vai trò người dùng (Role) ----------
 define('ROLE_UNGVIEN', 0);

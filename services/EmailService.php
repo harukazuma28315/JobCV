@@ -155,6 +155,8 @@ class EmailService
 
 		try {
 			$mail->isSMTP();
+			$mail->SMTPDebug = 2;                    // Bật debug SMTP (0 = tắt, 2 = chi tiết)
+			$mail->Debugoutput = 'error_log';        // Ghi vào error log
 
 			$mail->Host = MAIL_SMTP_HOST;
 			$mail->SMTPAuth = true;
@@ -162,8 +164,8 @@ class EmailService
 			$mail->Password = MAIL_SMTP_PASSWORD;
 			$mail->SMTPSecure = 'tls';
 			$mail->Port = MAIL_SMTP_PORT;
-			$mail->CharSet = 'UTF-8';
 
+			$mail->CharSet = 'UTF-8';
 			$mail->setFrom(MAIL_FROM_ADDRESS, MAIL_FROM_NAME);
 			$mail->addAddress($emailNguoiNhan, $tenNguoiNhan);
 
@@ -173,11 +175,16 @@ class EmailService
 
 			$mail->send();
 
+			error_log("Gửi email THÀNH CÔNG tới: " . $emailNguoiNhan);
 			return true;
-		} catch (Exception $e) {
-			// Chỉ ghi log, không throw ra ngoài
-			error_log('Gui email that bai: ' . $mail->ErrorInfo);
 
+		} catch (Exception $e) {
+			error_log('=== GỬI EMAIL THẤT BẠI ===');
+			error_log('Lỗi: ' . $e->getMessage());
+			error_log('Mail ErrorInfo: ' . $mail->ErrorInfo);
+			error_log('Host: ' . MAIL_SMTP_HOST);
+			error_log('Username: ' . MAIL_SMTP_USERNAME);
+			error_log('From: ' . MAIL_FROM_ADDRESS);
 			return false;
 		}
 	}

@@ -254,7 +254,24 @@ $routes = [
 	// =========================
 	// NHÀ TUYỂN DỤNG - QUẢN LÝ ỨNG VIÊN
 	// =========================
+	'recruiter/list' => [
+        'controller' => 'RecruiterController',
+        'method' => 'showList',
+        'constructor' => 'default'
+    ],
 
+    'recruiter/detail' => [
+        'controller' => 'RecruiterController',
+        'method' => 'showDetail',
+        'constructor' => 'default',
+        'parameters' => ['maHS']
+    ],
+
+    'recruiter/update-status' => [
+        'controller' => 'RecruiterController',
+        'method' => 'updateStatus',
+        'constructor' => 'default'
+    ],
 
 
 	// =========================
