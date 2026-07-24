@@ -24,6 +24,7 @@ require_once __DIR__ . '/controllers/TinTuyenDungController.php';
 require_once __DIR__ . '/controllers/UserManagementController.php';
 require_once __DIR__ . '/controllers/ForgotPasswordController.php';
 require_once __DIR__ . '/controllers/OtpController.php';
+require_once __DIR__ . '/controllers/JobApplyController.php';
 
 // ==========================================================
 // ROUTE
@@ -118,82 +119,6 @@ $routes = [
 		'constructor' => 'database'
 	],
 
-
-	// =========================
-	// CV
-	// =========================
-
-	'cv/list' => [
-		'controller' => 'CVController',
-		'method' => 'index',
-		'constructor' => 'default'
-	],
-
-	'cv/detail' => [
-		'controller' => 'CVController',
-		'method' => 'detail',
-		'constructor' => 'default',
-		'parameters' => [
-			'maCV'
-		]
-	],
-
-	'cv/create' => [
-		'controller' => 'CVController',
-		'method' => 'create',
-		'constructor' => 'default',
-		'parameters' => [
-			'post'
-		]
-	],
-
-	'cv/update' => [
-		'controller' => 'CVController',
-		'method' => 'update',
-		'constructor' => 'default',
-		'parameters' => [
-			'post'
-		]
-	],
-
-	'cv/delete' => [
-		'controller' => 'CVController',
-		'method' => 'delete',
-		'constructor' => 'default',
-		'parameters' => [
-			'maCV'
-		]
-	],
-
-	'cv/upload' => [
-		'controller' => 'CVController',
-		'method' => 'uploadCV',
-		'constructor' => 'default',
-		'parameters' => [
-			'maCV',
-			'file'
-		]
-	],
-
-	'cv/download' => [
-		'controller' => 'CVController',
-		'method' => 'downloadCV',
-		'constructor' => 'default',
-		'parameters' => [
-			'maCV'
-		]
-	],
-
-	'cv/delete-file' => [
-		'controller' => 'CVController',
-		'method' => 'deleteUploadedCV',
-		'constructor' => 'default',
-		'parameters' => [
-			'maCV'
-		]
-	],
-
-
 	// =========================
 	// TIN TUYỂN DỤNG
 	// =========================
@@ -213,223 +138,43 @@ $routes = [
 		]
 	],
 
-	'jobs/create' => [
-		'controller' => 'TinTuyenDungController',
-		'method' => 'create',
-		'constructor' => 'default',
-		'parameters' => [
-			'post'
-		]
-	],
-
-	'jobs/update' => [
-		'controller' => 'TinTuyenDungController',
-		'method' => 'update',
-		'constructor' => 'default',
-		'parameters' => [
-			'post'
-		]
-	],
-
-	'jobs/delete' => [
-		'controller' => 'TinTuyenDungController',
-		'method' => 'delete',
-		'constructor' => 'default',
-		'parameters' => [
-			'maTinTuyenDung'
-		]
-	],
-
-	'jobs/extend-deadline' => [
-		'controller' => 'TinTuyenDungController',
-		'method' => 'extendDeadline',
-		'constructor' => 'default',
-		'parameters' => [
-			'maTinTuyenDung',
-			'ngayHetHan'
-		]
-	],
-
-	'jobs/close' => [
-		'controller' => 'TinTuyenDungController',
-		'method' => 'closeJob',
-		'constructor' => 'default',
-		'parameters' => [
-			'maTinTuyenDung'
-		]
-	],
-
 
 	// =========================
 	// NHÀ TUYỂN DỤNG
 	// =========================
 
-	'employer/detail' => [
-		'controller' => 'NhaTuyenDungController',
-		'method' => 'detail',
-		'constructor' => 'default',
-		'parameters' => [
-			'maNhaTuyenDung'
-		]
-	],
-
-	'employer/update' => [
-		'controller' => 'NhaTuyenDungController',
-		'method' => 'update',
-		'constructor' => 'default',
-		'parameters' => [
-			'post'
-		]
-	],
-
-	'employer/upload-logo' => [
-		'controller' => 'NhaTuyenDungController',
-		'method' => 'uploadLogo',
-		'constructor' => 'default',
-		'parameters' => [
-			'maNhaTuyenDung',
-			'file'
-		]
-	],
-
-	'employer/upload-cover' => [
-		'controller' => 'NhaTuyenDungController',
-		'method' => 'uploadCover',
-		'constructor' => 'default',
-		'parameters' => [
-			'maNhaTuyenDung',
-			'file'
-		]
-	],
 
 
 	// =========================
 	// ỨNG TUYỂN
 	// =========================
 
-	'application/apply' => [
-		'controller' => 'ApplicationController',
-		'method' => 'showApplyForm',
-		'constructor' => 'default'
+	'jobs/apply' => [
+		'controller' => 'JobApplyController',
+		'method' => 'apply',
+		'constructor' => 'default',
+		'parameters' => [
+			'maTinTuyenDung'
+		]
 	],
 
-	'application/submit' => [
-		'controller' => 'ApplicationController',
-		'method' => 'submitApplication',
+	'jobs/apply-submit' => [
+		'controller' => 'JobApplyController',
+		'method' => 'submit',
 		'constructor' => 'default'
 	],
-
-	'application/history' => [
-		'controller' => 'ApplicationController',
-		'method' => 'showHistory',
-		'constructor' => 'default'
-	],
-
-	'application/detail' => [
-		'controller' => 'ApplicationController',
-		'method' => 'showDetail',
-		'constructor' => 'default'
-	],
-
 
 	// =========================
 	// NHÀ TUYỂN DỤNG - QUẢN LÝ ỨNG VIÊN
 	// =========================
 
-	'recruiter/list' => [
-		'controller' => 'RecruiterController',
-		'method' => 'showList',
-		'constructor' => 'default'
-	],
-
-	'recruiter/detail' => [
-		'controller' => 'RecruiterController',
-		'method' => 'showDetail',
-		'constructor' => 'default'
-	],
-
-	'recruiter/update-status' => [
-		'controller' => 'RecruiterController',
-		'method' => 'updateStatus',
-		'constructor' => 'default'
-	],
 
 
 	// =========================
 	// ADMIN
 	// =========================
 
-	'admin/dashboard' => [
-		'controller' => 'AdminController',
-		'method' => 'showDashboard',
-		'constructor' => 'default'
-	],
-
-	'admin/users' => [
-		'controller' => 'UserManagementController',
-		'method' => 'showUserList',
-		'constructor' => 'default'
-	],
-
-	'admin/users/lock' => [
-		'controller' => 'UserManagementController',
-		'method' => 'lockUser',
-		'constructor' => 'default'
-	],
-
-	'admin/users/unlock' => [
-		'controller' => 'UserManagementController',
-		'method' => 'unlockUser',
-		'constructor' => 'default'
-	],
-
-	'admin/users/approve' => [
-		'controller' => 'UserManagementController',
-		'method' => 'approveUser',
-		'constructor' => 'default'
-	],
-
-	'admin/jobs' => [
-		'controller' => 'JobManagementController',
-		'method' => 'showJobList',
-		'constructor' => 'default'
-	],
-
-	'admin/jobs/approve' => [
-		'controller' => 'JobManagementController',
-		'method' => 'approveJob',
-		'constructor' => 'default'
-	],
-
-	'admin/jobs/reject' => [
-		'controller' => 'JobManagementController',
-		'method' => 'rejectJob',
-		'constructor' => 'default'
-	],
-
-	'admin/jobs/remove' => [
-		'controller' => 'JobManagementController',
-		'method' => 'removeJob',
-		'constructor' => 'default'
-	],
-
-	//forgot password
-	'auth/forgot-password-submit' => [
-        'controller' => 'ForgotPasswordController',
-        'method' => 'handleRequest',
-        'constructor' => 'database'
-    ],
-
-	// =========================
-    // XÁC THỰC OTP ĐĂNG KÝ
-    // =========================
-	'auth/send-otp' => [
-        'controller' => 'OtpController',
-        'method' => 'handleRequest',
-        'constructor' => 'database'
-    ],
 ];
-
 
 // ==========================================================
 // KIỂM TRA ROUTE
@@ -481,7 +226,6 @@ if (isset($routeConfig['parameters'])) {
 		$parameters[] = $_REQUEST[$parameter] ?? null;
 	}
 }
-
 
 // ==========================================================
 // KIỂM TRA METHOD

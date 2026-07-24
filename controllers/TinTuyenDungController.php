@@ -22,6 +22,7 @@ class TinTuyenDungController
 	public function index()
 	{
 		$salary = $_GET['salary'] ?? '';
+		$sort = $_GET['sort'] ?? 'newest';
 
 		$filters = [
 			'keyword' => $_GET['keyword'] ?? '',
@@ -70,9 +71,9 @@ class TinTuyenDungController
 		}
 
 		if ($hasFilter) {
-			$result = $this->tinTuyenDungModel->filter($filters);
+			$result = $this->tinTuyenDungModel->filter($filters, $sort);
 		} else {
-			$result = $this->tinTuyenDungModel->getAll();
+			$result = $this->tinTuyenDungModel->getAll($sort);
 		}
 
 		$jobs = [];
@@ -100,7 +101,18 @@ class TinTuyenDungController
 	 */
 	public function detail($maTinTuyenDung)
 	{
-		return $this->tinTuyenDungModel->getById($maTinTuyenDung);
+		// Lấy thông tin tin tuyển dụng từ database
+		$job = $this->tinTuyenDungModel->getById($maTinTuyenDung);
+
+		// Nếu không tìm thấy tin tuyển dụng
+		if (!$job) {
+			http_response_code(404);
+			echo "404 - Không tìm thấy tin tuyển dụng.";
+			exit;
+		}
+
+		// Nạp giao diện chi tiết
+		require_once __DIR__ . '/../views/page/jobs/detail.php';
 	}
 
 	/**

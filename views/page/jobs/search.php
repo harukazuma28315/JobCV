@@ -181,25 +181,30 @@ include_once __DIR__ . '/../layouts/header.php';
 
                         <!-- Lọc kinh nghiệm -->
                         <div class="col-12 col-sm-6 col-md-3">
-                            <label class="form-label text-white-50 small fw-semibold mb-1">Kinh Nghiệm</label>
+                            <label class="form-label text-white-50 small fw-semibold mb-1">
+                                Kinh Nghiệm
+                            </label>
+
                             <select name="experience" class="form-select border-0 py-2 small text-dark fw-semibold">
+
                                 <option value="">Tất cả kinh nghiệm</option>
 
                                 <option value="0" <?= ($_GET['experience'] ?? '') === '0' ? 'selected' : '' ?>>
                                     Không yêu cầu kinh nghiệm
                                 </option>
 
-                                <option value="1" <?= ($_GET['experience'] ?? '') === '1' ? 'selected' : '' ?>>
-                                    Tối đa 1 năm
+                                <option value="1-3" <?= ($_GET['experience'] ?? '') === '1-3' ? 'selected' : '' ?>>
+                                    1 - 3 năm
                                 </option>
 
-                                <option value="3" <?= ($_GET['experience'] ?? '') === '3' ? 'selected' : '' ?>>
-                                    Tối đa 3 năm
+                                <option value="3-5" <?= ($_GET['experience'] ?? '') === '3-5' ? 'selected' : '' ?>>
+                                    3 - 5 năm
                                 </option>
 
-                                <option value="5" <?= ($_GET['experience'] ?? '') === '5' ? 'selected' : '' ?>>
-                                    Tối đa 5 năm
+                                <option value="5+" <?= ($_GET['experience'] ?? '') === '5+' ? 'selected' : '' ?>>
+                                    Trên 5 năm
                                 </option>
+
                             </select>
                         </div>
 
@@ -229,10 +234,66 @@ include_once __DIR__ . '/../layouts/header.php';
                 <!-- TĐề kết quả tìm kiếm -->
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h5 class="fw-bold mb-0">Tìm thấy <span class="text-primary-blue" style="color: var(--primary-blue, #0d6efd);"><?= count($jobs) ?></span> việc làm phù hợp</h5>
-                    <select class="form-select form-select-sm w-auto border-0 shadow-sm fw-semibold">
-                        <option>Tin mới nhất</option>
-                        <option>Lương cao nhất</option>
-                    </select>
+                    <form action="<?= $baseUrl ?>/index.php" method="GET">
+
+                        <!-- Giữ route -->
+                        <input type="hidden" name="route" value="jobs/list">
+
+                        <!-- Giữ lại các bộ lọc hiện tại -->
+                        <input type="hidden" name="keyword"
+                            value="<?= htmlspecialchars($_GET['keyword'] ?? '') ?>">
+
+                        <input type="hidden" name="location"
+                            value="<?= htmlspecialchars($_GET['location'] ?? '') ?>">
+
+                        <input type="hidden" name="category"
+                            value="<?= htmlspecialchars($_GET['category'] ?? '') ?>">
+
+                        <input type="hidden" name="position"
+                            value="<?= htmlspecialchars($_GET['position'] ?? '') ?>">
+
+                        <input type="hidden" name="salary"
+                            value="<?= htmlspecialchars($_GET['salary'] ?? '') ?>">
+
+                        <input type="hidden" name="level"
+                            value="<?= htmlspecialchars($_GET['level'] ?? '') ?>">
+
+                        <input type="hidden" name="job_type"
+                            value="<?= htmlspecialchars($_GET['job_type'] ?? '') ?>">
+
+                        <input type="hidden" name="experience"
+                            value="<?= htmlspecialchars($_GET['experience'] ?? '') ?>">
+
+                        <input type="hidden" name="posted_date"
+                            value="<?= htmlspecialchars($_GET['posted_date'] ?? '') ?>">
+
+                        <select name="sort"
+                                class="form-select form-select-sm w-auto border-0 shadow-sm fw-semibold"
+                                onchange="this.form.submit()">
+
+                            <option value="newest"
+                                <?= ($_GET['sort'] ?? 'newest') === 'newest' ? 'selected' : '' ?>>
+                                Tin mới nhất
+                            </option>
+
+                            <option value="oldest"
+                                <?= ($_GET['sort'] ?? '') === 'oldest' ? 'selected' : '' ?>>
+                                Tin cũ nhất
+                            </option>
+
+                            <option value="salary_high"
+                                <?= ($_GET['sort'] ?? '') === 'salary_high' ? 'selected' : '' ?>>
+                                Lương cao nhất
+                            </option>
+
+                            <option value="salary_low"
+                                <?= ($_GET['sort'] ?? '') === 'salary_low' ? 'selected' : '' ?>>
+                                Lương thấp nhất
+                            </option>
+
+                        </select>
+
+                    </form>
                 </div>
 
                 <!-- danh sách công việc -->
@@ -240,9 +301,6 @@ include_once __DIR__ . '/../layouts/header.php';
                     <?php foreach ($jobs as $job): ?>
                         <div class="card job-card border-0 shadow-sm p-3 rounded-3 bg-white">
                             <div class="row align-items-center">
-                                <div class="col-auto">
-                                    <img src="<?= !empty($job['company_logo']) ? htmlspecialchars($job['company_logo']) : 'assets//images/default-logo.png' ?>" class="company-logo" alt="Logo" style="width: 60px; height: 60px; object-fit: contain; border-radius: 8px;">
-                                </div>
                                 <div class="col">
                                     <h5 class="fw-bold mb-1 text-dark"><?= htmlspecialchars($job['title']) ?></h5>
                                     <p class="text-muted small mb-2"><i class="fa-regular fa-building me-1"></i> <?= htmlspecialchars($job['company_name']) ?></p>
@@ -256,7 +314,10 @@ include_once __DIR__ . '/../layouts/header.php';
                                     <button class="btn btn-light btn-heart border-0 rounded-circle py-2 px-2" onclick="alertLoginRequirement()" title="Lưu việc làm">
                                         <i class="fa-regular fa-heart fs-5"></i>
                                     </button>
-                                    <a href="detail.php?id=<?= isset($job['id']) ? $job['id'] : '' ?>" class="btn btn-outline-primary btn-sm px-3 fw-bold">Xem Chi Tiết</a>
+                                    <a href="<?= $baseUrl ?>/index.php?route=jobs/detail&maTinTuyenDung=<?= urlencode($job['id']) ?>"
+                                    class="btn btn-outline-primary btn-sm px-3 fw-bold">
+                                        Xem Chi Tiết
+                                    </a>
                                 </div>
                             </div>
                         </div>
