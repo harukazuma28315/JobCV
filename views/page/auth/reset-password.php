@@ -10,41 +10,48 @@ include_once __DIR__ . '/../layouts/header.php';
     <div class="card p-4 p-md-5 shadow-sm border-0" style="max-width: 760px; width: 100%; border-radius: 12px;">
         <div class="card-body p-0">
             <h2 class="card-title fw-bold mb-3" style="color: #2b5a8f;">Đặt lại mật khẩu</h2>
-            <p class="text-secondary mb-4">Tạo mật khẩu mới cho tài khoản của bạn.</p>
+            <p class="text-secondary mb-4">Tạo mật khẩu mới cho tài khoản của bạn (tối thiểu 6 ký tự).</p>
 
-            <form id="resetForm" novalidate>
+            <form id="resetForm" class="needs-validation" novalidate autocomplete="off">
                 <input type="hidden" name="action" value="reset_password">
 
                 <div class="mb-4">
-                    <label for="email" class="form-label fw-semibold text-dark">Email</label>
-                    <input type="email" id="email" name="email" class="form-control" value="<?= htmlspecialchars($email) ?>" readonly style="box-shadow: none; padding: 10px 12px;">
-                </div>
-
-                <div class="mb-4">
-                    <label for="matKhau" class="form-label fw-semibold text-dark">Mật khẩu mới</label>
+                    <label for="email" class="form-label fw-semibold text-dark">Email tài khoản</label>
                     <div class="input-group">
                         <span class="input-group-text bg-white border-end-0 text-secondary">
-                            <i class="bi bi-person"></i>
+                            <i class="bi bi-envelope"></i>
                         </span>
-                        <input type="password" id="matKhau" name="matKhau" class="form-control border-start-0 border-end-0 ps-0" placeholder="Nhập mật khẩu mới..." required style="box-shadow: none;">
+                        <input type="email" id="email" name="email" class="form-control border-start-0 ps-0" value="<?= htmlspecialchars($email) ?>" readonly style="box-shadow: none; padding: 10px 12px; background-color: #f8f9fa;">
                     </div>
                 </div>
 
                 <div class="mb-4">
-                    <label for="matKhauConfirm" class="form-label fw-semibold text-dark">Nhập lại mật khẩu mới</label>
+                    <label for="matKhau" class="form-label fw-semibold text-dark">Mật khẩu mới <span class="text-danger">*</span></label>
                     <div class="input-group">
                         <span class="input-group-text bg-white border-end-0 text-secondary">
-                            <i class="bi bi-person"></i>
+                            <i class="bi bi-lock"></i>
                         </span>
-                        <input type="password" id="matKhauConfirm" name="matKhauConfirm" class="form-control border-start-0 border-end-0 ps-0" placeholder="Nhập lại mật khẩu mới..." required style="box-shadow: none;">
+                        <input type="password" id="matKhau" name="matKhau" class="form-control border-start-0 ps-0" placeholder="Nhập mật khẩu mới..." required minlength="6" maxlength="50" autocomplete="new-password" style="box-shadow: none;">
                     </div>
                 </div>
 
-                <button type="button" id="btnResetPassword" class="btn text-white w-100 py-2.5 fw-semibold mb-4" style="background-color: #628cb6; border-radius: 4px; font-size: 1.05rem;">Lưu Mật Khẩu Mới</button>
+                <div class="mb-4">
+                    <label for="matKhauConfirm" class="form-label fw-semibold text-dark">Nhập lại mật khẩu mới <span class="text-danger">*</span></label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-white border-end-0 text-secondary">
+                            <i class="bi bi-shield-check"></i>
+                        </span>
+                        <input type="password" id="matKhauConfirm" name="matKhauConfirm" class="form-control border-start-0 ps-0" placeholder="Nhập lại mật khẩu mới..." required minlength="6" maxlength="50" autocomplete="new-password" style="box-shadow: none;">
+                    </div>
+                </div>
+
+                <button type="button" id="btnResetPassword" class="btn text-white w-100 py-2.5 fw-semibold mb-3" style="background-color: #628cb6; border-radius: 4px; font-size: 1.05rem;">Lưu Mật Khẩu Mới</button>
                 <div id="resetMessage" class="small"></div>
 
                 <div class="text-start mt-3">
-                    <a href="<?= $baseUrl ?>/index.php?route=auth/login" class="text-decoration-none text-dark fw-medium">Quay lại Đăng Nhập</a>
+                    <a href="<?= $baseUrl ?>/index.php?route=auth/login" class="text-decoration-none text-dark fw-medium">
+                        <i class="bi bi-arrow-left me-1"></i>Quay lại Đăng Nhập
+                    </a>
                 </div>
             </form>
         </div>
@@ -57,3 +64,5 @@ include_once __DIR__ . '/../layouts/header.php';
     };
 </script>
 <script src="<?= $baseUrl ?>/assets/js/reset-password.js"></script>
+
+<?php include_once __DIR__ . '/../layouts/footer.php'; ?>
