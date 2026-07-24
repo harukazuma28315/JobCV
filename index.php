@@ -133,6 +133,14 @@ $routes = [
 			'post'
 		]
 	],
+	'cv/update-submit' => [
+		'controller' => 'CVController',
+		'method' => 'updateSubmit',
+		'constructor' => 'default',
+		'parameters' => [
+			'post'
+		]
+	],
 	
 
 	'cv/upload-submit' => [
@@ -168,7 +176,43 @@ $routes = [
 	// NHÀ TUYỂN DỤNG
 	// =========================
 
+	'employer/detail' => [
+		'controller' => 'NhaTuyenDungController',
+		'method' => 'detail',
+		'constructor' => 'default',
+		'parameters' => [
+			'maNhaTuyenDung'
+		]
+	],
 
+	'employer/update' => [
+		'controller' => 'NhaTuyenDungController',
+		'method' => 'update',
+		'constructor' => 'default',
+		'parameters' => [
+			'post'
+		]
+	],
+
+	'employer/upload-logo' => [
+		'controller' => 'NhaTuyenDungController',
+		'method' => 'uploadLogo',
+		'constructor' => 'default',
+		'parameters' => [
+			'maNhaTuyenDung',
+			'file'
+		]
+	],
+
+	'employer/upload-cover' => [
+		'controller' => 'NhaTuyenDungController',
+		'method' => 'uploadCover',
+		'constructor' => 'default',
+		'parameters' => [
+			'maNhaTuyenDung',
+			'file'
+		]
+	],
 
 	// =========================
 	// ỨNG TUYỂN

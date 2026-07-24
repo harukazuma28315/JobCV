@@ -728,7 +728,6 @@ require_once __DIR__ . '/header.php';
                                     name="sdt"
                                     class="form-control"
                                     value="<?= htmlspecialchars($cv['SDT']) ?>"
-                                    required
                                 >
 
                             </div>
@@ -840,7 +839,23 @@ function showUploadForm() {
         });
 
 }
+function showEditForm() {
 
+    const form = document.getElementById('editForm');
+
+    form.style.display = 'block';
+
+    form.scrollIntoView({
+        behavior: 'smooth'
+    });
+
+}
+
+function hideEditForm() {
+
+    document.getElementById('editForm').style.display = 'none';
+
+}
 </script>
 
 

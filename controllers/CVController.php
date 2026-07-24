@@ -160,6 +160,64 @@ class CVController
 
         }
     }
+    public function updateSubmit($post)
+    {
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: /JobCV/index.php?route=auth/login');
+            exit;
+        }
+
+        $cvData = [
+
+            'maCV' => $post['maCV'] ?? '',
+
+            'tieuDe' => trim($post['tieuDe'] ?? ''),
+
+            'kyNang' => trim($post['kyNang'] ?? ''),
+
+            'soThich' => trim($post['soThich'] ?? ''),
+
+            'mucTieu' => trim($post['mucTieu'] ?? ''),
+
+            'trangThai' => 1,
+
+            'viTriMongMuon' => trim($post['viTriMongMuon'] ?? ''),
+
+            'email' => trim($post['email'] ?? ''),
+
+            'sdt' => trim($post['sdt'] ?? '')
+
+        ];
+
+
+        $success = $this->cvModel->update($cvData);
+
+        if ($success) {
+
+            echo "
+                <script>
+
+                    alert('Cập nhật CV thành công!');
+
+                    window.location.href =
+                        '/JobCV/index.php?route=cv/create';
+
+                </script>
+            ";
+
+        } else {
+
+            echo "
+                <script>
+
+                    alert('Không thể cập nhật CV.');
+
+                    window.history.back();
+
+                </script>
+            ";
+        }
+    }
 
     /**
      * Upload CV cá nhân
