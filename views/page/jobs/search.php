@@ -25,39 +25,87 @@ include_once __DIR__ . '/../layouts/header.php';
                     </div>
                 </div>
 
-                <!-- 2: BỘ LỌC ĐỊA ĐIỂM & NGÀNH NGHỀ -->
+                <!-- 2: BỘ LỌC ĐỊA ĐIỂM, NGÀNH NGHỀ & VỊ TRÍ -->
                 <div class="row g-3 mb-3">
+
                     <!-- Chọn địa điểm -->
-                    <div class="col-12 col-md-6">
+                    <div class="col-12 col-md-4">
                         <select name="location" class="form-select border-0 py-2 fw-semibold">
                             <option value="">Chọn Địa Điểm</option>
+
                             <?php 
                             $locations = [
-    'Cần Thơ' => 'Cần Thơ',
-    'Hồ Chí Minh' => 'Hồ Chí Minh',
-    'Hà Nội' => 'Hà Nội',
-    'Đà Nẵng' => 'Đà Nẵng'
-];
+                                'Cần Thơ' => 'Cần Thơ',
+                                'Hồ Chí Minh' => 'Hồ Chí Minh',
+                                'Hà Nội' => 'Hà Nội',
+                                'Đà Nẵng' => 'Đà Nẵng'
+                            ];
+
                             foreach ($locations as $val => $lbl): 
-                                $selected = (isset($_GET['location']) && $_GET['location'] == $val) ? 'selected' : '';
+                                $selected = (($_GET['location'] ?? '') === $val) ? 'selected' : '';
                             ?>
-                                <option value="<?= $val ?>" <?= $selected ?>><?= $lbl ?></option>
+                                <option value="<?= htmlspecialchars($val) ?>" <?= $selected ?>>
+                                    <?= htmlspecialchars($lbl) ?>
+                                </option>
                             <?php endforeach; ?>
                         </select>
                     </div>
+
                     <!-- Chọn ngành nghề -->
-                    <div class="col-12 col-md-6">
+                    <div class="col-12 col-md-4">
                         <select name="category" class="form-select border-0 py-2 fw-semibold">
                             <option value="">Chọn Ngành Nghề</option>
-                            <?php 
-                            $categories = ['it' => 'Công nghệ thông tin', 'marketing' => 'Marketing', 'finance' => 'Tài chính / Kế toán', 'sales' => 'Kinh doanh / Bán hàng'];
-                            foreach ($categories as $val => $lbl): 
-                                $selected = (isset($_GET['category']) && $_GET['category'] == $val) ? 'selected' : '';
-                            ?>
-                                <option value="<?= $val ?>" <?= $selected ?>><?= $lbl ?></option>
-                            <?php endforeach; ?>
+
+                            <?php if (!empty($categories)): ?>
+                                <?php foreach ($categories as $category): ?>
+
+                                    <?php 
+                                    $selected = (($_GET['category'] ?? '') === $category['MaDanhMuc'])
+                                        ? 'selected'
+                                        : '';
+                                    ?>
+
+                                    <option 
+                                        value="<?= htmlspecialchars($category['MaDanhMuc']) ?>"
+                                        <?= $selected ?>
+                                    >
+                                        <?= htmlspecialchars($category['TenDanhMuc']) ?>
+                                    </option>
+
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+
                         </select>
                     </div>
+
+                    <!-- Chọn vị trí tuyển dụng -->
+                    <div class="col-12 col-md-4">
+                        <select name="position" class="form-select border-0 py-2 fw-semibold">
+
+                            <option value="">Chọn Vị Trí Tuyển Dụng</option>
+
+                            <?php if (!empty($positions)): ?>
+                                <?php foreach ($positions as $position): ?>
+
+                                    <?php 
+                                    $selected = (($_GET['position'] ?? '') === $position)
+                                        ? 'selected'
+                                        : '';
+                                    ?>
+
+                                    <option 
+                                        value="<?= htmlspecialchars($position) ?>"
+                                        <?= $selected ?>
+                                    >
+                                        <?= htmlspecialchars($position) ?>
+                                    </option>
+
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+
+                        </select>
+                    </div>
+
                 </div>
 
                 <!-- 3: NÚT TÌM VIỆC & BỘ LỌC NÂNG CAO -->
