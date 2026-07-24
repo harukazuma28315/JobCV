@@ -168,9 +168,32 @@ class CV
             $fileData["maCV"]
         );
 
-        $statement->execute();
-
         return $statement->execute();
+    }
+    public function getByUngVien($maUngVien)
+    {
+        $sql = "
+            SELECT *
+            FROM cv
+            WHERE MaUngVien = ?
+            AND TrangThai = 1
+            ORDER BY MaCV DESC
+            LIMIT 1
+        ";
+
+        $stmt = $this->conn->prepare($sql);
+
+        if (!$stmt) {
+            die("Lỗi prepare: " . $this->conn->error);
+        }
+
+        $stmt->bind_param("s", $maUngVien);
+
+        $stmt->execute();
+
+        $result = $stmt->get_result();
+
+        return $result->fetch_assoc();
     }
 
 }
