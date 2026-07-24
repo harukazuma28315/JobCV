@@ -133,6 +133,7 @@ $routes = [
 			'post'
 		]
 	],
+	
 
 	'cv/upload-submit' => [
 		'controller' => 'CVController',
@@ -198,7 +199,6 @@ $routes = [
 	// ADMIN
 	// =========================
 
-<<<<<<< HEAD
 	'admin/dashboard' => [
 		'controller' => 'AdminController',
 		'method' => 'showDashboard',
@@ -292,8 +292,6 @@ $routes = [
         'method' => 'handleRequest',
         'constructor' => 'database'
     ],
-=======
->>>>>>> 6314ee3af0627145a0073db051b45661dea19941
 ];
 
 // ==========================================================
