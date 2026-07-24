@@ -1,13 +1,17 @@
 /**
  * register.js
- * Xử lý chuyển tab vai trò (switch role), gửi OTP theo ngữ cảnh (type-aware), và xác thực dữ liệu đăng ký
+ * Quản lý tương tác giao diện và xác thực dữ liệu cho form đăng ký (Ứng viên & Nhà tuyển dụng).
  */
 
-// Gắn hàm gửi OTP vào đối tượng window để gọi trực tiếp từ thuộc tính onclick ngoài HTML
+/**
+ * Gửi yêu cầu khởi tạo mã OTP xác thực email đến máy chủ qua AJAX.
+ * Áp dụng đếm ngược thời gian (cooldown) ở giao diện để hạn chế người dùng bấm gửi liên tục gây quá tải server.
+ * 
+ * @param {string} type - Loại tài khoản đăng ký ('candidate' hoặc 'employer').
+ */
 window.requestOtp = function (type) {
   const baseUrl = window.appConfig?.baseUrl || "/JobCV";
 
-  // Tìm phần tử dựa theo loại form (employer - Nhà tuyển dụng hoặc candidate - Ứng viên)
   const emailId = type === "employer" ? "EmailEmployer" : "Email";
   const btnId = type === "employer" ? "btnGetOtpEmployer" : "btnGetOtp";
 
@@ -30,7 +34,7 @@ window.requestOtp = function (type) {
   formData.append("action", "send_otp");
   formData.append("email", emailValue);
 
-  fetch(`${baseUrl}/controllers/OtpController.php`, {
+  fetch(`${baseUrl}/index.php?route=auth/send-otp`, {
     method: "POST",
     body: formData,
   })
@@ -76,7 +80,12 @@ window.requestOtp = function (type) {
     });
 };
 
-// Gắn hàm chuyển đổi giao diện ứng viên / nhà tuyển dụng
+/**
+ * Chuyển đổi trạng thái hiển thị của form đăng ký giữa hai vai trò Ứng viên và Nhà tuyển dụng.
+ * Tự động bật/tắt các ràng buộc dữ liệu bắt buộc (như Mã số thuế) tương ứng với từng đối tượng.
+ * 
+ * @param {number} roleVal - Mã vai trò người dùng (1: Nhà tuyển dụng, 0/khác: Ứng viên).
+ */
 window.switchRole = function (roleVal) {
   document.getElementById("Role").value = roleVal;
   document.getElementById("RoleEmployer").value = roleVal;
@@ -91,41 +100,41 @@ window.switchRole = function (roleVal) {
   const labelDiaChi = document.getElementById("labelDiaChi");
   const maSoThue = document.getElementById("MaSoThue");
 
-  if (roleVal === 1) {
-    if (personalFields) personalFields.style.display = "none";
-    if (employerFields) employerFields.style.display = "block";
-    if (labelHoTen)
-      labelHoTen.innerHTML =
-        'Tên công ty / Doanh nghiệp <span class="text-danger">*</span>';
-    if (inputHoTen) inputHoTen.placeholder = "Nhập tên công ty chính thức";
-    if (labelEmail)
-      labelEmail.innerHTML = 'Email công ty <span class="text-danger">*</span>';
-    if (labelSDT) labelSDT.innerText = "Số điện thoại công ty";
-    if (labelDiaChi) labelDiaChi.innerText = "Địa chỉ trụ sở chính";
-    if (btnSubmit) {
-      btnSubmit.innerText = "Đăng Ký Nhà Tuyển Dụng";
-      btnSubmit.className = "btn btn-success btn-lg";
-    }
-    if (maSoThue) maSoThue.setAttribute("required", "required");
-  } else {
-    if (personalFields) personalFields.style.display = "flex";
-    if (employerFields) employerFields.style.display = "none";
-    if (labelHoTen)
-      labelHoTen.innerHTML = 'Họ và Tên <span class="text-danger">*</span>';
-    if (inputHoTen) inputHoTen.placeholder = "Nhập họ và tên đầy đủ";
-    if (labelEmail)
-      labelEmail.innerHTML = 'Email <span class="text-danger">*</span>';
-    if (labelSDT) labelSDT.innerText = "Số điện thoại";
-    if (labelDiaChi) labelDiaChi.innerText = "Địa chỉ";
-    if (btnSubmit) {
-      btnSubmit.innerText = "Đăng Ký Ứng Viên";
-      btnSubmit.className = "btn btn-primary-blue btn-lg";
-    }
-    if (maSoThue) maSoThue.removeAttribute("required");
+  const isEmployer = roleVal === 1;
+
+  if (personalFields) personalFields.style.display = isEmployer ? "none" : "flex";
+  if (employerFields) employerFields.style.display = isEmployer ? "block" : "none";
+
+  if (labelHoTen) {
+    labelHoTen.innerHTML = isEmployer 
+      ? 'Tên công ty / Doanh nghiệp <span class="text-danger">*</span>'
+      : 'Họ và Tên <span class="text-danger">*</span>';
+  }
+  if (inputHoTen) {
+    inputHoTen.placeholder = isEmployer ? "Nhập tên công ty chính thức" : "Nhập họ và tên đầy đủ";
+  }
+  if (labelEmail) {
+    labelEmail.innerHTML = isEmployer 
+      ? 'Email công ty <span class="text-danger">*</span>' 
+      : 'Email <span class="text-danger">*</span>';
+  }
+  if (labelSDT) labelSDT.innerText = isEmployer ? "Số điện thoại công ty" : "Số điện thoại";
+  if (labelDiaChi) labelDiaChi.innerText = isEmployer ? "Địa chỉ trụ sở chính" : "Địa chỉ";
+
+  if (btnSubmit) {
+    btnSubmit.innerText = isEmployer ? "Đăng Ký Nhà Tuyển Dụng" : "Đăng Ký Ứng Viên";
+    btnSubmit.className = isEmployer ? "btn btn-success btn-lg" : "btn btn-primary-blue btn-lg";
+  }
+
+  if (maSoThue) {
+    isEmployer ? maSoThue.setAttribute("required", "required") : maSoThue.removeAttribute("required");
   }
 };
 
-// Bootstrap Custom Form Validation
+/**
+ * Đăng ký các sự kiện lắng nghe khi DOM đã tải hoàn tất.
+ * Khởi tạo kiểm tra tính hợp lệ của Form Bootstrap và xác nhận mật khẩu khớp nhau trước khi Submit.
+ */
 document.addEventListener("DOMContentLoaded", () => {
   "use strict";
   const forms = document.querySelectorAll(".needs-validation");
@@ -134,13 +143,8 @@ document.addEventListener("DOMContentLoaded", () => {
     form.addEventListener(
       "submit",
       function (event) {
-        // Chỉ tìm các ô nhập password của chính form đang submit hiện tại (Tránh lấy nhầm form kia)
-        const passwordInput = form.querySelector(
-          'input[type="password"][name="MatKhau"]'
-        );
-        const confirmInput = form.querySelector(
-          'input[type="password"][name="MatKhauConfirm"]'
-        );
+        const passwordInput = form.querySelector('input[type="password"][name="MatKhau"]');
+        const confirmInput = form.querySelector('input[type="password"][name="MatKhauConfirm"]');
 
         if (passwordInput && confirmInput) {
           const password = passwordInput.value;

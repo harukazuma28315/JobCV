@@ -19,10 +19,8 @@ class LogoutController {
 		$shouldLogout = (isset($_GET['action']) && $_GET['action'] === 'logout') || (isset($_GET['route']) && $_GET['route'] === 'auth/logout');
 
 		if ($shouldLogout) {
-			// 1. Xóa bỏ tất cả các biến session
 			$_SESSION = array();
 
-			// 2. Xóa cookie session nếu có để bảo mật trình duyệt
 			if (ini_get("session.use_cookies")) {
 				$params = session_get_cookie_params();
 				setcookie(session_name(), '', time() - 42000,
@@ -31,10 +29,8 @@ class LogoutController {
 				);
 			}
 
-			// 3. Phá hủy hoàn toàn Session trên Server
 			session_destroy();
 
-			// 4. Chuyển hướng về trang đăng nhập
 			header("Location: /JobCV/index.php?route=auth/login");
 			exit();
 		}

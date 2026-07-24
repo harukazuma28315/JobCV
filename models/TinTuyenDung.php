@@ -472,6 +472,24 @@ class TinTuyenDung
 			$types .= "s";
 		}
 
+		if (!empty($filters["position"])) {
+			$sql .= " AND ViTriTuyenDung = ?";
+			$params[] = $filters["position"];
+			$types .= "s";
+		}
+		
+		if (!empty($filters["category"])) {
+			$sql .= " AND EXISTS (
+						SELECT 1
+						FROM chitietdanhmuc ctdm
+						WHERE ctdm.MaTinTuyenDung = TinTuyenDung.MaTinTuyenDung
+						AND ctdm.MaDanhMuc = ?
+					)";
+
+			$params[] = $filters["category"];
+			$types .= "s";
+		}
+
 		if (!empty($filters["capBac"])) {
 			$sql .= " AND CapBac = ?";
 			$params[] = $filters["capBac"];
@@ -512,5 +530,45 @@ class TinTuyenDung
 		$statement->execute();
 
 		return $statement->get_result();
+	}
+	public function getCategories()
+		{
+			$sql = "SELECT MaDanhMuc, TenDanhMuc
+					FROM danhmuc
+					WHERE LoaiDanhMuc = 'NganhNghe'
+					ORDER BY TenDanhMuc ASC";
+
+			$result = $this->conn->query($sql);
+
+			$categories = [];
+
+			while ($row = $result->fetch_assoc()) {
+				$categories[] = $row;
+			}
+
+			return $categories;
+		}
+	/**
+	 * Lấy danh sách vị trí tuyển dụng duy nhất.
+	 *
+	 * @return array
+	 */
+	public function getPositions()
+	{
+		$sql = "SELECT DISTINCT ViTriTuyenDung
+				FROM TinTuyenDung
+				WHERE ViTriTuyenDung IS NOT NULL
+				AND ViTriTuyenDung != ''
+				ORDER BY ViTriTuyenDung ASC";
+
+		$result = $this->conn->query($sql);
+
+		$positions = [];
+
+		while ($row = $result->fetch_assoc()) {
+			$positions[] = $row['ViTriTuyenDung'];
+		}
+
+		return $positions;
 	}
 }

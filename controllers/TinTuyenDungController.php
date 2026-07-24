@@ -26,12 +26,19 @@ class TinTuyenDungController
 		$filters = [
 			'keyword' => $_GET['keyword'] ?? '',
 			'location' => $_GET['location'] ?? '',
+			'position' => $_GET['position'] ?? '',
 			'capBac' => $_GET['level'] ?? '',
+			'category' => $_GET['category'] ?? '',
 			'hinhThucLamViec' => $_GET['job_type'] ?? '',
 			'soNamKinhNghiem' => $_GET['experience'] ?? '',
 			'minSalary' => '',
 			'maxSalary' => ''
 		];
+
+		$categories = $this->tinTuyenDungModel->getCategories();
+
+		// Lấy danh sách vị trí duy nhất từ database
+		$positions = $this->tinTuyenDungModel->getPositions();
 
 		switch ($salary) {
 			case 'under-10':

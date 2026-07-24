@@ -1,3 +1,11 @@
+/**
+ * forgot-password.js
+ * Quản lý tương tác giao diện và gửi các yêu cầu AJAX cho quy trình quên mật khẩu (Gửi OTP, Xác thực OTP).
+ */
+
+/**
+ * Đăng ký các sự kiện lắng nghe và điều phối luồng xử lý giao diện cho trang Quên mật khẩu.
+ */
 document.addEventListener('DOMContentLoaded', () => {
     const baseUrl = window.appConfig?.baseUrl || '/JobCV';
     
@@ -9,17 +17,37 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!btnGetOtp || !btnVerifyOtp) return;
 
+    /**
+     * Cập nhật trạng thái kích hoạt và nhãn hiển thị của nút bấm.
+     * Áp dụng để khóa thao tác của người dùng trong lúc chờ xử lý AJAX nhằm tránh gửi yêu cầu trùng lặp.
+     * 
+     * @param {HTMLElement} button - Phần tử button cần thay đổi trạng thái.
+     * @param {boolean} disabled - Trạng thái vô hiệu hóa (true: khóa, false: mở).
+     * @param {string} text - Nội dung văn bản hiển thị trên nút.
+     */
     function setButtonState(button, disabled, text) {
         button.disabled = disabled;
         button.innerText = text;
     }
 
+    /**
+     * Hiển thị thông báo phản hồi từ phía server lên giao diện người dùng.
+     * 
+     * @param {string} message - Nội dung thông báo cần hiển thị.
+     * @param {string} type - Loại thông báo ('success', 'danger', hoặc 'info') để thiết định màu sắc tương ứng.
+     */
     function showMessage(message, type = 'info') {
         if (!formMessage) return;
         formMessage.className = `small mt-2 text-${type === 'success' ? 'success' : type === 'danger' ? 'danger' : 'secondary'}`;
         formMessage.innerText = message;
     }
 
+    /**
+     * Đếm ngược thời gian chờ (cooldown) và vô hiệu hóa nút gửi mã.
+     * Tự động ngăn chặn hành vi spam yêu cầu lấy mã OTP liên tục gây quá tải hệ thống.
+     * 
+     * @param {number} seconds - Số giây cần đếm ngược trước khi cho phép bấm lại.
+     */
     function startCooldown(seconds) {
         let remaining = seconds;
         setButtonState(btnGetOtp, true, `Đợi (${remaining}s)`);
@@ -34,6 +62,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 1000);
     }
 
+    /**
+     * Gửi yêu cầu AJAX khởi tạo và gửi mã OTP khôi phục mật khẩu tới email người dùng.
+     */
     function sendForgotOtp() {
         const email = emailInput.value.trim();
         if (!email) {
@@ -62,6 +93,10 @@ document.addEventListener('DOMContentLoaded', () => {
             });
     }
 
+    /**
+     * Gửi yêu cầu AJAX xác thực mã OTP nhập vào từ client.
+     * Chuyển hướng người dùng sang trang đặt lại mật khẩu nếu mã OTP chính xác và còn thời hạn.
+     */
     function verifyForgotOtp() {
         const email = emailInput.value.trim();
         const otp = otpInput.value.trim();

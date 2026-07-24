@@ -124,7 +124,7 @@ class EmailService
 	 */
 	public function sendOTPEmail($userEmail, $otpCode)
 	{
-		$tieuDeEmail = 'Mã xác thực đăng ký tài khoản';
+		$tieuDeEmail = 'Mã xác thực';
 		
 		// Xây dựng template HTML rõ ràng, sử dụng hàm taoNoiDungEmail để đồng bộ chữ ký hệ thống[cite: 10]
 		$noiDungChinh = "

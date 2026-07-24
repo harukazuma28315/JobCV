@@ -38,15 +38,10 @@ $resetEmail = $_SESSION['user_email'] ?? $profileData['email'] ?? '';
                     </span>
                 </div>
                 
-                <h5 class="fw-bold text-dark mb-1"><?php echo htmlspecialchars($profileData['fullname']); ?></h5> 
-                <!-- <p class="text-muted small mb-3">Mã UV: <?php echo htmlspecialchars($profileData['candidate_code']); ?></p>  -->
+                <h5 class="fw-bold text-dark mb-1"><?php echo htmlspecialchars($profileData['fullname'] ?? ''); ?></h5> 
                 <span class="badge bg-light text-primary-blue border fw-semibold px-3 py-2 mb-4">Ứng viên</span>
 
                 <div class="nav flex-column nav-pills text-start gap-2" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-                    <!-- <button class="nav-link active py-3 px-3 d-flex align-items-center gap-3 border-0" id="v-pills-info-tab" data-bs-toggle="pill" data-bs-target="#v-pills-info" type="button" role="tab" aria-selected="true">
-                        <i class="fa-regular fa-user text-primary fs-5"></i>
-                        <span>Thông tin cá nhân</span>
-                    </button> -->
                     <a href="list_cv.php" class="nav-link py-3 px-3 d-flex align-items-center gap-3 border-0 text-decoration-none">
                         <i class="fa-solid fa-file-pdf text-danger fs-5"></i>
                         <span>Quản lý hồ sơ & CV</span>
@@ -66,44 +61,47 @@ $resetEmail = $_SESSION['user_email'] ?? $profileData['email'] ?? '';
                     <div class="card border-0 shadow-sm p-4 bg-white">
                         <h4 class="fw-bold mb-4 border-start border-4 border-primary ps-3 text-dark">Thông Tin Cá Nhân</h4>
                         
-                        <form action="<?= $baseUrl ?>/index.php?route=profile/update" method="POST">
+                        <form action="<?= $baseUrl ?>/index.php?route=profile/update" method="POST" class="needs-validation" novalidate>
                             <input type="hidden" name="action" value="update">
                             <div class="row g-3">
+                                <!-- Họ và tên -->
                                 <div class="col-12 col-md-6">
-                                    <label class="form-label fw-semibold text-dark">Họ và tên</label>
-                                    <input type="text" name="hoTen" class="form-control py-2" value="<?php echo htmlspecialchars($profileData['fullname']); ?>" required>
+                                    <label class="form-label fw-semibold text-dark">Họ và tên <span class="text-danger">*</span></label>
+                                    <input type="text" name="hoTen" class="form-control py-2" value="<?php echo htmlspecialchars($profileData['fullname'] ?? ''); ?>" required maxlength="100">
                                 </div>
-                                <!-- <div class="col-12 col-md-6">
-                                    <label class="form-label fw-semibold text-dark">Mã số ứng viên</label>
-                                    <input type="text" name="candidate_code" class="form-control py-2" value="<?php echo htmlspecialchars($profileData['candidate_code']); ?>" readonly>
-                                </div> -->
+                                
+                                <!-- Email (Chỉ đọc) -->
                                 <div class="col-12 col-md-6">
                                     <label class="form-label fw-semibold text-dark">Email liên hệ</label>
-                                    <input type="email" name="email" class="form-control py-2" value="<?php echo htmlspecialchars($profileData['email']); ?>" readonly>
+                                    <input type="email" name="email" class="form-control py-2" value="<?php echo htmlspecialchars($profileData['email'] ?? ''); ?>" readonly>
                                 </div>
+
+                                <!-- Số điện thoại -->
                                 <div class="col-12 col-md-6">
-                                    <label class="form-label fw-semibold text-dark">Số điện thoại</label>
-                                    <input type="tel" name="sdt" class="form-control py-2" value="<?php echo htmlspecialchars($profileData['phone']); ?>" required>
+                                    <label class="form-label fw-semibold text-dark">Số điện thoại <span class="text-danger">*</span></label>
+                                    <input type="tel" name="sdt" class="form-control py-2" value="<?php echo htmlspecialchars($profileData['phone'] ?? ''); ?>" required inputmode="numeric" maxlength="10" pattern="(03|05|07|08|09)[0-9]{8}" oninput="this.value = this.value.replace(/\D/g, '')" title="Số điện thoại phải gồm 10 chữ số chuẩn nhà mạng Việt Nam">
                                 </div>
+
+                                <!-- Ngày sinh -->
                                 <div class="col-12 col-md-6">
                                     <label class="form-label fw-semibold text-dark">Ngày sinh</label>
-                                    <input type="date" name="ngaySinh" class="form-control py-2" value="<?php echo htmlspecialchars($profileData['birthDate']); ?>">
+                                    <input type="date" name="ngaySinh" class="form-control py-2" value="<?php echo htmlspecialchars($profileData['birthDate'] ?? ''); ?>">
                                 </div>
+
+                                <!-- Giới tính -->
                                 <div class="col-12 col-md-6">
                                     <label class="form-label fw-semibold text-dark">Giới tính</label>
                                     <select name="gioiTinh" class="form-select py-2">
-                                        <option value="1" <?php echo ($profileData['gender'] !== null && (int)$profileData['gender'] === 1) ? 'selected' : ''; ?>>Nam</option>
-                                        <option value="0" <?php echo ($profileData['gender'] !== null && (int)$profileData['gender'] === 0) ? 'selected' : ''; ?>>Nữ</option>
+                                        <option value="1" <?php echo (isset($profileData['gender']) && (int)$profileData['gender'] === 1) ? 'selected' : ''; ?>>Nam</option>
+                                        <option value="0" <?php echo (isset($profileData['gender']) && (int)$profileData['gender'] === 0) ? 'selected' : ''; ?>>Nữ</option>
                                     </select>
                                 </div>
+
+                                <!-- Địa chỉ -->
                                 <div class="col-12">
                                     <label class="form-label fw-semibold text-dark">Địa chỉ</label>
-                                    <input type="text" name="diaChi" class="form-control py-2" value="<?php echo htmlspecialchars($profileData['address']); ?>">
+                                    <input type="text" name="diaChi" class="form-control py-2" value="<?php echo htmlspecialchars($profileData['address'] ?? ''); ?>" maxlength="255">
                                 </div>
-                                <!-- <div class="col-12">
-                                    <label class="form-label fw-semibold text-dark">Giới thiệu ngắn về bản thân</label>
-                                    <textarea name="bio" class="form-control" rows="4"><?php echo htmlspecialchars($profileData['bio']); ?></textarea>
-                                </div> -->
                             </div>
                             
                             <div class="mt-4 pt-3 border-top text-end">
@@ -118,46 +116,6 @@ $resetEmail = $_SESSION['user_email'] ?? $profileData['email'] ?? '';
                         </form>
                     </div>
                 </div>
-
-                <!-- <div class="tab-pane fade" id="v-pills-cv" role="tabpanel" aria-labelledby="v-pills-cv-tab">
-                    <div class="card border-0 shadow-sm p-4 bg-white">
-                        <h4 class="fw-bold mb-4 border-start border-4 border-primary ps-3 text-dark">Quản Lý Hồ Sơ & CV</h4>
-                        
-                        <form action="upload-cv.php" method="POST" enctype="multipart/form-data">
-                            <div class="border border-2 border-dashed rounded-3 p-4 text-center bg-light mb-4 position-relative">
-                                <input type="file" name="cv_file" class="position-absolute top-0 start-0 w-100 h-100 opacity-0" style="cursor: pointer;" accept=".pdf,.doc,.docx" onchange="this.form.submit()">
-                                <div class="py-3">
-                                    <i class="fa-solid fa-cloud-arrow-up text-primary-blue fs-1 mb-3"></i>
-                                    <h5 class="fw-bold text-dark">Kéo thả hoặc tải lên CV của bạn</h5>
-                                    <p class="text-muted small mb-0">Hỗ trợ định dạng .PDF, .DOCX, .DOC (Tối đa 5MB)</p>
-                                </div>
-                            </div>
-                        </form>
-
-                        <h6 class="fw-bold text-dark mb-3">Các file CV đã tải lên:</h6>
-                        <div class="d-flex flex-column gap-3">
-                            <?php if (!empty($user['cv_filename'])): ?>
-                                <div class="p-3 border rounded-3 bg-white d-flex align-items-center justify-content-between">
-                                    <div class="d-flex align-items-center gap-3">
-                                        <span class="fs-2 text-danger"><i class="fa-solid fa-file-pdf"></i></span>
-                                        <div>
-                                            <h6 class="fw-bold text-dark mb-1"><?php echo htmlspecialchars($user['cv_filename']); ?></h6>
-                                            <span class="text-muted small">Cập nhật: <?php echo htmlspecialchars($user['cv_updated_at'] ?? ''); ?></span>
-                                        </div>
-                                    </div>
-                                    <div class="d-flex gap-2">
-                                        <a href="<?php echo htmlspecialchars($user['cv_filepath'] ?? '#'); ?>" target="_blank" class="btn btn-light btn-sm text-primary-blue" title="Xem trước"><i class="fa-solid fa-eye"></i></a>
-                                        <a href="delete-cv.php" class="btn btn-light btn-sm text-danger" title="Xóa" onclick="return confirm('Bạn có chắc chắn muốn xóa CV này?')"><i class="fa-solid fa-trash-can"></i></a>
-                                    </div>
-                                </div>
-                            <?php else: ?>
-                                <div class="text-center p-3 text-muted border rounded-3 bg-light-subtle">
-                                    Bạn chưa tải lên CV nào.
-                                </div>
-                            <?php endif; ?>
-                        </div>
-                    </div>
-                </div> -->
 
             </div>
         </div>
