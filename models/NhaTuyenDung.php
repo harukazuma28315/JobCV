@@ -126,4 +126,41 @@ class NhaTuyenDung
 
 		return $statement->execute();
 	}
+	    /**
+     * Đếm tổng số tin tuyển dụng của nhà tuyển dụng
+     */
+    public function countJobs($maNhaTuyenDung)
+    {
+        $sql = "
+            SELECT COUNT(*) AS total
+            FROM tintuyendung
+            WHERE MaNhaTuyenDung = ?
+        ";
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("s", $maNhaTuyenDung);
+        $stmt->execute();
+
+        return $stmt->get_result()->fetch_assoc()['total'];
+    }
+
+    /**
+     * Đếm tổng số ứng viên đã ứng tuyển vào tin của nhà tuyển dụng
+     */
+    public function countApplications($maNhaTuyenDung)
+    {
+        $sql = "
+            SELECT COUNT(*) AS total
+            FROM hosotuyendung h
+            INNER JOIN tintuyendung t
+                ON h.MaTinTuyenDung = t.MaTinTuyenDung
+            WHERE t.MaNhaTuyenDung = ?
+        ";
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("s", $maNhaTuyenDung);
+        $stmt->execute();
+
+        return $stmt->get_result()->fetch_assoc()['total'];
+    }
 }

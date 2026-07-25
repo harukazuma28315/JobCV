@@ -100,7 +100,7 @@ class UserModel {
 
 		try {
 			// Thứ tự cột chuẩn CSDL: MaUser, Email, MatKhau, Role, HoTen, NgaySinh, GioiTinh, SDT, DiaChi
-			$sqlUser = "INSERT INTO user (MaUser, Email, MatKhau, Role, HoTen, NgaySinh, GioiTinh, SDT, DiaChi) 
+			$sqlUser = "INSERT INTO user (MaUser, MatKhau, Role, HoTen, NgaySinh, GioiTinh, Email, SDT, DiaChi) 
 						VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 			$stmtUser = $this->db->prepare($sqlUser);
 			
@@ -143,19 +143,19 @@ class UserModel {
 		$this->db->begin_transaction();
 
 		try {
-			$sqlUser = "INSERT INTO user (MaUser, Email, MatKhau, Role, HoTen, NgaySinh, GioiTinh, SDT, DiaChi) 
+			$sqlUser = "INSERT INTO user (MaUser, MatKhau, Role, HoTen, NgaySinh, GioiTinh, Email, SDT, DiaChi) 
 						VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 			$stmtUser = $this->db->prepare($sqlUser);
 			
 			$stmtUser->bind_param(
 				"sssississ", 
 				$userData['maUser'], 
-				$userData['email'], 
 				$userData['matKhauHashed'], 
 				$userData['role'], 
 				$userData['hoTen'], 
 				$userData['ngaySinh'], 
 				$userData['gioiTinh'], 
+				$userData['email'], 
 				$userData['sdt'], 
 				$userData['diaChi']
 			);

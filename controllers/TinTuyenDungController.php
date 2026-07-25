@@ -143,13 +143,79 @@ class TinTuyenDungController
 	 * @param array $tinTuyenDungData
 	 * @return bool
 	 */
-	public function create(array $tinTuyenDungData)
+	public function create(array $tinTuyenDungData = [])
 	{
-		if (!$this->validateJobData($tinTuyenDungData)) {
-			return false;
+		// Chỉ cho nhà tuyển dụng truy cập
+		if (
+			!isset($_SESSION['user_id']) ||
+			($_SESSION['user_role'] ?? 0) != 1
+		) {
+			exit('Bạn không có quyền truy cập.');
 		}
 
-		return $this->tinTuyenDungModel->create($tinTuyenDungData);
+		// Lấy mã nhà tuyển dụng đang đăng nhập
+		$maNhaTuyenDung = $_SESSION['user_id'];
+
+		// Nếu submit form
+		if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+			$tinTuyenDungData['maNhaTuyenDung'] = $maNhaTuyenDung;
+
+			if (!$this->validateJobData($tinTuyenDungData)) {
+				exit('Dữ liệu đăng tin không hợp lệ.');
+			}
+
+			$result = $this->tinTuyenDungModel->create($tinTuyenDungData);
+
+			if ($result) {
+				header(
+					'Location: /JobCV/index.php?route=jobs/manage'
+				);
+				exit;
+			}
+
+			exit('Đăng tin tuyển dụng thất bại.');
+		}
+
+		// Lấy danh sách ngành nghề từ database
+		$categories = $this->tinTuyenDungModel->getCategories();
+		$jobs = $this->tinTuyenDungModel
+        ->getByNhaTuyenDung($maNhaTuyenDung);
+
+		// Hiển thị trang đăng tin
+		require_once __DIR__ . '/../views/page/employer/post-job.php';
+	}
+	public function manage()
+	{
+
+		if (
+			!isset($_SESSION['user_id']) ||
+			($_SESSION['Role'] ?? 0) != 1
+		) {
+			exit("Bạn không có quyền.");
+		}
+
+
+		$maNhaTuyenDung = $_SESSION['user_id'];
+
+
+
+		$jobs =
+			$this->tinTuyenDungModel
+			->getByNhaTuyenDung(
+				$maNhaTuyenDung
+			);
+
+
+		$categories =
+			$this->tinTuyenDungModel
+			->getCategories();
+
+
+
+		require_once
+		__DIR__ .
+		'/../views/page/employer/manage-jobs.php';
 	}
 
 	/**
@@ -214,29 +280,33 @@ class TinTuyenDungController
 	 * @param array $tinTuyenDungData
 	 * @return bool
 	 */
-	private function validateJobData(array $tinTuyenDungData)
+	private function validateJobData(array $data)
 	{
-		if (empty(trim($tinTuyenDungData["tieuDe"]))) {
+		if (empty(trim($data['tieuDe']))) {
 			return false;
 		}
 
-		if (empty(trim($tinTuyenDungData["moTaCongViec"]))) {
+		if (empty(trim($data['moTaCongViec']))) {
 			return false;
 		}
 
-		if (empty(trim($tinTuyenDungData["yeuCauCongViec"]))) {
+		if (empty(trim($data['yeuCauCongViec']))) {
 			return false;
 		}
 
-		if (empty(trim($tinTuyenDungData["viTriTuyenDung"]))) {
+		if (empty($data['ngayHetHan'])) {
 			return false;
 		}
 
-		if (empty($tinTuyenDungData["ngayHetHan"])) {
+		if (empty($data['mucLuong'])) {
 			return false;
 		}
 
-		if ($tinTuyenDungData["soLuongTuyen"] <= 0) {
+		if (empty(trim($data['diaChiLamViec']))) {
+			return false;
+		}
+
+		if (empty(trim($data['hinhThucLamViec']))) {
 			return false;
 		}
 

@@ -2,75 +2,99 @@
 
 require_once __DIR__ . "/../config/db.php";
 
-/**
- * Model quản lý tin tuyển dụng.
- */
 class TinTuyenDung
 {
-	private $conn;
+    private $conn;
 
-	public function __construct()
-	{
-		global $conn;
-		$this->conn = $conn;
-	}
+    public function __construct()
+    {
+        global $conn;
+        $this->conn = $conn;
+    }
 
-	/**
-	 * Thêm tin tuyển dụng.
-	 *
-	 * @param array $tinTuyenDungData
-	 * @return bool
-	 */
-	public function create(array $tinTuyenDungData)
-	{
-		$sql = "INSERT INTO TinTuyenDung
-				(
-					MaTinTuyenDung,
-					MaNhaTuyenDung,
-					TieuDe,
-					MoTaCongViec,
-					NgayHetHan,
-					YeuCauCongViec,
-					ViTriTuyenDung,
-					CapBac,
-					SoNamKinhNghiem,
-					MucLuong,
-					DiaChiLamViec,
-					HinhThucLamViec,
-					DoTuoiYeuCau,
-					SoLuongTuyen,
-					ThoiGianThuViec,
-					TrangThai
-				)
-				VALUES
-				(
-					?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
-				)";
+    //==================================================
+    // TẠO TIN TUYỂN DỤNG
+    //==================================================
 
-		$statement = $this->conn->prepare($sql);
+    public function create(array $data)
+    {
+        $maTinTuyenDung = uniqid("TD");
 
-		$statement->bind_param(
-			"sssssssssdsssiis",
-			$tinTuyenDungData["maTinTuyenDung"],
-			$tinTuyenDungData["maNhaTuyenDung"],
-			$tinTuyenDungData["tieuDe"],
-			$tinTuyenDungData["moTaCongViec"],
-			$tinTuyenDungData["ngayHetHan"],
-			$tinTuyenDungData["yeuCauCongViec"],
-			$tinTuyenDungData["viTriTuyenDung"],
-			$tinTuyenDungData["capBac"],
-			$tinTuyenDungData["soNamKinhNghiem"],
-			$tinTuyenDungData["mucLuong"],
-			$tinTuyenDungData["diaChiLamViec"],
-			$tinTuyenDungData["hinhThucLamViec"],
-			$tinTuyenDungData["doTuoiYeuCau"],
-			$tinTuyenDungData["soLuongTuyen"],
-			$tinTuyenDungData["thoiGianThuViec"],
-			$tinTuyenDungData["trangThai"]
-		);
+        $sql = "
+        INSERT INTO TinTuyenDung
+        (
+            MaTinTuyenDung,
+            MaNhaTuyenDung,
+            TieuDe,
+            MoTaCongViec,
+            NgayHetHan,
+            YeuCauCongViec,
+            ViTriTuyenDung,
+            CapBac,
+            SoNamKinhNghiem,
+            MucLuong,
+            DiaChiLamViec,
+            HinhThucLamViec,
+            DoTuoiYeuCau,
+            SoLuongTuyen,
+            ThoiGianThuViec,
+            TrangThai
+        )
 
-		return $statement->execute();
-	}
+        VALUES
+        (
+            ?,
+            ?,
+            ?,
+            ?,
+            ?,
+            ?,
+            ?,
+            ?,
+            ?,
+            ?,
+            ?,
+            ?,
+            ?,
+            ?,
+            ?,
+            ?
+        )
+        ";
+
+        $stmt = $this->conn->prepare($sql);
+
+        $viTriTuyenDung = $data['tieuDe'];
+        $capBac = "Intern";
+        $soNamKinhNghiem = 0;
+        $doTuoiYeuCau = "";
+        $soLuongTuyen = 1;
+        $thoiGianThuViec = 0;
+        $trangThai = "DangMo";
+
+        $stmt->bind_param(
+            "ssssssssidssiiss",
+
+            $maTinTuyenDung,
+            $data['maNhaTuyenDung'],
+            $data['tieuDe'],
+            $data['moTaCongViec'],
+            $data['ngayHetHan'],
+            $data['yeuCauCongViec'],
+            $viTriTuyenDung,
+            $capBac,
+            $soNamKinhNghiem,
+            $data['mucLuong'],
+            $data['diaChiLamViec'],
+            $data['hinhThucLamViec'],
+            $doTuoiYeuCau,
+            $soLuongTuyen,
+            $thoiGianThuViec,
+            $trangThai
+        );
+
+        return $stmt->execute();
+    }
 
 	/**
 	 * Lấy tất cả tin tuyển dụng.
@@ -670,5 +694,25 @@ class TinTuyenDung
 		";
 
 		return $this->conn->query($sql);
+	}
+	public function getByNhaTuyenDung($maNhaTuyenDung)
+	{
+		$sql = "
+			SELECT *
+			FROM TinTuyenDung
+			WHERE MaNhaTuyenDung = ?
+			ORDER BY NgayDang DESC
+		";
+
+		$statement = $this->conn->prepare($sql);
+
+		$statement->bind_param(
+			"s",
+			$maNhaTuyenDung
+		);
+
+		$statement->execute();
+
+		return $statement->get_result();
 	}
 }

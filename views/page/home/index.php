@@ -1,12 +1,16 @@
 <?php
-// BƯỚC 1: Khởi động session và kiểm tra quyền truy cập (Trang chủ chỉ dành cho người đã đăng nhập)
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
 $baseUrl = '/JobCV';
+
 include_once __DIR__ . '/../layouts/header.php';
+
+$role = $_SESSION['user_role'] ?? 0;
 ?>
+
+<?php if ($role == 0): ?>
 
 <section class="position-relative py-5 d-flex align-items-center"
     style="background: url('<?= $baseUrl ?>/assets/images/city-bg.png') no-repeat center center; background-size: cover; min-height: 450px;">
@@ -776,6 +780,617 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
 </style>
+
+<?php elseif ($role == 1): ?>
+<!-- ================= NHÀ TUYỂN DỤNG ================= -->
+
+<!-- HERO -->
+
+<section class="employer-hero">
+
+    <div class="container">
+
+        <div class="row align-items-center">
+
+            <!-- Nội dung -->
+
+            <div class="col-lg-7">
+
+                <span class="employer-badge">
+                    DÀNH CHO NHÀ TUYỂN DỤNG
+                </span>
+
+                <h1 class="employer-title">
+                    Tìm kiếm nhân tài
+                    <br>
+                    <span>phù hợp với doanh nghiệp</span>
+                </h1>
+
+                <p class="employer-description">
+                    Đăng tin tuyển dụng, tiếp cận ứng viên tiềm năng
+                    và xây dựng đội ngũ nhân sự chất lượng cho doanh nghiệp.
+                </p>
+
+                <div class="d-flex gap-3 flex-wrap">
+
+                    <a href="<?= $baseUrl ?>/index.php?route=jobs/create"
+                       class="btn btn-warning btn-lg px-4 fw-bold">
+
+                        <i class="fa-solid fa-plus me-2"></i>
+
+                        Đăng tin tuyển dụng
+
+                    </a>
+
+                    <a href="<?= $baseUrl ?>/index.php?route=jobs/manage"
+                       class="btn btn-outline-light btn-lg px-4">
+
+                        Quản lý tin đăng
+
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <!-- Khối minh họa -->
+
+            <div class="col-lg-5 mt-5 mt-lg-0">
+
+                <div class="employer-dashboard-card">
+
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+
+                        <div>
+
+                            <small class="text-muted">
+                                TỔNG QUAN TUYỂN DỤNG
+                            </small>
+
+                            <h4 class="fw-bold mb-0">
+                                Hoạt động của bạn
+                            </h4>
+
+                        </div>
+
+                        <div class="dashboard-icon">
+                            <i class="fa-solid fa-chart-line"></i>
+                        </div>
+
+                    </div>
+
+
+                    <div class="row g-3">
+
+                        <div class="col-6">
+
+                            <div class="stat-box">
+
+                                <i class="fa-solid fa-briefcase text-primary-blue"></i>
+
+                                <h3 class="fw-bold mb-0">
+                                    <?= $totalJobs ?? 0 ?>
+                                </h3>
+
+                                <small class="text-muted">
+                                    Tin tuyển dụng
+                                </small>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="col-6">
+
+                            <div class="stat-box">
+
+                                <i class="fa-solid fa-users text-success"></i>
+
+                                <h3 class="fw-bold mb-0">
+                                    <?= $totalApplications ?? 0 ?>
+                                </h3>
+
+                                <small class="text-muted">
+                                    Ứng viên
+                                </small>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="candidate-progress mt-4">
+
+                        <div class="d-flex justify-content-between mb-2">
+
+                            <span class="small fw-semibold">
+                                Hiệu quả tuyển dụng
+                            </span>
+
+                            <span class="small text-success fw-bold">
+                                Đang hoạt động
+                            </span>
+
+                        </div>
+
+                        <div class="progress">
+
+                            <div class="progress-bar bg-success"
+                                 style="width: 75%;">
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= CHỨC NĂNG ================= -->
+
+<section class="py-5 bg-light">
+
+    <div class="container">
+
+        <div class="section-heading mb-4">
+
+            <span>
+                QUẢN LÝ TUYỂN DỤNG
+            </span>
+
+            <h2>
+                Mọi thứ bạn cần để tuyển dụng hiệu quả
+            </h2>
+
+        </div>
+
+
+        <div class="row g-4">
+
+
+            <!-- Đăng tin -->
+
+            <div class="col-lg-4">
+
+                <a href="<?= $baseUrl ?>/index.php?route=jobs/create"
+                   class="feature-card">
+
+                    <div class="feature-number">
+                        01
+                    </div>
+
+                    <div>
+
+                        <h4>
+                            Đăng tin tuyển dụng
+                        </h4>
+
+                        <p>
+                            Tạo tin tuyển dụng và tiếp cận những ứng viên
+                            phù hợp với nhu cầu của doanh nghiệp.
+                        </p>
+
+                        <span class="feature-link">
+                            Đăng tin ngay
+                            <i class="fa-solid fa-arrow-right ms-2"></i>
+                        </span>
+
+                    </div>
+
+                </a>
+
+            </div>
+
+
+            <!-- Quản lý ứng viên -->
+
+            <div class="col-lg-4">
+
+                <a href="<?= $baseUrl ?>/index.php?route=applications/manage"
+                   class="feature-card">
+
+                    <div class="feature-number">
+                        02
+                    </div>
+
+                    <div>
+
+                        <h4>
+                            Quản lý ứng viên
+                        </h4>
+
+                        <p>
+                            Theo dõi hồ sơ, đánh giá ứng viên và quản lý
+                            toàn bộ quá trình tuyển dụng.
+                        </p>
+
+                        <span class="feature-link">
+                            Xem ứng viên
+                            <i class="fa-solid fa-arrow-right ms-2"></i>
+                        </span>
+
+                    </div>
+
+                </a>
+
+            </div>
+
+
+            <!-- Quản lý tin -->
+
+            <div class="col-lg-4">
+
+                <a href="<?= $baseUrl ?>/index.php?route=jobs/manage"
+                   class="feature-card">
+
+                    <div class="feature-number">
+                        03
+                    </div>
+
+                    <div>
+
+                        <h4>
+                            Quản lý tin đăng
+                        </h4>
+
+                        <p>
+                            Chỉnh sửa, cập nhật và theo dõi hiệu quả
+                            các tin tuyển dụng của bạn.
+                        </p>
+
+                        <span class="feature-link">
+                            Quản lý tin
+                            <i class="fa-solid fa-arrow-right ms-2"></i>
+                        </span>
+
+                    </div>
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= CTA ================= -->
+
+<section class="py-5 bg-white">
+
+    <div class="container">
+
+        <div class="employer-cta">
+
+            <div>
+
+                <h3 class="fw-bold mb-2">
+                    Đang tìm kiếm nhân tài cho đội ngũ của bạn?
+                </h3>
+
+                <p class="mb-0 text-white-50">
+                    Hãy bắt đầu bằng việc đăng tin tuyển dụng đầu tiên.
+                </p>
+
+            </div>
+
+            <a href="<?= $baseUrl ?>/index.php?route=jobs/create"
+               class="btn btn-warning fw-bold px-4 py-3">
+
+                Đăng tin ngay
+
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<style>
+
+.employer-hero {
+
+    background:
+        linear-gradient(
+            110deg,
+            #0b2239 0%,
+            #123d63 65%,
+            #1e5ba6 100%
+        );
+
+    padding: 90px 0;
+
+    color: white;
+
+}
+
+
+.employer-badge {
+
+    display: inline-block;
+
+    background: rgba(255,255,255,0.12);
+
+    border: 1px solid rgba(255,255,255,0.25);
+
+    border-radius: 30px;
+
+    padding: 8px 18px;
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+    letter-spacing: .5px;
+
+    margin-bottom: 22px;
+
+}
+
+
+.employer-title {
+
+    font-size: 3.4rem;
+
+    line-height: 1.15;
+
+    font-weight: 800;
+
+    margin-bottom: 25px;
+
+}
+
+
+.employer-title span {
+
+    color: #ffc107;
+
+}
+
+
+.employer-description {
+
+    max-width: 570px;
+
+    font-size: 1.1rem;
+
+    line-height: 1.7;
+
+    color: rgba(255,255,255,.75);
+
+    margin-bottom: 32px;
+
+}
+
+
+.employer-dashboard-card {
+
+    background: white;
+
+    color: #172b4d;
+
+    border-radius: 22px;
+
+    padding: 30px;
+
+    box-shadow: 0 25px 60px rgba(0,0,0,.25);
+
+}
+
+
+.dashboard-icon {
+
+    width: 48px;
+
+    height: 48px;
+
+    border-radius: 14px;
+
+    background: #eaf2fb;
+
+    color: #1e5ba6;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 20px;
+
+}
+
+
+.stat-box {
+
+    background: #f5f7fa;
+
+    border-radius: 14px;
+
+    padding: 18px;
+
+}
+
+
+.stat-box i {
+
+    font-size: 20px;
+
+    margin-bottom: 8px;
+
+}
+
+
+.progress {
+
+    height: 8px;
+
+    border-radius: 20px;
+
+}
+
+
+.section-heading span {
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+    color: #1e5ba6;
+
+    letter-spacing: 1px;
+
+}
+
+
+.section-heading h2 {
+
+    font-weight: 800;
+
+    margin-top: 8px;
+
+}
+
+
+.feature-card {
+
+    display: flex;
+
+    gap: 20px;
+
+    height: 100%;
+
+    padding: 30px;
+
+    background: white;
+
+    border-radius: 18px;
+
+    text-decoration: none;
+
+    color: #172b4d;
+
+    border: 1px solid #e9edf2;
+
+    transition: all .25s ease;
+
+}
+
+
+.feature-card:hover {
+
+    transform: translateY(-5px);
+
+    box-shadow: 0 15px 35px rgba(11,34,57,.12);
+
+    color: #172b4d;
+
+}
+
+
+.feature-number {
+
+    font-size: 18px;
+
+    font-weight: 800;
+
+    color: #1e5ba6;
+
+    min-width: 35px;
+
+}
+
+
+.feature-card h4 {
+
+    font-weight: 700;
+
+    margin-bottom: 12px;
+
+}
+
+
+.feature-card p {
+
+    color: #6c757d;
+
+    line-height: 1.6;
+
+    margin-bottom: 20px;
+
+}
+
+
+.feature-link {
+
+    color: #1e5ba6;
+
+    font-weight: 700;
+
+    font-size: 14px;
+
+}
+
+
+.employer-cta {
+
+    background: linear-gradient(135deg, #0b2239, #1d446c);
+
+    border-radius: 20px;
+
+    padding: 38px 45px;
+
+    color: white;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    gap: 25px;
+
+}
+
+
+@media (max-width: 768px) {
+
+    .employer-title {
+
+        font-size: 2.4rem;
+
+    }
+
+    .employer-cta {
+
+        flex-direction: column;
+
+        align-items: flex-start;
+
+    }
+
+}
+
+</style>
+
+<?php endif; ?>
 
 
 <?php include_once __DIR__ . '/../layouts/footer.php'; ?>

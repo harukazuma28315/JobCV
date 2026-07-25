@@ -3,12 +3,14 @@
 require_once __DIR__ . '/../config/db.php';
 require_once __DIR__ . '/../models/UserModel.php';
 require_once __DIR__ . '/../models/TinTuyenDung.php';
+require_once __DIR__ . '/../models/NhaTuyenDung.php';
 
 class HomeController
 {
     private $userModel;
     private $tinTuyenDungModel;
     private $conn;
+    private $nhaTuyenDungModel;
 
     public function __construct($conn)
     {
@@ -18,6 +20,7 @@ class HomeController
 
         // TinTuyenDung hiện tại tự lấy global $conn
         $this->tinTuyenDungModel = new TinTuyenDung();
+        $this->nhaTuyenDungModel = new NhaTuyenDung();
     }
 
     /**
@@ -76,6 +79,25 @@ class HomeController
 
         while ($row = $resultCategories->fetch_assoc()) {
             $categories[] = $row;
+        }
+
+
+        // nhà tuyển dụng
+        $totalJobs = 0;
+        $totalApplications = 0;
+
+        if (
+            isset($_SESSION['user_id']) &&
+            isset($_SESSION['Role']) &&
+            $_SESSION['Role'] == 1
+        ) {
+            $maNhaTuyenDung = $_SESSION['user_id'];
+
+            $totalJobs = $this->nhaTuyenDungModel
+                ->countJobs($maNhaTuyenDung);
+
+            $totalApplications = $this->nhaTuyenDungModel
+                ->countApplications($maNhaTuyenDung);
         }
 
         require_once __DIR__ . '/../views/page/home/index.php';

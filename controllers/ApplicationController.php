@@ -189,4 +189,20 @@ class ApplicationController
 
 		require ROOT_PATH . '/views/applicant/applicationDetail.php';
 	}
+	public function manage()
+	{
+		if (
+			!isset($_SESSION['user_id']) ||
+			($_SESSION['Role'] ?? 0) != 1
+		) {
+			exit('Bạn không có quyền truy cập.');
+		}
+
+		$maNhaTuyenDung = $_SESSION['user_id'];
+
+		$applications = $this->jobApplyModel
+			->getByNhaTuyenDung($maNhaTuyenDung);
+
+		require_once __DIR__ . '/../views/page/employer/manage-candidates.php';
+	}
 }

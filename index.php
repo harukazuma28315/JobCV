@@ -199,42 +199,28 @@ $routes = [
 	// NHÀ TUYỂN DỤNG
 	// =========================
 
-	'employer/detail' => [
-		'controller' => 'NhaTuyenDungController',
-		'method' => 'detail',
-		'constructor' => 'default',
-		'parameters' => [
-			'maNhaTuyenDung'
-		]
-	],
-
-	'employer/update' => [
-		'controller' => 'NhaTuyenDungController',
-		'method' => 'update',
+	'jobs/create' => [
+		'controller' => 'TinTuyenDungController',
+		'method' => 'create',
 		'constructor' => 'default',
 		'parameters' => [
 			'post'
 		]
 	],
-
-	'employer/upload-logo' => [
-		'controller' => 'NhaTuyenDungController',
-		'method' => 'uploadLogo',
+	// Quản lý bài đăng
+	'jobs/manage' => [
+		'controller' => 'TinTuyenDungController',
+		'method' => 'manage',
 		'constructor' => 'default',
-		'parameters' => [
-			'maNhaTuyenDung',
-			'file'
-		]
+		'parameters' => []
 	],
 
-	'employer/upload-cover' => [
-		'controller' => 'NhaTuyenDungController',
-		'method' => 'uploadCover',
+	// Quản lý ứng viên
+	'applications/manage' => [
+		'controller' => 'ApplicationController',
+		'method' => 'manage',
 		'constructor' => 'default',
-		'parameters' => [
-			'maNhaTuyenDung',
-			'file'
-		]
+		'parameters' => []
 	],
 
 	// =========================
