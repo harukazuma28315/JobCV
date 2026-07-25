@@ -39,6 +39,7 @@ class TinTuyenDungController
 			'category' => $_GET['category'] ?? '',
 			'hinhThucLamViec' => $_GET['job_type'] ?? '',
 			'soNamKinhNghiem' => $_GET['experience'] ?? '',
+			'postedDate' => $_GET['posted_date'] ?? '',
 			'minSalary' => '',
 			'maxSalary' => ''
 		];

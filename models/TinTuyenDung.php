@@ -361,44 +361,51 @@ class TinTuyenDung
 		return $statement->get_result();
 	}
 
+	/**
+	 * Lấy danh sách địa điểm từ bảng danhmuc (LoaiDanhMuc = 'diadiem').
+	 *
+	 * @return array
+	 */
 	public function getLocations()
 	{
-		$sql = "SELECT DISTINCT DiaChiLamViec
-				FROM tintuyendung
-				WHERE DiaChiLamViec IS NOT NULL
-				AND DiaChiLamViec != ''
-				ORDER BY DiaChiLamViec ASC";
+		$sql = "SELECT MaDanhMuc, TenDanhMuc
+				FROM danhmuc
+				WHERE LoaiDanhMuc = 'diadiem'
+				ORDER BY TenDanhMuc ASC";
 
 		$result = $this->conn->query($sql);
 
 		$locations = [];
 
 		while ($row = $result->fetch_assoc()) {
-			$locations[] = $row['DiaChiLamViec'];
+			$locations[] = $row;
 		}
 
 		return $locations;
 	}
 
 	/**
-	 * Lọc theo địa điểm.
+	 * Lọc theo địa điểm (dùng bảng danhmuc thông qua chitietdanhmuc).
 	 *
-	 * @param string $diaChi
+	 * @param string $maDanhMuc Mã địa điểm trong bảng danhmuc
 	 * @return mysqli_result
 	 */
-	public function filterLocation($diaChi)
+	public function filterLocation($maDanhMuc)
 	{
-		$sql = "SELECT *
-				FROM TinTuyenDung
-				WHERE DiaChiLamViec LIKE ?";
+		$sql = "SELECT t.*
+				FROM tintuyendung t
+				WHERE EXISTS (
+					SELECT 1
+					FROM chitietdanhmuc ctdm
+					WHERE ctdm.MaTinTuyenDung = t.MaTinTuyenDung
+					AND ctdm.MaDanhMuc = ?
+				)";
 
 		$statement = $this->conn->prepare($sql);
 
-		$search = "%" . $diaChi . "%";
-
 		$statement->bind_param(
 			"s",
-			$search
+			$maDanhMuc
 		);
 
 		$statement->execute();
@@ -505,21 +512,45 @@ class TinTuyenDung
 	 * @param array $filters
 	 * @return mysqli_result
 	 */
-	public function filter($filters)
+	public function filter($filters, $sort = 'newest')
 	{
-		$sql = "SELECT *
-				FROM TinTuyenDung
-				WHERE 1 = 1";
+		$orderBy = "t.NgayDang DESC";
+
+		switch ($sort) {
+			case 'oldest':
+				$orderBy = "t.NgayDang ASC";
+				break;
+
+			case 'salary_high':
+				$orderBy = "t.MucLuong DESC";
+				break;
+
+			case 'salary_low':
+				$orderBy = "t.MucLuong ASC";
+				break;
+		}
+
+		$sql = "
+			SELECT
+				t.*,
+				n.TenCongTy,
+				n.Logo
+			FROM tintuyendung t
+			INNER JOIN nhatuyendung n
+				ON t.MaNhaTuyenDung = n.MaNhaTuyenDung
+			WHERE 1 = 1
+		";
 
 		$params = [];
 		$types = "";
 
+		// Tìm theo tên công ty, địa điểm, tiêu đề, cấp bậc
 		if (!empty($filters["keyword"])) {
 			$sql .= " AND (
-						TieuDe LIKE ?
-						OR MoTaCongViec LIKE ?
-						OR YeuCauCongViec LIKE ?
-						OR ViTriTuyenDung LIKE ?
+						t.TieuDe LIKE ?
+						OR t.DiaChiLamViec LIKE ?
+						OR t.CapBac LIKE ?
+						OR n.TenCongTy LIKE ?
 					)";
 
 			$keyword = "%" . $filters["keyword"] . "%";
@@ -533,25 +564,32 @@ class TinTuyenDung
 		}
 
 		if (isset($filters["minSalary"]) && $filters["minSalary"] !== "") {
-			$sql .= " AND MucLuong >= ?";
+			$sql .= " AND t.MucLuong >= ?";
 			$params[] = $filters["minSalary"];
 			$types .= "d";
 		}
 
 		if (isset($filters["maxSalary"]) && $filters["maxSalary"] !== "") {
-			$sql .= " AND MucLuong <= ?";
+			$sql .= " AND t.MucLuong <= ?";
 			$params[] = $filters["maxSalary"];
 			$types .= "d";
 		}
 
+		// Lọc theo địa điểm: dùng bảng danhmuc (qua chitietdanhmuc)
 		if (!empty($filters["location"])) {
-			$sql .= " AND DiaChiLamViec LIKE ?";
-			$params[] = "%" . $filters["location"] . "%";
+			$sql .= " AND EXISTS (
+						SELECT 1
+						FROM chitietdanhmuc ctdm
+						WHERE ctdm.MaTinTuyenDung = t.MaTinTuyenDung
+						AND ctdm.MaDanhMuc = ?
+					)";
+
+			$params[] = $filters["location"];
 			$types .= "s";
 		}
 
 		if (!empty($filters["position"])) {
-			$sql .= " AND ViTriTuyenDung = ?";
+			$sql .= " AND t.ViTriTuyenDung = ?";
 			$params[] = $filters["position"];
 			$types .= "s";
 		}
@@ -560,7 +598,7 @@ class TinTuyenDung
 			$sql .= " AND EXISTS (
 						SELECT 1
 						FROM chitietdanhmuc ctdm
-						WHERE ctdm.MaTinTuyenDung = TinTuyenDung.MaTinTuyenDung
+						WHERE ctdm.MaTinTuyenDung = t.MaTinTuyenDung
 						AND ctdm.MaDanhMuc = ?
 					)";
 
@@ -569,13 +607,13 @@ class TinTuyenDung
 		}
 
 		if (!empty($filters["capBac"])) {
-			$sql .= " AND CapBac = ?";
+			$sql .= " AND t.CapBac = ?";
 			$params[] = $filters["capBac"];
 			$types .= "s";
 		}
 
 		if (!empty($filters["hinhThucLamViec"])) {
-			$sql .= " AND HinhThucLamViec = ?";
+			$sql .= " AND t.HinhThucLamViec = ?";
 			$params[] = $filters["hinhThucLamViec"];
 			$types .= "s";
 		}
@@ -584,10 +622,25 @@ class TinTuyenDung
 			isset($filters["soNamKinhNghiem"]) &&
 			$filters["soNamKinhNghiem"] !== ""
 		) {
-			$sql .= " AND SoNamKinhNghiem <= ?";
+			$sql .= " AND t.SoNamKinhNghiem <= ?";
 			$params[] = $filters["soNamKinhNghiem"];
 			$types .= "i";
 		}
+
+		// Lọc theo thời gian đăng tin
+		if (!empty($filters["postedDate"])) {
+			switch ($filters["postedDate"]) {
+				case '24h':
+					$sql .= " AND t.NgayDang >= DATE_SUB(NOW(), INTERVAL 1 DAY)";
+					break;
+
+				case '1week':
+					$sql .= " AND t.NgayDang >= DATE_SUB(NOW(), INTERVAL 7 DAY)";
+					break;
+			}
+		}
+
+		$sql .= " ORDER BY $orderBy";
 
 		$statement = $this->conn->prepare($sql);
 

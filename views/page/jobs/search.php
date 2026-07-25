@@ -33,21 +33,24 @@ include_once __DIR__ . '/../layouts/header.php';
                         <select name="location" class="form-select border-0 py-2 fw-semibold">
                             <option value="">Chọn Địa Điểm</option>
 
-                            <?php 
-                            $locations = [
-                                'Cần Thơ' => 'Cần Thơ',
-                                'Hồ Chí Minh' => 'Hồ Chí Minh',
-                                'Hà Nội' => 'Hà Nội',
-                                'Đà Nẵng' => 'Đà Nẵng'
-                            ];
+                            <?php if (!empty($locations)): ?>
+                                <?php foreach ($locations as $location): ?>
 
-                            foreach ($locations as $val => $lbl): 
-                                $selected = (($_GET['location'] ?? '') === $val) ? 'selected' : '';
-                            ?>
-                                <option value="<?= htmlspecialchars($val) ?>" <?= $selected ?>>
-                                    <?= htmlspecialchars($lbl) ?>
-                                </option>
-                            <?php endforeach; ?>
+                                    <?php 
+                                    $selected = (($_GET['location'] ?? '') === $location['MaDanhMuc'])
+                                        ? 'selected'
+                                        : '';
+                                    ?>
+
+                                    <option
+                                        value="<?= htmlspecialchars($location['MaDanhMuc']) ?>"
+                                        <?= $selected ?>
+                                    >
+                                        <?= htmlspecialchars($location['TenDanhMuc']) ?>
+                                    </option>
+
+                                <?php endforeach; ?>
+                            <?php endif; ?>
                         </select>
                     </div>
 
@@ -120,7 +123,7 @@ include_once __DIR__ . '/../layouts/header.php';
 
                 <!-- 4: BỘ LỌC NÂNG CAO -->
                 <div class="collapse <?= (isset($_GET['salary']) || isset($_GET['level']) || isset($_GET['job_type']) || isset($_GET['experience']) || isset($_GET['posted_date'])) ? 'show' : '' ?>" id="advancedFilter">
-                    <div class="row g-3 mt-2 pt-3 border-top border-white-50">
+                    <div class="row g-3 mt-2 border-top">
                         <!-- Lọc mức lương -->
                         <div class="col-12 col-sm-6 col-md-3">
                             <label class="form-label text-white-50 small fw-semibold mb-1">Mức Lương</label>
