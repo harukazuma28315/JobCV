@@ -233,12 +233,12 @@ CREATE TABLE `ungvien` (
 
 CREATE TABLE `user` (
   `MaUser` varchar(50) NOT NULL,
+  `Email` varchar(100) DEFAULT NULL,
   `MatKhau` varchar(255) NOT NULL,
   `Role` int(11) NOT NULL DEFAULT 0 COMMENT '0 = UngVien, 1 = NhaTuyenDung, 2 = Admin',
   `HoTen` varchar(100) NOT NULL,
   `NgaySinh` date DEFAULT NULL,
   `GioiTinh` tinyint(1) DEFAULT NULL,
-  `Email` varchar(100) DEFAULT NULL,
   `SDT` varchar(15) DEFAULT NULL,
   `DiaChi` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
