@@ -48,20 +48,23 @@
                                         <!-- Mật khẩu -->
                                         <div class="mb-3">
                                             <label for="MatKhau" class="form-label small fw-semibold">Mật khẩu <span class="text-danger">*</span></label>
-                                            <input type="password" class="form-control py-2" id="MatKhau" name="MatKhau" required placeholder="Nhập mật khẩu" minlength="6" title="Mật khẩu tối thiểu 6 ký tự">
+                                            <input type="password" class="form-control py-2" id="MatKhau" name="MatKhau" required placeholder="Nhập mật khẩu (6-32 ký tự)" minlength="6" maxlength="32" pattern="^\S{6,32}$" oninput="this.value = this.value.replace(/\s/g, '')" title="Mật khẩu từ 6 đến 32 ký tự và không chứa khoảng trắng">
                                         </div>
 
                                         <!-- Xác nhận mật khẩu -->
                                         <div class="mb-3">
                                             <label for="MatKhauConfirm" class="form-label small fw-semibold">Nhập lại mật khẩu <span class="text-danger">*</span></label>
-                                            <input type="password" class="form-control py-2" id="MatKhauConfirm" name="MatKhauConfirm" required placeholder="Xác nhận lại mật khẩu">
+                                            <input type="password" class="form-control py-2" id="MatKhauConfirm" name="MatKhauConfirm" required placeholder="Xác nhận lại mật khẩu" minlength="6" maxlength="32" oninput="this.value = this.value.replace(/\s/g, '')">
                                             <div class="invalid-feedback" id="passwordErrorMsg">Vui lòng nhập lại mật khẩu trùng khớp.</div>
                                         </div>
 
                                         <!-- Họ và tên -->
                                         <div class="mb-3">
                                             <label for="HoTen" class="form-label small fw-semibold" id="labelHoTen">Họ và Tên <span class="text-danger">*</span></label>
-                                            <input type="text" class="form-control py-2" id="HoTen" name="HoTen" required placeholder="Nhập họ và tên đầy đủ" maxlength="100">
+                                            <input type="text" class="form-control py-2" id="HoTen" name="HoTen" required placeholder="Nhập họ và tên đầy đủ" maxlength="100"
+                                                   pattern="^[a-zA-ZàáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđĐ\s\.]+$"
+                                                   oninput="this.value = this.value.replace(/[^a-zA-ZàáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđĐ\s\.]/g, '').replace(/\s+/g, ' ');"
+                                                   title="Họ và tên chỉ bao gồm chữ cái và khoảng trắng, không chứa ký tự đặc biệt">
                                         </div>
 
                                         <!-- Ngày sinh & Giới tính -->
@@ -85,8 +88,8 @@
 
                                         <!-- Số điện thoại -->
                                         <div class="mb-3">
-                                            <label for="SDT" class="form-label small fw-semibold" id="labelSDT">Số điện thoại</label>
-                                            <input type="tel" class="form-control py-2" id="SDT" name="SDT" placeholder="Nhập số điện thoại (10 số)" inputmode="numeric" maxlength="10" pattern="(03|05|07|08|09)[0-9]{8}" oninput="this.value = this.value.replace(/\D/g, '')" title="Số điện thoại phải gồm 10 chữ số đúng đầu số Việt Nam (ví dụ: 0912345678)">
+                                            <label for="SoDienThoai" class="form-label small fw-semibold">Số điện thoại <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control py-2" id="SoDienThoai" name="SDT" required placeholder="Nhập 10 chữ số (vd: 0912345678)" inputmode="numeric" maxlength="10" pattern="0[0-9]{9}" oninput="this.value = this.value.replace(/[^0-9]/g, '')" title="Số điện thoại phải bao gồm đúng 10 chữ số và bắt đầu bằng số 0">
                                         </div>
 
                                         <!-- Địa chỉ (Ứng viên) -->
@@ -142,25 +145,28 @@
                                         <!-- Mật khẩu -->
                                         <div class="mb-3">
                                             <label for="MatKhauEmployer" class="form-label small fw-semibold">Mật khẩu <span class="text-danger">*</span></label>
-                                            <input type="password" class="form-control py-2" id="MatKhauEmployer" name="MatKhau" required placeholder="Nhập mật khẩu" minlength="6" title="Mật khẩu tối thiểu 6 ký tự">
+                                            <input type="password" class="form-control py-2" id="MatKhauEmployer" name="MatKhau" required placeholder="Nhập mật khẩu (6-32 ký tự)" minlength="6" maxlength="32" pattern="^\S{6,32}$" oninput="this.value = this.value.replace(/\s/g, '')" title="Mật khẩu từ 6 đến 32 ký tự và không chứa khoảng trắng">
                                         </div>
 
                                         <!-- Xác nhận mật khẩu -->
                                         <div class="mb-3">
                                             <label for="MatKhauConfirmEmployer" class="form-label small fw-semibold">Nhập lại mật khẩu <span class="text-danger">*</span></label>
-                                            <input type="password" class="form-control py-2" id="MatKhauConfirmEmployer" name="MatKhauConfirm" required placeholder="Xác nhận lại mật khẩu">
+                                            <input type="password" class="form-control py-2" id="MatKhauConfirmEmployer" name="MatKhauConfirm" required placeholder="Xác nhận lại mật khẩu" minlength="6" maxlength="32" oninput="this.value = this.value.replace(/\s/g, '')">
                                         </div>
 
                                         <!-- Tên công ty -->
                                         <div class="mb-3">
                                             <label for="HoTenEmployer" class="form-label small fw-semibold">Tên công ty / Doanh nghiệp <span class="text-danger">*</span></label>
-                                            <input type="text" class="form-control py-2" id="HoTenEmployer" name="HoTen" required placeholder="Nhập tên công ty chính thức" maxlength="150">
+                                            <input type="text" class="form-control py-2" id="HoTenEmployer" name="HoTen" required placeholder="Nhập tên công ty chính thức" maxlength="150"
+                                                   pattern="^[a-zA-Z0-9àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđĐ\s\.\,\-\&]+$"
+                                                   oninput="this.value = this.value.replace(/[^a-zA-Z0-9àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđĐ\s\.\,\-\&]/g, '').replace(/\s+/g, ' ');"
+                                                   title="Tên công ty chỉ chứa chữ cái, số, khoảng trắng và các dấu (.,-&)">
                                         </div>
 
                                         <!-- SĐT công ty -->
                                         <div class="mb-3">
-                                            <label for="SDTEmployer" class="form-label small fw-semibold">Số điện thoại công ty</label>
-                                            <input type="tel" class="form-control py-2" id="SDTEmployer" name="SDT" placeholder="Nhập số điện thoại công ty" inputmode="numeric" maxlength="10" pattern="(03|05|07|08|09)[0-9]{8}" oninput="this.value = this.value.replace(/\D/g, '')" title="Số điện thoại phải gồm 10 chữ số đúng đầu số Việt Nam">
+                                            <label for="SDTEmployer" class="form-label small fw-semibold">Số điện thoại công ty <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control py-2" id="SDTEmployer" name="SDT" required placeholder="Nhập 10 chữ số (vd: 0912345678)" inputmode="numeric" maxlength="10" pattern="0[0-9]{9}" oninput="this.value = this.value.replace(/[^0-9]/g, '')" title="Số điện thoại phải bao gồm đúng 10 chữ số và bắt đầu bằng số 0">
                                         </div>
 
                                         <!-- Địa chỉ trụ sở (Doanh nghiệp) -->

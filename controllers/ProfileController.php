@@ -18,10 +18,8 @@ class ProfileController {
 		$shouldLogout = (isset($_GET['action']) && $_GET['action'] === 'logout') || (isset($_GET['route']) && $_GET['route'] === 'auth/logout');
 
 		if ($shouldLogout) {
-			// 1. Xóa bỏ tất cả các biến session
 			$_SESSION = array();
 
-			// 2. Xóa cookie session nếu có để bảo mật trình duyệt
 			if (ini_get("session.use_cookies")) {
 				$params = session_get_cookie_params();
 				setcookie(session_name(), '', time() - 42000,
@@ -30,10 +28,7 @@ class ProfileController {
 				);
 			}
 
-			// 3. Phá hủy hoàn toàn Session trên Server
 			session_destroy();
-
-			// 4. Chuyển hướng về trang đăng nhập
 			header("Location: /JobCV/index.php?route=auth/login");
 			exit();
 		}
@@ -55,12 +50,6 @@ class ProfileController {
 		require_once $viewPath;
 	}
 
-	/**
-	 * Lấy và chuẩn hóa dữ liệu hồ sơ người dùng dựa theo phân quyền Role.
-	 * Trả về cấu trúc dữ liệu tương ứng cho Ứng viên hoặc Nhà tuyển dụng.
-	 * 
-	 * @return array Mảng dữ liệu đã được xử lý và chuẩn hóa theo quy tắc camelCase.
-	 */
 	public function handleGetProfile() : array {
 		if (!isset($_SESSION['user_id'])) {
 			header("Location: /JobCV/index.php?route=auth/login");
@@ -70,9 +59,7 @@ class ProfileController {
 		$maUser = $_SESSION['user_id'];
 		$role = isset($_SESSION['user_role']) ? (int) $_SESSION['user_role'] : 0;
 
-		// Phân tách dữ liệu lấy ra dựa trên Role của tài khoản
 		if ($role === 1) {
-			// Luồng xử lý cho NHÀ TUYỂN DỤNG
 			$rawData = $this->userModel->getEmployerById($maUser);
 			
 			return [
@@ -87,7 +74,6 @@ class ProfileController {
 			];
 		}
 
-		// Luồng xử lý cho ỨNG VIÊN (Mặc định hoặc Role = 0)
 		$rawData = $this->userModel->getUserById($maUser);
 		
 		return [
@@ -112,12 +98,30 @@ class ProfileController {
 			$role = $_SESSION['user_role'] ?? 0;
 			$currentProfile = $this->handleGetProfile();
 
+			$sdt = trim($_POST['sdt'] ?? '');
+
+			// 1. Kiểm tra Số điện thoại giống trang Đăng ký (Bắt buộc đúng 10 số & bắt đầu bằng số 0)
+			if (!empty($sdt) && !preg_match('/^0[0-9]{9}$/', $sdt)) {
+				echo "<script>alert('Số điện thoại phải bao gồm đúng 10 chữ số và bắt đầu bằng số 0!'); window.history.back();</script>";
+				exit();
+			}
+
 			if ($role == 1) {
+				$diaChi = trim($_POST['diaChi'] ?? '');
+				$website = trim($_POST['website'] ?? '');
+				$linhVuc = trim($_POST['linhVuc'] ?? '');
+
+				// Kiểm tra regex Địa chỉ nếu có nhập
+				if (!empty($diaChi) && !preg_match('/^[a-zA-Z0-9àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđĐ\s,\/]+$/u', $diaChi)) {
+					echo "<script>alert('Địa chỉ chứa ký tự không hợp lệ!'); window.history.back();</script>";
+					exit();
+				}
+
 				$dataUpdate = [
-					'sdt'      => trim($_POST['sdt'] ?? ''),
-					'diaChi'   => trim($_POST['diaChi'] ?? ''),
-					'website'  => trim($_POST['website'] ?? ''),
-					'linhVuc'  => trim($_POST['linhVuc'] ?? '')
+					'sdt'      => $sdt,
+					'diaChi'   => $diaChi,
+					'website'  => $website,
+					'linhVuc'  => $linhVuc
 				];
 
 				$hasChange = (
@@ -128,18 +132,31 @@ class ProfileController {
 				);
 
 				if (!$hasChange) {
-					header("Location: /JobCV/index.php?route=profile&status=unchanged");
+					echo "<script>alert('Không có thông tin nào thay đổi.'); window.location.href='/JobCV/index.php?route=profile';</script>";
 					exit();
 				}
 
 				$result = $this->userModel->updateEmployerProfile($maUser, $dataUpdate);
 			} else {
+				$hoTen = trim($_POST['hoTen'] ?? '');
+				$diaChi = trim($_POST['diaChi'] ?? '');
+
+				if (empty($hoTen)) {
+					echo "<script>alert('Họ và tên không được bỏ trống!'); window.history.back();</script>";
+					exit();
+				}
+
+				if (!empty($hoTen) && !preg_match('/^[a-zA-ZàáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđĐ\s\.]+$/u', $hoTen)) {
+					echo "<script>alert('Họ và tên chỉ bao gồm chữ cái và khoảng trắng!'); window.history.back();</script>";
+					exit();
+				}
+
 				$dataUpdate = [
-					'hoTen'    => trim($_POST['hoTen'] ?? ''),
+					'hoTen'    => $hoTen,
 					'ngaySinh' => !empty($_POST['ngaySinh']) ? $_POST['ngaySinh'] : null,
 					'gioiTinh' => $_POST['gioiTinh'] ?? null,
-					'sdt'      => trim($_POST['sdt'] ?? ''),
-					'diaChi'   => trim($_POST['diaChi'] ?? '')
+					'sdt'      => $sdt,
+					'diaChi'   => $diaChi
 				];
 
 				$hasChange = (
@@ -151,7 +168,7 @@ class ProfileController {
 				);
 
 				if (!$hasChange) {
-					header("Location: /JobCV/index.php?route=profile&status=unchanged");
+					echo "<script>alert('Không có thông tin nào thay đổi.'); window.location.href='/JobCV/index.php?route=profile';</script>";
 					exit();
 				}
 
@@ -159,11 +176,11 @@ class ProfileController {
 			}
 
 			if ($result) {
-				if(isset($dataUpdate['hoTen'])) $_SESSION['user_name'] = $dataUpdate['hoTen'];
-				header("Location: /JobCV/index.php?route=profile&status=success");
+				if (isset($dataUpdate['hoTen'])) $_SESSION['user_name'] = $dataUpdate['hoTen'];
+				echo "<script>alert('Cập nhật thông tin hồ sơ thành công!'); window.location.href='/JobCV/index.php?route=profile';</script>";
 				exit();
 			} else {
-				header("Location: /JobCV/index.php?route=profile&status=error");
+				echo "<script>alert('Có lỗi xảy ra trong quá trình cập nhật dữ liệu!'); window.history.back();</script>";
 				exit();
 			}
 		}

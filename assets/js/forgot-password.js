@@ -77,7 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
         formData.append('email', email);
 
         setButtonState(btnGetOtp, true, 'Đang gửi...');
-        fetch(`${baseUrl}/index.php?route=auth/forgot-password-submit`, { method: 'POST', body: formData })
+        fetch(`${baseUrl}/index.php?route=auth/forgot-password-submit`, { method: 'POST', body: formData, credentials: 'same-origin' })
             .then(response => response.json())
             .then(data => {
                 showMessage(data.message, data.status === 'success' ? 'success' : 'danger');
@@ -112,7 +112,7 @@ document.addEventListener('DOMContentLoaded', () => {
         formData.append('otp', otp);
 
         setButtonState(btnVerifyOtp, true, 'Đang xác nhận...');
-        fetch(`${baseUrl}/index.php?route=auth/forgot-password-submit`, { method: 'POST', body: formData })
+        fetch(`${baseUrl}/index.php?route=auth/forgot-password-submit`, { method: 'POST', body: formData, credentials: 'same-origin' })
             .then(response => response.json())
             .then(data => {
                 showMessage(data.message, data.status === 'success' ? 'success' : 'danger');

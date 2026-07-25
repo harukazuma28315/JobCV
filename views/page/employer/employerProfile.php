@@ -4,17 +4,7 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 $baseUrl = '/JobCV';
-// require_once __DIR__ . '/../../../config/db.php';
-// require_once __DIR__ . '/../../../controllers/ProfileController.php';
-// require_once __DIR__ . '/../../../controllers/LogoutController.php';
 include_once __DIR__ . '/../layouts/header.php'; 
-
-// $logoutCtrl = new LogoutController($conn);
-// $logoutCtrl->handleLogout();
-
-// $profileCtrl = new ProfileController($conn);
-// $profileCtrl->handleUpdateProfile();
-// $profile = $profileCtrl->handleGetProfile();
 
 $resetEmail = $_SESSION['user_email'] ?? $profile['email'] ?? '';
 ?>
@@ -24,12 +14,10 @@ $resetEmail = $_SESSION['user_email'] ?? $profile['email'] ?? '';
         <!-- Cột trái: Xem nhanh Logo, Ảnh bìa & Trạng thái -->
         <div class="col-12 col-lg-4">
             <div class="card border-0 shadow-sm overflow-hidden bg-white rounded-3">
-                <!-- Ảnh bìa doanh nghiệp -->
                 <div class="position-relative" style="height: 120px; background-color: #e9ecef;">
                     <img src="https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&w=800&q=80" alt="Cover" class="w-100 h-100 style-cover" style="object-fit: cover;">
                 </div>
 
-                <!-- Logo đè lên ảnh bìa -->
                 <div class="text-center position-relative" style="margin-top: -50px; z-index: 2;">
                     <div class="position-relative d-inline-block" style="width: 100px; height: 100px;">
                         <img src="https://api.dicebear.com/7.x/identicon/svg?seed=vng" alt="Logo" class="rounded-circle border border-3 border-white p-1 bg-white shadow-sm" style="width: 100%; height: 100%; object-fit: contain;">
@@ -41,7 +29,7 @@ $resetEmail = $_SESSION['user_email'] ?? $profile['email'] ?? '';
                         </span>
                     </div>
                 </div>
-                <!-- Thông tin tóm tắt -->
+
                 <div class="card-body text-center pt-2">
                     <h5 class="fw-bold text-dark mb-1"><?php echo htmlspecialchars($profile['companyName'] ?? 'Chưa cập nhật'); ?></h5>
                     <p class="text-muted small mb-3">Thông tin tài khoản nhà tuyển dụng</p>
@@ -65,49 +53,42 @@ $resetEmail = $_SESSION['user_email'] ?? $profile['email'] ?? '';
                 <form action="<?= $baseUrl ?>/index.php?route=profile/update" method="POST" class="needs-validation" novalidate id="profileForm">
                     <input type="hidden" name="action" value="update">
                     <div class="row g-3">
-                        <!-- Tên công ty (Chỉ đọc) -->
                         <div class="col-12 col-md-6">
                             <label class="form-label fw-semibold text-dark">Tên công ty / Doanh nghiệp</label>
                             <input type="text" class="form-control py-2" value="<?php echo htmlspecialchars($profile['companyName'] ?? ''); ?>" readonly>
                         </div>
 
-                        <!-- Mã số thuế (Chỉ đọc) -->
                         <div class="col-12 col-md-6">
                             <label class="form-label fw-semibold text-dark">Mã số thuế / Giấy phép KD</label>
                             <input type="text" class="form-control py-2" value="<?php echo htmlspecialchars($profile['taxCode'] ?? ''); ?>" readonly>
                         </div>
 
-                        <!-- Email (Chỉ đọc) -->
                         <div class="col-12 col-md-6">
                             <label class="form-label fw-semibold text-dark">Email liên hệ tuyển dụng</label>
                             <input type="email" class="form-control py-2" value="<?php echo htmlspecialchars($profile['email'] ?? ''); ?>" readonly>
                         </div>
 
-                        <!-- Số điện thoại -->
+                        <!-- Số điện thoại (Giống Đăng ký) -->
                         <div class="col-12 col-md-6">
                             <label class="form-label fw-semibold text-dark">Số điện thoại liên hệ <span class="text-danger">*</span></label>
-                            <input type="tel" name="sdt" class="form-control py-2" value="<?php echo htmlspecialchars($profile['phone'] ?? ''); ?>" required inputmode="numeric" maxlength="10" pattern="(03|05|07|08|09)[0-9]{8}" oninput="this.value = this.value.replace(/\D/g, '')" title="Số điện thoại phải bao gồm 10 chữ số chuẩn nhà mạng Việt Nam">
-                            <div class="invalid-feedback">Vui lòng nhập đúng 10 số điện thoại đầu số Việt Nam.</div>
+                            <input type="text" name="sdt" class="form-control py-2" value="<?php echo htmlspecialchars($profile['phone'] ?? ''); ?>" required placeholder="Nhập 10 chữ số (vd: 0912345678)" inputmode="numeric" maxlength="10" pattern="0[0-9]{9}" oninput="this.value = this.value.replace(/[^0-9]/g, '')" title="Số điện thoại phải bao gồm đúng 10 chữ số và bắt đầu bằng số 0">
                         </div>
 
-                        <!-- Website công ty -->
+                        <!-- Website công ty (Cập nhật pattern linh hoạt chuẩn như trang Đăng ký) -->
                         <div class="col-12 col-md-6">
                             <label class="form-label fw-semibold text-dark">Website công ty</label>
-                            <input type="url" name="website" class="form-control py-2" value="<?php echo htmlspecialchars($profile['website'] ?? ''); ?>" placeholder="https://example.com" maxlength="255" pattern="https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)" oninput="this.value = this.value.replace(/\s/g, '').replace(/[^a-zA-Z0-9\.\:\/\_\-\?\=\&\#]/g, '')" title="Địa chỉ website phải bắt đầu bằng http:// hoặc https:// (ví dụ: https://example.com)">
-                            <div class="invalid-feedback">Website phải bắt đầu bằng http:// hoặc https:// (ví dụ: https://example.com)</div>
+                            <input type="url" name="website" class="form-control py-2" value="<?php echo htmlspecialchars($profile['website'] ?? ''); ?>" placeholder="https://example.com" maxlength="255" pattern="^(https?:\/\/)?([\w\d-]+\.)+[\w\d-]+(\/.*)?$" oninput="this.value = this.value.replace(/\s/g, '').replace(/[^a-zA-Z0-9\.\:\/\_\-\?\=\&\#]/g, '')" title="Nhập định dạng website hợp lệ (ví dụ: https://example.com hoặc example.com)">
                         </div>
 
-                        <!-- Lĩnh vực hoạt động -->
                         <div class="col-12 col-md-6">
                             <label class="form-label fw-semibold text-dark">Lĩnh vực hoạt động</label>
                             <input type="text" name="linhVuc" class="form-control py-2" value="<?php echo htmlspecialchars($profile['industry'] ?? ''); ?>" maxlength="150">
                         </div>
 
-                        <!-- Địa chỉ trụ sở -->
+                        <!-- Địa chỉ trụ sở (Giống Đăng ký) -->
                         <div class="col-12">
                             <label class="form-label fw-semibold text-dark">Địa chỉ trụ sở chính <span class="text-danger">*</span></label>
                             <input type="text" name="diaChi" class="form-control py-2" value="<?php echo htmlspecialchars($profile['address'] ?? ''); ?>" required maxlength="255" pattern="^[a-zA-Z0-9àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđĐ\s,\/]+$" oninput="this.value = this.value.replace(/[^a-zA-Z0-9àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđĐ\s,\/]/g, '')" title="Địa chỉ chỉ được chứa chữ cái, số, khoảng trắng, dấu phẩy (,) và dấu xuyệt (/). Không chứa các ký tự đặc biệt khác">
-                            <div class="invalid-feedback">Địa chỉ chứa ký tự không hợp lệ.</div>
                         </div>
                     </div>
                     
@@ -141,5 +122,4 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 
-<!-- Nhúng Footer chung -->
 <?php include_once __DIR__ . '/../layouts/footer.php'; ?>

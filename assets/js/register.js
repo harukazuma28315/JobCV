@@ -137,6 +137,15 @@ window.switchRole = function (roleVal) {
  */
 document.addEventListener("DOMContentLoaded", () => {
   "use strict";
+
+  // Chuẩn hóa họ tên: Tự động xóa các khoảng trắng thừa ở đầu/cuối khi người dùng rê chuột ra ngoài
+  const nameInputs = document.querySelectorAll("#HoTen, #HoTenEmployer");
+  nameInputs.forEach((input) => {
+    input.addEventListener("blur", function () {
+      this.value = this.value.trim().replace(/\s+/g, " ");
+    });
+  });
+
   const forms = document.querySelectorAll(".needs-validation");
 
   Array.prototype.slice.call(forms).forEach(function (form) {

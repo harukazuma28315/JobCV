@@ -3,9 +3,6 @@
  * Quản lý tương tác giao diện và gửi yêu cầu AJAX đổi mật khẩu mới trong luồng Khôi phục mật khẩu.
  */
 
-/**
- * Đăng ký các sự kiện lắng nghe và điều phối luồng xử lý giao diện cho trang Đặt lại mật khẩu.
- */
 document.addEventListener('DOMContentLoaded', () => {
     const baseUrl = window.appConfig?.baseUrl || '/JobCV';
     
@@ -17,9 +14,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /**
      * Hiển thị thông báo phản hồi từ phía server hoặc phản hồi validation trực tiếp trên giao diện.
-     * 
-     * @param {string} message - Nội dung thông báo cần hiển thị cho người dùng.
-     * @param {string} type - Loại thông báo ('success', 'danger', hoặc 'info') để chọn định dạng màu tương ứng.
      */
     function showResetMessage(message, type = 'info') {
         if (!resetMessage) return;
@@ -28,23 +22,30 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /**
-     * Lắng nghe sự kiện click nút bấm để gửi yêu cầu đổi mật khẩu mới.
-     * Áp dụng kiểm tra độ trùng khớp mật khẩu ở client trước khi tạo AJAX request để tiết kiệm tài nguyên server.
+     * Lắng nghe sự kiện SUBMIT của Form
      */
-    btnResetPassword.addEventListener('click', () => {
-        const password = document.getElementById('matKhau')?.value || '';
-        const confirmPassword = document.getElementById('matKhauConfirm')?.value || '';
+    resetForm.addEventListener('submit', function (e) {
+        // 1. Luôn ngăn hành vi submit mặc định của trình duyệt
+        e.preventDefault();
 
-        if (!password || !confirmPassword) {
-            showResetMessage('Vui lòng nhập đầy đủ các trường mật khẩu.', 'danger');
+        // 2. Kích hoạt Validation mặc định của HTML5 (minlength, maxlength, pattern...)
+        if (!resetForm.checkValidity()) {
+            e.stopPropagation();
+            resetForm.classList.add('was-validated');
+            showResetMessage('Mật khẩu phải từ 6 đến 32 ký tự và không chứa khoảng trắng.', 'danger');
             return;
         }
 
+        const password = document.getElementById('matKhau')?.value || '';
+        const confirmPassword = document.getElementById('matKhauConfirm')?.value || '';
+
+        // 3. Kiểm tra mật khẩu nhập lại trùng khớp
         if (password !== confirmPassword) {
             showResetMessage('Mật khẩu nhập lại không trùng khớp!', 'danger');
             return;
         }
 
+        // 4. Nếu hợp lệ -> Tiến hành gửi AJAX
         const formData = new FormData(resetForm);
         
         btnResetPassword.disabled = true;
@@ -52,13 +53,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
         fetch(`${baseUrl}/index.php?route=auth/forgot-password-submit`, { 
             method: 'POST', 
-            body: formData 
+            body: formData ,
+            credentials: 'same-origin'
         })
         .then(response => response.json())
         .then(data => {
             showResetMessage(data.message, data.status === 'success' ? 'success' : 'danger');
             if (data.status === 'success') {
-                // Trì hoãn chuyển hướng ngắn để người dùng kịp đọc thông báo thành công
                 setTimeout(() => {
                     window.location.href = `${baseUrl}/index.php?route=auth/login`;
                 }, 1200);
