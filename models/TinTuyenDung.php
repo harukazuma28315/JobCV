@@ -101,10 +101,34 @@ class TinTuyenDung
 	 *
 	 * @return mysqli_result
 	 */
-	public function getAll()
+	public function getAll($sort = 'newest')
 	{
-		$sql = "SELECT *
-				FROM TinTuyenDung";
+		$orderBy = "t.NgayDang DESC";
+
+		switch ($sort) {
+			case 'oldest':
+				$orderBy = "t.NgayDang ASC";
+				break;
+
+			case 'salary_high':
+				$orderBy = "t.MucLuong DESC";
+				break;
+
+			case 'salary_low':
+				$orderBy = "t.MucLuong ASC";
+				break;
+		}
+
+		$sql = "
+			SELECT 
+				t.*,
+				n.TenCongTy,
+				n.Logo
+			FROM tintuyendung t
+			INNER JOIN nhatuyendung n
+				ON t.MaNhaTuyenDung = n.MaNhaTuyenDung
+			ORDER BY $orderBy
+		";
 
 		return $this->conn->query($sql);
 	}
@@ -117,9 +141,14 @@ class TinTuyenDung
 	 */
 	public function getById($maTinTuyenDung)
 	{
-		$sql = "SELECT *
-				FROM TinTuyenDung
-				WHERE MaTinTuyenDung = ?";
+		$sql = "SELECT 
+					t.*,
+					n.TenCongTy,
+					n.Logo
+				FROM tintuyendung t
+				INNER JOIN nhatuyendung n
+					ON t.MaNhaTuyenDung = n.MaNhaTuyenDung
+				WHERE t.MaTinTuyenDung = ?";
 
 		$statement = $this->conn->prepare($sql);
 

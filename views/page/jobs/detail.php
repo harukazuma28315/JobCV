@@ -27,7 +27,7 @@ require_once __DIR__ . '/../layouts/header.php';
                         </h1>
 
                         <p class="fs-5 mb-2 text-warning fw-semibold">
-                            <?= htmlspecialchars($job['MaNhaTuyenDung']) ?>
+                            <?= htmlspecialchars($job['TenCongTy']) ?>
                         </p>
                         
                         <div class="d-flex flex-wrap gap-3 small text-white-50">

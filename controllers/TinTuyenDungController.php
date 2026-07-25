@@ -91,7 +91,7 @@ class TinTuyenDungController
 			$jobs[] = [
 				'id' => $row['MaTinTuyenDung'],
 				'title' => $row['TieuDe'],
-				'company_name' => $row['MaNhaTuyenDung'],
+				'company_name' => $row['TenCongTy'],
 				'company_logo' => '',
 				'salary_text' => $row['MucLuong'],
 				'location_text' => $row['DiaChiLamViec'],

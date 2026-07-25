@@ -311,9 +311,7 @@ include_once __DIR__ . '/../layouts/header.php';
                                     </div>
                                 </div>
                                 <div class="col-md-auto text-end d-flex flex-md-column align-items-center justify-content-between gap-3 mt-3 mt-md-0">
-                                    <button class="btn btn-light btn-heart border-0 rounded-circle py-2 px-2" onclick="alertLoginRequirement()" title="Lưu việc làm">
-                                        <i class="fa-regular fa-heart fs-5"></i>
-                                    </button>
+                                    
                                     <a href="<?= $baseUrl ?>/index.php?route=jobs/detail&maTinTuyenDung=<?= urlencode($job['id']) ?>"
                                     class="btn btn-outline-primary btn-sm px-3 fw-bold">
                                         Xem Chi Tiết
