@@ -111,8 +111,10 @@ class JobModel
             $sql .= " AND t.TrangThaiDuyet = 'DaDuyet'";
         } elseif (in_array($status, ['rejected', 'TuChoi'])) {
             $sql .= " AND t.TrangThaiDuyet = 'TuChoi'";
+        } elseif (in_array($status, ['removed', 'DaGo'])) {
+            // hỗ trợ cả DaGo (mới) và DaGoi (dữ liệu cũ nếu có)
+            $sql .= " AND t.TrangThaiDuyet IN ('DaGo')";
         }
-
         $sql .= " ORDER BY t.NgayDang DESC";
 
         $stmt = mysqli_prepare($this->link, $sql);
@@ -163,7 +165,7 @@ class JobModel
      */
     public function removeJob($maTin)
     {
-        $sql = "UPDATE tintuyendung SET TrangThaiDuyet = 'DaGoi' WHERE MaTinTuyenDung = ?";
+        $sql = "UPDATE tintuyendung SET TrangThaiDuyet = 'DaGo' WHERE MaTinTuyenDung = ?";
         $stmt = mysqli_prepare($this->link, $sql);
         mysqli_stmt_bind_param($stmt, 's', $maTin);
         $success = mysqli_stmt_execute($stmt);

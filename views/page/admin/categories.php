@@ -60,7 +60,17 @@ $diaDiemList   = $diaDiemList ?? [];
             <i class="fa-solid fa-plus me-2"></i>Thêm danh mục mới
         </button>
     </div>
+    <!-- Thông báo -->
+    <?php if (isset($thongBao) && !empty($thongBao)): 
+        $alertClass = (isset($thongBao['type']) && $thongBao['type'] === 'success') ? 'success' : 'danger';
+    ?>
+        <div class="alert alert-<?= $alertClass ?> alert-dismissible fade show mb-4" role="alert">
+            <?= htmlspecialchars($thongBao['message'] ?? '') ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    <?php endif; ?>
 
+    <!-- Tabs for Ngành nghề and Địa điểm -->
     <ul class="nav nav-tabs mb-3" id="myTab" role="tablist">
         <li class="nav-item" role="presentation">
             <button class="nav-link active" id="job-tab" data-bs-toggle="tab" data-bs-target="#job-tab-pane" type="button" role="tab">
@@ -110,7 +120,8 @@ $diaDiemList   = $diaDiemList ?? [];
                                     <form method="POST" action="<?= BASE_URL ?>/index.php?route=admin/categories/delete" style="display:inline;">
                                         <input type="hidden" name="maDanhMuc" value="<?= htmlspecialchars($item['MaDanhMuc']) ?>">
                                         <input type="hidden" name="loai" value="nganhnghe">
-                                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Xóa?')">
+                                        <button type="submit" class="btn btn-sm btn-danger" 
+                                                onclick="return confirm('Bạn có chắc muốn xóa ngành nghề này không?')">
                                             <i class="fa-solid fa-trash"></i> Xóa
                                         </button>
                                     </form>
@@ -157,7 +168,8 @@ $diaDiemList   = $diaDiemList ?? [];
                                     <form method="POST" action="<?= BASE_URL ?>/index.php?route=admin/categories/delete" style="display:inline;">
                                         <input type="hidden" name="maDanhMuc" value="<?= htmlspecialchars($item['MaDanhMuc']) ?>">
                                         <input type="hidden" name="loai" value="diadiem">
-                                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Xóa?')">
+                                        <button type="submit" class="btn btn-sm btn-danger" 
+                                                onclick="return confirm('Bạn có chắc muốn xóa địa điểm này không?')">
                                             <i class="fa-solid fa-trash"></i> Xóa
                                         </button>
                                     </form>
