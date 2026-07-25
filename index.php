@@ -166,7 +166,8 @@ $routes = [
 		'method' => 'uploadSubmit',
 		'constructor' => 'default',
 		'parameters' => [
-			'file'
+			'file',
+			'post'
 		]
 	],
 	'applications/applied' => [

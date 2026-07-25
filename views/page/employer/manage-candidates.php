@@ -68,7 +68,7 @@ $currentTrangThai = $currentFilters['trangThai'] ?? ($_GET['trangThai'] ?? '');
                     <tr>
                         <th>Ứng viên</th>
                         <th>CV</th>
-                        <th>Điểm</th>
+                        <!-- <th>Điểm đánh giá</th> -->
                         <th>Trạng thái</th>
                         <th class="text-center">Hành động</th>
                     </tr>
@@ -90,15 +90,18 @@ $currentTrangThai = $currentFilters['trangThai'] ?? ($_GET['trangThai'] ?? '');
                                 </div>
                             </td>
                             <td>
-                                <?php if (!empty($hs['TenFileCV'])): ?>
-                                    <a href="<?= BASE_URL ?>/cv/download?maCV=<?= $hs['MaCV'] ?? '' ?>" class="text-danger small">
-                                        <i class="fa-solid fa-file-pdf"></i> <?= htmlspecialchars($hs['TenFileCV']) ?>
+                                <?php if (!empty($hs['DuongDanFileCV']) || !empty($hs['TenFileCV'])): ?>
+                                    <a href="<?= $baseUrl ?>/index.php?route=cv/download&maCV=<?= urlencode($hs['MaCV'] ?? '') ?>"
+                                    class="text-danger small"
+                                    target="_blank">
+                                        <i class="fa-solid fa-file-pdf"></i>
+                                        <?= htmlspecialchars($hs['TenFileCV'] ?: 'Tải CV') ?>
                                     </a>
                                 <?php else: ?>
-                                    <span class="text-muted small">Chưa có CV</span>
+                                    <span class="text-muted small">Chưa có file CV</span>
                                 <?php endif; ?>
                             </td>
-                            <td>
+                            <!-- <td>
                                 <?php if (isset($hs['DiemDanhGia']) && $hs['DiemDanhGia'] > 0): ?>
                                     <span class="badge bg-success text-white">
                                         <?= number_format($hs['DiemDanhGia'], 1) ?>/10
@@ -108,7 +111,7 @@ $currentTrangThai = $currentFilters['trangThai'] ?? ($_GET['trangThai'] ?? '');
                                         Chưa đánh giá
                                     </span>
                                 <?php endif; ?>
-                            </td>
+                            </td> -->
                             <td>
                                 <?php 
                                     $statusClass = match($hs['TrangThai'] ?? '') {

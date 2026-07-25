@@ -84,27 +84,41 @@ class JobApply
     /**
      * Sinh mã hồ sơ mới
      */
+    /**
+ * Sinh mã hồ sơ mới (không trùng)
+ */
     public function generateId()
     {
+        // Lấy số lớn nhất hiện có (xử lý đúng kiểu số, không phụ thuộc sắp xếp chuỗi)
         $sql = "
-            SELECT MaHS
+            SELECT MAX(CAST(SUBSTRING(MaHS, 3) AS UNSIGNED)) AS maxNum
             FROM hosotuyendung
-            ORDER BY MaHS DESC
-            LIMIT 1
+            WHERE MaHS LIKE 'HS%'
         ";
 
         $result = $this->conn->query($sql);
+        $row = $result ? $result->fetch_assoc() : null;
 
-        if ($result->num_rows === 0) {
-            return 'HS001';
-        }
+        $next = ((int)($row['maxNum'] ?? 0)) + 1;
 
-        $row = $result->fetch_assoc();
+        // Đảm bảo không trùng (phòng trường hợp race condition)
+        do {
+            $maHS = 'HS' . str_pad($next, 3, '0', STR_PAD_LEFT);
 
-        $number = intval(substr($row['MaHS'], 2)) + 1;
+            $check = $this->conn->prepare("SELECT MaHS FROM hosotuyendung WHERE MaHS = ? LIMIT 1");
+            $check->bind_param("s", $maHS);
+            $check->execute();
+            $exists = $check->get_result()->num_rows > 0;
+            $check->close();
 
-        return 'HS' . str_pad($number, 3, '0', STR_PAD_LEFT);
+            if ($exists) {
+                $next++;
+            }
+        } while ($exists);
+
+        return $maHS;
     }
+    
     public function getApplicationsByCandidate($maUngVien)
     {
         $sql = "

@@ -17,85 +17,90 @@ class TinTuyenDung
     //==================================================
 
     public function create(array $data)
-    {
-        $maTinTuyenDung = uniqid("TD");
+	{
+		$maTinTuyenDung = uniqid("TD");
 
-        $sql = "
-        INSERT INTO TinTuyenDung
-        (
-            MaTinTuyenDung,
-            MaNhaTuyenDung,
-            TieuDe,
-            MoTaCongViec,
-            NgayHetHan,
-            YeuCauCongViec,
-            ViTriTuyenDung,
-            CapBac,
-            SoNamKinhNghiem,
-            MucLuong,
-            DiaChiLamViec,
-            HinhThucLamViec,
-            DoTuoiYeuCau,
-            SoLuongTuyen,
-            ThoiGianThuViec,
-            TrangThai
-        )
+		$sql = "
+			INSERT INTO TinTuyenDung
+			(
+				MaTinTuyenDung,
+				MaNhaTuyenDung,
+				TieuDe,
+				MoTaCongViec,
+				NgayHetHan,
+				YeuCauCongViec,
+				ViTriTuyenDung,
+				CapBac,
+				SoNamKinhNghiem,
+				MucLuong,
+				DiaChiLamViec,
+				HinhThucLamViec,
+				DoTuoiYeuCau,
+				SoLuongTuyen,
+				ThoiGianThuViec,
+				TrangThai
+			)
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+		";
 
-        VALUES
-        (
-            ?,
-            ?,
-            ?,
-            ?,
-            ?,
-            ?,
-            ?,
-            ?,
-            ?,
-            ?,
-            ?,
-            ?,
-            ?,
-            ?,
-            ?,
-            ?
-        )
-        ";
+		$stmt = $this->conn->prepare($sql);
 
-        $stmt = $this->conn->prepare($sql);
+		if (!$stmt) {
+			die("Lỗi prepare: " . $this->conn->error);
+		}
 
-        $viTriTuyenDung = $data['tieuDe'];
-        $capBac = "Intern";
-        $soNamKinhNghiem = 0;
-        $doTuoiYeuCau = "";
-        $soLuongTuyen = 1;
-        $thoiGianThuViec = 0;
-        $trangThai = "DangMo";
+		$viTriTuyenDung  = $data['tieuDe'];
+		$capBac          = "Intern";
+		$soNamKinhNghiem = 0;
+		$doTuoiYeuCau    = "";
+		$soLuongTuyen    = 1;
+		$thoiGianThuViec = 0;
+		$trangThai       = "DangMo";
 
-        $stmt->bind_param(
-            "ssssssssidssiiss",
+		$stmt->bind_param(
+			"ssssssss" . "id" . "sss" . "ii" . "s",
+			$maTinTuyenDung,
+			$data['maNhaTuyenDung'],
+			$data['tieuDe'],
+			$data['moTaCongViec'],
+			$data['ngayHetHan'],
+			$data['yeuCauCongViec'],
+			$viTriTuyenDung,
+			$capBac,
+			$soNamKinhNghiem,
+			$data['mucLuong'],
+			$data['diaChiLamViec'],
+			$data['hinhThucLamViec'],
+			$doTuoiYeuCau,
+			$soLuongTuyen,
+			$thoiGianThuViec,
+			$trangThai
+		);
 
-            $maTinTuyenDung,
-            $data['maNhaTuyenDung'],
-            $data['tieuDe'],
-            $data['moTaCongViec'],
-            $data['ngayHetHan'],
-            $data['yeuCauCongViec'],
-            $viTriTuyenDung,
-            $capBac,
-            $soNamKinhNghiem,
-            $data['mucLuong'],
-            $data['diaChiLamViec'],
-            $data['hinhThucLamViec'],
-            $doTuoiYeuCau,
-            $soLuongTuyen,
-            $thoiGianThuViec,
-            $trangThai
-        );
+		// Thực thi insert tin tuyển dụng
+		if (!$stmt->execute()) {
+			die("Lỗi SQL: " . $stmt->error);
+		}
 
-        return $stmt->execute();
-    }
+		// Lưu ngành nghề vào bảng chitietdanhmuc (nếu có)
+		if (!empty($data['category'])) {
+			$maCTDM = uniqid("CTDM");
+			$sqlCT = "INSERT INTO chitietdanhmuc (MaCTDM, MaTinTuyenDung, MaDanhMuc) VALUES (?, ?, ?)";
+			$stmtCT = $this->conn->prepare($sqlCT);
 
+			if (!$stmtCT) {
+				die("Lỗi prepare category: " . $this->conn->error);
+			}
+
+			$stmtCT->bind_param("sss", $maCTDM, $maTinTuyenDung, $data['category']);
+
+			if (!$stmtCT->execute()) {
+				die("Lỗi lưu category: " . $stmtCT->error);
+			}
+		}
+
+		return true;
+	}
 	/**
 	 * Lấy tất cả tin tuyển dụng.
 	 *
@@ -727,19 +732,19 @@ class TinTuyenDung
 	public function getByNhaTuyenDung($maNhaTuyenDung)
 	{
 		$sql = "
-			SELECT *
-			FROM TinTuyenDung
-			WHERE MaNhaTuyenDung = ?
-			ORDER BY NgayDang DESC
+			SELECT 
+				t.*,
+				COUNT(hs.MaHS) AS SoUngVien
+			FROM TinTuyenDung t
+			LEFT JOIN hosotuyendung hs 
+				ON t.MaTinTuyenDung = hs.MaTinTuyenDung
+			WHERE t.MaNhaTuyenDung = ?
+			GROUP BY t.MaTinTuyenDung
+			ORDER BY t.NgayDang DESC
 		";
 
 		$statement = $this->conn->prepare($sql);
-
-		$statement->bind_param(
-			"s",
-			$maNhaTuyenDung
-		);
-
+		$statement->bind_param("s", $maNhaTuyenDung);
 		$statement->execute();
 
 		return $statement->get_result();

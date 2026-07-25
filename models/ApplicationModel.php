@@ -175,25 +175,29 @@ class ApplicationModel
 	public function getListForRecruiter($maNhaTuyenDung, $maTinLoc = null, $trangThaiLoc = null)
 	{
 		$sql = "SELECT 
-					hs.MaHS,
-					hs.MaCV,
-					hs.MaTinTuyenDung,
-					hs.NgayNop,
-					hs.CoverLetter,
-					hs.TrangThai,
-					u.HoTen,
-					u.Email,
-					cv.TenFileCV,
-					cv.MaCV,
-					t.TieuDe as TenTin
-				FROM hosotuyendung hs
-				JOIN tintuyendung t ON hs.MaTinTuyenDung = t.MaTinTuyenDung
-				JOIN user u ON hs.MaCV = (SELECT MaCV FROM cv WHERE MaUngVien = u.MaUser LIMIT 1)  -- Giả sử liên kết qua CV
-				LEFT JOIN cv ON hs.MaCV = cv.MaCV
-				WHERE t.MaNhaTuyenDung = ?";
+            hs.MaHS,
+            hs.MaCV,
+            hs.MaTinTuyenDung,
+            hs.NgayNop,
+            hs.CoverLetter,
+            hs.TrangThai,
+            u.HoTen,
+            u.Email,
+            u.MaUser AS MaUngVien,
+            cv.TenFileCV,
+            cv.DuongDanFileCV,
+            t.TieuDe AS TenTin
+        FROM hosotuyendung hs
+        INNER JOIN tintuyendung t 
+            ON hs.MaTinTuyenDung = t.MaTinTuyenDung
+        LEFT JOIN cv 
+            ON hs.MaCV = cv.MaCV
+        LEFT JOIN user u 
+            ON cv.MaUngVien = u.MaUser
+        WHERE t.MaNhaTuyenDung = ?";	
 
 		$params = [$maNhaTuyenDung];
-		$types = 's';
+		$types  = 's';
 
 		if ($maTinLoc) {
 			$sql .= " AND hs.MaTinTuyenDung = ?";

@@ -52,7 +52,7 @@ $status  = $status ?? null;
         </div>
     </div>
     <div class="px-4">
-        <a href="<?= BASE_URL ?>/index.php?route=home" class="btn btn-outline-danger w-100">Thoát giao diện Admin</a>
+        <a href="<?= BASE_URL ?>/index.php?route=auth/logout" class="btn btn-outline-danger w-100">Thoát giao diện Admin</a>
     </div>
 </div>
 

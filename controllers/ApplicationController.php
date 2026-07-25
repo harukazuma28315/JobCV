@@ -9,7 +9,7 @@
  */
 
 require_once ROOT_PATH . '/models/ApplicationModel.php';
-require_once ROOT_PATH . '/models/Cv.php';
+require_once ROOT_PATH . '/models/CvModel.php';
 require_once ROOT_PATH . '/models/JobModel.php';
 require_once ROOT_PATH . '/helpers/AuthHelper.php';
 require_once ROOT_PATH . '/helpers/ResponseHelper.php';
@@ -193,15 +193,28 @@ class ApplicationController
 	{
 		if (
 			!isset($_SESSION['user_id']) ||
-			($_SESSION['Role'] ?? 0) != 1
+			($_SESSION['user_role'] ?? 0) != 1
 		) {
 			exit('Bạn không có quyền truy cập.');
 		}
 
 		$maNhaTuyenDung = $_SESSION['user_id'];
 
-		$applications = $this->jobApplyModel
-			->getByNhaTuyenDung($maNhaTuyenDung);
+		// Danh sách hồ sơ ứng tuyển
+		$danhSachHoSoUngTuyen = $this->hoSoUngTuyenModel
+			->getListForRecruiter($maNhaTuyenDung);
+
+		// Danh sách tin tuyển dụng (để lọc)
+		require_once ROOT_PATH . '/models/TinTuyenDung.php';
+		$tinModel = new TinTuyenDung();
+		$resultTin = $tinModel->getByNhaTuyenDung($maNhaTuyenDung);
+
+		$danhSachTinTuyenDung = [];
+		if ($resultTin) {
+			while ($row = $resultTin->fetch_assoc()) {
+				$danhSachTinTuyenDung[] = $row;
+			}
+		}
 
 		require_once __DIR__ . '/../views/page/employer/manage-candidates.php';
 	}

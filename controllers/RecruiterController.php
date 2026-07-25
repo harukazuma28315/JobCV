@@ -58,32 +58,53 @@ class RecruiterController
 	 */
 	public function showList()
 	{
-		$_SESSION['role'] = ROLE_NHATUYENDUNG;
-		$_SESSION['user_id'] = 'NTD001';
+		// Bắt buộc là Nhà tuyển dụng (Role = 1)
+		AuthHelper::requireRole(ROLE_NHATUYENDUNG);
 
-		$maNhaTuyenDung = AuthHelper::getCurrentUserId() ?: 'NTD001';
+		$maNhaTuyenDung = AuthHelper::getCurrentUserId();
 
-		$maTinLoc = isset($_GET['maTin']) && $_GET['maTin'] !== '' ? trim($_GET['maTin']) : null;
-		$trangThaiLoc = isset($_GET['trangThai']) && $_GET['trangThai'] !== '' ? trim($_GET['trangThai']) : null;
+		if (!$maNhaTuyenDung) {
+			exit('Bạn chưa đăng nhập.');
+		}
 
-		// Lưu filter hiện tại vào SESSION để dùng cho hidden field
+		$maTinLoc = isset($_GET['maTin']) && $_GET['maTin'] !== ''
+			? trim($_GET['maTin'])
+			: null;
+
+		$trangThaiLoc = isset($_GET['trangThai']) && $_GET['trangThai'] !== ''
+			? trim($_GET['trangThai'])
+			: null;
+
 		$_SESSION['recruiter_current_filter'] = [
-			'maTin' => $maTinLoc,
+			'maTin'     => $maTinLoc,
 			'trangThai' => $trangThaiLoc
 		];
 
 		$danhSachHoSoUngTuyen = $this->hoSoUngTuyenModel->getListForRecruiter(
-			$maNhaTuyenDung, 
-			$maTinLoc, 
+			$maNhaTuyenDung,
+			$maTinLoc,
 			$trangThaiLoc
 		);
-		
-		$danhSachTinTuyenDung = $this->tinTuyenDungModel->getJobsByRecruiter($maNhaTuyenDung);
+
+		// Lấy danh sách tin của NTD (fallback nếu JobModel không có method)
+		if (method_exists($this->tinTuyenDungModel, 'getJobsByRecruiter')) {
+			$danhSachTinTuyenDung = $this->tinTuyenDungModel->getJobsByRecruiter($maNhaTuyenDung);
+		} else {
+			require_once ROOT_PATH . '/models/TinTuyenDung.php';
+			$tinModel = new TinTuyenDung();
+			$resultTin = $tinModel->getByNhaTuyenDung($maNhaTuyenDung);
+			$danhSachTinTuyenDung = [];
+			if ($resultTin) {
+				while ($row = $resultTin->fetch_assoc()) {
+					$danhSachTinTuyenDung[] = $row;
+				}
+			}
+		}
+
 		$thongBao = ResponseHelper::getFlash();
 
-		// Truyền filter cho view
 		$currentFilters = [
-			'maTin' => $_GET['maTin'] ?? '',
+			'maTin'     => $_GET['maTin'] ?? '',
 			'trangThai' => $_GET['trangThai'] ?? ''
 		];
 
@@ -97,9 +118,7 @@ class RecruiterController
 	 */
 	public function showDetail()
 	{
-		$_SESSION['role'] = ROLE_NHATUYENDUNG;   
-    	$_SESSION['user_id'] = 'NTD001';           
-		// AuthHelper::requireRole(ROLE_NHATUYENDUNG);
+		AuthHelper::requireRole(ROLE_NHATUYENDUNG);
 
 		$maHoSo = isset($_GET['maHS']) ? trim($_GET['maHS']) : '';
 		$maNhaTuyenDung = AuthHelper::getCurrentUserId();
@@ -128,10 +147,9 @@ class RecruiterController
 			AuthHelper::redirect(BASE_URL . '/index.php?route=recruiter/list');
 		}
 
-		// Đồng bộ với showList()/showDetail(): đảm bảo có user đăng nhập (demo fallback NTD001)
-		$_SESSION['role'] = ROLE_NHATUYENDUNG;
-		$maNhaTuyenDung = AuthHelper::getCurrentUserId() ?: 'NTD001';
-		$_SESSION['user_id'] = $maNhaTuyenDung;
+		AuthHelper::requireRole(ROLE_NHATUYENDUNG);
+
+		$maNhaTuyenDung = AuthHelper::getCurrentUserId();
 
 		$maHoSo = isset($_POST['maHS']) ? trim($_POST['maHS']) : '';
 		$trangThaiMoi = isset($_POST['trangThai']) ? trim($_POST['trangThai']) : '';
@@ -145,8 +163,6 @@ class RecruiterController
 				throw new Exception('Trạng thái không hợp lệ.');
 			}
 
-			// Lấy thông tin hồ sơ (email, tên ứng viên, tên tin) TRƯỚC khi update,
-			// đồng thời xác thực hồ sơ này thuộc về đúng Nhà tuyển dụng đang đăng nhập.
 			$hoSoUngTuyen = $this->hoSoUngTuyenModel->getDetailForRecruiter($maHoSo, $maNhaTuyenDung);
 
 			if (!$hoSoUngTuyen) {
@@ -159,13 +175,12 @@ class RecruiterController
 				throw new Exception('Cập nhật thất bại.');
 			}
 
-			// Gửi email thông báo tương ứng với trạng thái mới cho ứng viên.
 			$guiMailThanhCong = $this->guiEmailTheoTrangThai($trangThaiMoi, $hoSoUngTuyen);
 
 			if ($guiMailThanhCong) {
 				ResponseHelper::setFlash('success', 'Cập nhật trạng thái thành công và đã gửi email thông báo cho ứng viên.');
 			} else {
-				ResponseHelper::setFlash('success', 'Cập nhật trạng thái thành công, nhưng gửi email thông báo thất bại. Vui lòng kiểm tra lại cấu hình SMTP.');
+				ResponseHelper::setFlash('success', 'Cập nhật trạng thái thành công, nhưng gửi email thông báo thất bại.');
 			}
 
 		} catch (Exception $e) {

@@ -63,7 +63,7 @@ if (session_status() === PHP_SESSION_NONE) {
         </div>
     </div>
     <div class="px-4">
-        <a href="<?= BASE_URL ?>/index.php?route=home" class="btn btn-outline-danger w-100">
+        <a href="<?= BASE_URL ?>/index.php?route=auth/logout" class="btn btn-outline-danger w-100">
             <i class="fa-solid fa-arrow-right-from-bracket me-2"></i>Thoát giao diện Admin
         </a>
     </div>
@@ -72,6 +72,15 @@ if (session_status() === PHP_SESSION_NONE) {
 <div class="main-content">
     <h3 class="fw-bold mb-4">Quản lý bài đăng</h3>
 
+    <!-- Thông báo -->
+    <?php if (isset($thongBao) && !empty($thongBao)): 
+        $alertClass = (isset($thongBao['type']) && $thongBao['type'] === 'success') ? 'success' : 'danger';
+    ?>
+        <div class="alert alert-<?= $alertClass ?> alert-dismissible fade show" role="alert">
+            <?= htmlspecialchars($thongBao['message'] ?? '') ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    <?php endif; ?>
     <!-- Bộ lọc -->
     <form method="GET" action="<?= BASE_URL ?>/index.php">
         <input type="hidden" name="route" value="admin/jobs">
@@ -89,8 +98,9 @@ if (session_status() === PHP_SESSION_NONE) {
                     <select name="status" class="form-select">
                         <option value="">-- Trạng thái --</option>
                         <option value="ChoDuyet" <?= (isset($status) && $status === 'ChoDuyet') ? 'selected' : '' ?>>Chờ duyệt</option>
-                        <option value="DaDuyet" <?= (isset($status) && $status === 'DaDuyet') ? 'selected' : '' ?>>Đã duyệt</option>
-                        <option value="TuChoi" <?= (isset($status) && $status === 'TuChoi') ? 'selected' : '' ?>>Từ chối duyệt</option>
+                        <option value="DaDuyet"  <?= (isset($status) && $status === 'DaDuyet')  ? 'selected' : '' ?>>Đã duyệt</option>
+                        <option value="TuChoi"   <?= (isset($status) && $status === 'TuChoi')   ? 'selected' : '' ?>>Từ chối duyệt</option>
+                        <option value="DaGo"     <?= (isset($status) && $status === 'DaGo')     ? 'selected' : '' ?>>Đã gỡ</option>
                     </select>
                 </div>
                 <div class="col-md-2">
@@ -126,18 +136,22 @@ if (session_status() === PHP_SESSION_NONE) {
                                     <?php 
                                     $badgeClass = 'bg-secondary';
                                     $badgeText = $tin['TrangThaiDuyet'] ?? 'Không xác định';
-                                    switch ($tin['TrangThaiDuyet']) {
+                                    switch ($tin['TrangThaiDuyet'] ?? '') {
                                         case 'ChoDuyet':
                                             $badgeClass = 'bg-warning-subtle text-warning';
-                                            $badgeText = 'Chờ duyệt';
+                                            $badgeText  = 'Chờ duyệt';
                                             break;
                                         case 'DaDuyet':
                                             $badgeClass = 'bg-success-subtle text-success';
-                                            $badgeText = 'Đã duyệt';
+                                            $badgeText  = 'Đã duyệt';
                                             break;
                                         case 'TuChoi':
                                             $badgeClass = 'bg-danger-subtle text-danger';
-                                            $badgeText = 'Từ chối duyệt';
+                                            $badgeText  = 'Từ chối duyệt';
+                                            break;
+                                        case 'DaGo':
+                                            $badgeClass = 'bg-secondary-subtle text-secondary';
+                                            $badgeText  = 'Đã gỡ';
                                             break;
                                     }
                                     ?>
@@ -186,21 +200,6 @@ if (session_status() === PHP_SESSION_NONE) {
                     <?php endif; ?>
                 </tbody>
             </table>
-        </div>
-
-        <!-- Phân trang -->
-        <div class="card-footer bg-white border-0 px-3 py-3 d-flex justify-content-center align-items-center">
-            <nav aria-label="Page navigation">
-                <ul class="pagination pagination-sm mb-0">
-                    <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1"><i class="fa-solid fa-chevron-left"></i></a></li>
-                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item disabled"><span class="page-link">...</span></li>
-                    <li class="page-item"><a class="page-link" href="#">30</a></li>
-                    <li class="page-item"><a class="page-link" href="#"><i class="fa-solid fa-chevron-right"></i></a></li>
-                </ul>
-            </nav>
         </div>
     </div>
 </div>
