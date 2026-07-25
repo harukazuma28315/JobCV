@@ -35,7 +35,7 @@ class UserModel {
 	 * @return array|null Mảng chứa thông tin cá nhân chi tiết hoặc null nếu không tồn tại.
 	 */
 	public function getUserById($maUser) {
-		$sql = "SELECT MaUser, Email, Role, HoTen, NgaySinh, GioiTinh, SDT, DiaChi FROM user WHERE MaUser = ?";
+		$sql = "SELECT MaUser, Role, HoTen, NgaySinh, GioiTinh, Email, SDT, DiaChi FROM user WHERE MaUser = ?";
 		$stmt = $this->db->prepare($sql);
 		$stmt->bind_param("s", $maUser);
 		$stmt->execute();
