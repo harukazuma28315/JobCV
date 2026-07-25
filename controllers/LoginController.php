@@ -61,12 +61,31 @@ class LoginController
 
         if ($user && password_verify($matKhau, $user['MatKhau'])) {
 
+                // ===== CHẶN TÀI KHOẢN BỊ KHÓA =====
+            $isLocked = !empty($user['IsLocked']) || (($user['TrangThai'] ?? '') === 'BiKhoa');
+            if ($isLocked) {
+                echo "<script>
+                        alert('Tài khoản của bạn đã bị khóa. Vui lòng liên hệ Admin!');
+                        window.history.back();
+                    </script>";
+                return;
+            }
+
+            // (Tuỳ chọn) chặn cả tài khoản chờ duyệt
+            // if (($user['TrangThai'] ?? '') === 'ChoDuyet') {
+            //     echo "<script>
+            //             alert('Tài khoản đang chờ duyệt. Vui lòng đợi Admin xác nhận!');
+            //             window.history.back();
+            //           </script>";
+            //     return;
+            // }
+
             $_SESSION['user_id'] = $user['MaUser'];
             $_SESSION['user_email'] = $user['Email'];
             $_SESSION['user_name'] = $user['HoTen'];
 
             $role = (int)$user['Role'];
-            
+
             $_SESSION['user_role'] = $user['Role'];
             $_SESSION['role'] = $user['Role']; // Đồng bộ với AuthHelper::requireRole() đang đọc key 'role'
 
