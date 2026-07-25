@@ -58,7 +58,6 @@ class RecruiterController
 	 */
 	public function showList()
 	{
-		// Bắt buộc là Nhà tuyển dụng (Role = 1)
 		AuthHelper::requireRole(ROLE_NHATUYENDUNG);
 
 		$maNhaTuyenDung = AuthHelper::getCurrentUserId();
@@ -67,33 +66,27 @@ class RecruiterController
 			exit('Bạn chưa đăng nhập.');
 		}
 
-		$maTinLoc = isset($_GET['maTin']) && $_GET['maTin'] !== ''
-			? trim($_GET['maTin'])
-			: null;
 
-		$trangThaiLoc = isset($_GET['trangThai']) && $_GET['trangThai'] !== ''
-			? trim($_GET['trangThai'])
-			: null;
+		// ==================================================
+		// 1. LẤY DANH SÁCH TIN TUYỂN DỤNG CỦA NTD
+		// ==================================================
 
-		$_SESSION['recruiter_current_filter'] = [
-			'maTin'     => $maTinLoc,
-			'trangThai' => $trangThaiLoc
-		];
-
-		$danhSachHoSoUngTuyen = $this->hoSoUngTuyenModel->getListForRecruiter(
-			$maNhaTuyenDung,
-			$maTinLoc,
-			$trangThaiLoc
-		);
-
-		// Lấy danh sách tin của NTD (fallback nếu JobModel không có method)
 		if (method_exists($this->tinTuyenDungModel, 'getJobsByRecruiter')) {
-			$danhSachTinTuyenDung = $this->tinTuyenDungModel->getJobsByRecruiter($maNhaTuyenDung);
+
+			$danhSachTinTuyenDung =
+				$this->tinTuyenDungModel->getJobsByRecruiter($maNhaTuyenDung);
+
 		} else {
+
 			require_once ROOT_PATH . '/models/TinTuyenDung.php';
+
 			$tinModel = new TinTuyenDung();
-			$resultTin = $tinModel->getByNhaTuyenDung($maNhaTuyenDung);
+
+			$resultTin =
+				$tinModel->getByNhaTuyenDung($maNhaTuyenDung);
+
 			$danhSachTinTuyenDung = [];
+
 			if ($resultTin) {
 				while ($row = $resultTin->fetch_assoc()) {
 					$danhSachTinTuyenDung[] = $row;
@@ -101,12 +94,58 @@ class RecruiterController
 			}
 		}
 
-		$thongBao = ResponseHelper::getFlash();
+
+		// ==================================================
+		// 2. XÁC ĐỊNH TIN ĐANG ĐƯỢC CHỌN
+		// ==================================================
+
+		if (isset($_GET['maTin']) && $_GET['maTin'] !== '') {
+
+			// Người dùng đã chọn tin cụ thể
+			$maTinLoc = trim($_GET['maTin']);
+
+		} else {
+
+			// Mặc định lấy tin mới nhất
+			$maTinLoc = !empty($danhSachTinTuyenDung)
+				? $danhSachTinTuyenDung[0]['MaTinTuyenDung']
+				: null;
+		}
+
+
+		// ==================================================
+		// 3. LỌC TRẠNG THÁI
+		// ==================================================
+
+		$trangThaiLoc = isset($_GET['trangThai']) && $_GET['trangThai'] !== ''
+			? trim($_GET['trangThai'])
+			: null;
+
+
+		// ==================================================
+		// 4. LẤY HỒ SƠ THEO TIN ĐANG CHỌN
+		// ==================================================
+
+		$danhSachHoSoUngTuyen =
+			$this->hoSoUngTuyenModel->getListForRecruiter(
+				$maNhaTuyenDung,
+				$maTinLoc,
+				$trangThaiLoc
+			);
+
+
+		// ==================================================
+		// 5. FILTER HIỂN THỊ
+		// ==================================================
 
 		$currentFilters = [
-			'maTin'     => $_GET['maTin'] ?? '',
-			'trangThai' => $_GET['trangThai'] ?? ''
+			'maTin'     => $maTinLoc,
+			'trangThai' => $trangThaiLoc
 		];
+
+
+		$thongBao = ResponseHelper::getFlash();
+
 
 		require ROOT_PATH . '/views/page/employer/manage-candidates.php';
 	}

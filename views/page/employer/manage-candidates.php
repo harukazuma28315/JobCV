@@ -26,9 +26,9 @@ $currentTrangThai = $currentFilters['trangThai'] ?? ($_GET['trangThai'] ?? '');
             <input type="hidden" name="route" value="recruiter/list">
 
             <div class="col-12 col-md-5">
-                <label class="form-label small fw-semibold text-muted mb-1">Lọc theo chiến dịch tuyển dụng</label>
+                <label class="form-label small fw-semibold text-muted mb-1">Lọc theo tin tuyển dụng</label>
                 <select name="maTin" class="form-select form-select-sm">
-                    <option value="">-- Tất cả chiến dịch đang tuyển --</option>
+                    <option value="">-- Tất cả tin tuyển dụng --</option>
                     <?php if (!empty($danhSachTinTuyenDung)): ?>
                         <?php foreach ($danhSachTinTuyenDung as $tin): ?>
                             <option value="<?= htmlspecialchars($tin['MaTinTuyenDung']) ?>" 
@@ -126,70 +126,193 @@ $currentTrangThai = $currentFilters['trangThai'] ?? ($_GET['trangThai'] ?? '');
                                 <span class="badge <?= $statusClass ?>"><?= htmlspecialchars($hs['TrangThaiText'] ?? $hs['TrangThai'] ?? 'Không xác định') ?></span>
                             </td>
                             <td class="text-center">
-                                <?php 
-                                    $trangThai = $hs['TrangThai'] ?? ''; 
-                                ?>
+                                <?php
+                                    $trangThai = $hs['TrangThai'] ?? '';
+                                    ?>
 
-                                <!-- Trạng thái Mới Nộp -->
-                                <?php if ($trangThai === STATUS_MOI_NOP): ?>
-                                    <!-- Đã Xem -->
-                                    <form method="POST" action="<?= BASE_URL ?>/index.php?route=recruiter/update-status" style="display:inline;">
-                                        <input type="hidden" name="maHS" value="<?= htmlspecialchars($hs['MaHS']) ?>">
-                                        <input type="hidden" name="trangThai" value="DaXem">
-                                        <button type="submit" class="btn btn-outline-info btn-sm mb-1" 
-                                                onclick="return confirm('Xác nhận đã xem hồ sơ?')">
-                                            <i class="fa-solid fa-eye"></i> Đã Xem
-                                        </button>
-                                    </form>
+                                    <!-- MỚI NỘP -->
+                                    <?php if ($trangThai === STATUS_MOI_NOP): ?>
 
-                                    <!-- Hẹn PV -->
-                                    <form method="POST" action="<?= BASE_URL ?>/index.php?route=recruiter/update-status" style="display:inline;">
-                                        <input type="hidden" name="maHS" value="<?= htmlspecialchars($hs['MaHS']) ?>">
-                                        <input type="hidden" name="trangThai" value="HenPhongVan">
-                                        <button type="submit" class="btn btn-outline-success btn-sm mb-1" 
-                                                onclick="return confirm('Xác nhận hẹn phỏng vấn?')">
-                                            <i class="fa-solid fa-calendar-check"></i> Hẹn PV
-                                        </button>
-                                    </form>
-                                <?php endif; ?>
+                                        <!-- ĐÃ XEM -->
+                                        <form
+                                            method="POST"
+                                            action="<?= BASE_URL ?>/index.php?route=recruiter/update-status"
+                                            class="d-inline"
+                                        >
 
-                                <!-- Trạng thái Đã Xem hoặc Mới Nộp (đã xem) -->
-                                <?php if ($trangThai === STATUS_DA_XEM || $trangThai === STATUS_MOI_NOP): ?>
-                                    <!-- Hẹn PV -->
-                                    <form method="POST" action="<?= BASE_URL ?>/index.php?route=recruiter/update-status" style="display:inline;">
-                                        <input type="hidden" name="maHS" value="<?= htmlspecialchars($hs['MaHS']) ?>">
-                                        <input type="hidden" name="trangThai" value="HenPhongVan">
-                                        <button type="submit" class="btn btn-outline-success btn-sm mb-1" 
-                                                onclick="return confirm('Xác nhận hẹn phỏng vấn?')">
-                                            <i class="fa-solid fa-calendar-check"></i> Hẹn PV
-                                        </button>
-                                    </form>
-                                <?php endif; ?>
+                                            <input
+                                                type="hidden"
+                                                name="maHS"
+                                                value="<?= htmlspecialchars($hs['MaHS']) ?>"
+                                            >
 
-                                <!-- Trạng thái Đã Hẹn Phỏng Vấn -->
-                                <?php if ($trangThai === STATUS_HEN_PHONG_VAN): ?>
-                                    <!-- Nhận Việc -->
-                                    <form method="POST" action="<?= BASE_URL ?>/index.php?route=recruiter/update-status" style="display:inline;">
-                                        <input type="hidden" name="maHS" value="<?= htmlspecialchars($hs['MaHS']) ?>">
-                                        <input type="hidden" name="trangThai" value="NhanViec">
-                                        <button type="submit" class="btn btn-outline-success btn-sm mb-1" 
-                                                onclick="return confirm('Xác nhận nhận việc?')">
-                                            <i class="fa-solid fa-circle-check"></i> Nhận Việc
-                                        </button>
-                                    </form>
-                                <?php endif; ?>
+                                            <input
+                                                type="hidden"
+                                                name="trangThai"
+                                                value="DaXem"
+                                            >
 
-                                <!-- Nút Từ chối - Hiển thị ở hầu hết các trạng thái (trừ khi đã hoàn tất) -->
-                                <?php if ($trangThai !== STATUS_NHAN_VIEC && $trangThai !== STATUS_TU_CHOI): ?>
-                                    <form method="POST" action="<?= BASE_URL ?>/index.php?route=recruiter/update-status" style="display:inline;">
-                                        <input type="hidden" name="maHS" value="<?= htmlspecialchars($hs['MaHS']) ?>">
-                                        <input type="hidden" name="trangThai" value="TuChoi">
-                                        <button type="submit" class="btn btn-outline-danger btn-sm" 
-                                                onclick="return confirm('Xác nhận từ chối?')">
-                                            <i class="fa-solid fa-user-xmark"></i> Từ chối
-                                        </button>
-                                    </form>
-                                <?php endif; ?>
+                                            <button
+                                                type="submit"
+                                                class="btn btn-outline-info btn-sm mb-1"
+                                                onclick="return confirm('Xác nhận đã xem hồ sơ?')"
+                                            >
+
+                                                <i class="fa-solid fa-eye"></i>
+                                                Đã xem
+
+                                            </button>
+
+                                        </form>
+
+
+                                        <!-- HẸN PHỎNG VẤN -->
+                                        <form
+                                            method="POST"
+                                            action="<?= BASE_URL ?>/index.php?route=recruiter/update-status"
+                                            class="d-inline"
+                                        >
+
+                                            <input
+                                                type="hidden"
+                                                name="maHS"
+                                                value="<?= htmlspecialchars($hs['MaHS']) ?>"
+                                            >
+
+                                            <input
+                                                type="hidden"
+                                                name="trangThai"
+                                                value="HenPhongVan"
+                                            >
+
+                                            <button
+                                                type="submit"
+                                                class="btn btn-outline-success btn-sm mb-1"
+                                                onclick="return confirm('Xác nhận hẹn phỏng vấn?')"
+                                            >
+
+                                                <i class="fa-solid fa-calendar-check"></i>
+                                                Hẹn PV
+
+                                            </button>
+
+                                        </form>
+
+                                    <?php endif; ?>
+
+
+                                    <!-- ĐÃ XEM -->
+                                    <?php if ($trangThai === STATUS_DA_XEM): ?>
+
+                                        <form
+                                            method="POST"
+                                            action="<?= BASE_URL ?>/index.php?route=recruiter/update-status"
+                                            class="d-inline"
+                                        >
+
+                                            <input
+                                                type="hidden"
+                                                name="maHS"
+                                                value="<?= htmlspecialchars($hs['MaHS']) ?>"
+                                            >
+
+                                            <input
+                                                type="hidden"
+                                                name="trangThai"
+                                                value="HenPhongVan"
+                                            >
+
+                                            <button
+                                                type="submit"
+                                                class="btn btn-outline-success btn-sm mb-1"
+                                                onclick="return confirm('Xác nhận hẹn phỏng vấn?')"
+                                            >
+
+                                                <i class="fa-solid fa-calendar-check"></i>
+                                                Hẹn PV
+
+                                            </button>
+
+                                        </form>
+
+                                    <?php endif; ?>
+
+
+                                    <!-- HẸN PHỎNG VẤN -->
+                                    <?php if ($trangThai === STATUS_HEN_PHONG_VAN): ?>
+
+                                        <form
+                                            method="POST"
+                                            action="<?= BASE_URL ?>/index.php?route=recruiter/update-status"
+                                            class="d-inline"
+                                        >
+
+                                            <input
+                                                type="hidden"
+                                                name="maHS"
+                                                value="<?= htmlspecialchars($hs['MaHS']) ?>"
+                                            >
+
+                                            <input
+                                                type="hidden"
+                                                name="trangThai"
+                                                value="NhanViec"
+                                            >
+
+                                            <button
+                                                type="submit"
+                                                class="btn btn-outline-success btn-sm mb-1"
+                                                onclick="return confirm('Xác nhận nhận việc?')"
+                                            >
+
+                                                <i class="fa-solid fa-circle-check"></i>
+                                                Nhận việc
+
+                                            </button>
+
+                                        </form>
+
+                                    <?php endif; ?>
+
+
+                                    <!-- TỪ CHỐI -->
+                                    <?php if (
+                                        $trangThai !== STATUS_NHAN_VIEC &&
+                                        $trangThai !== STATUS_TU_CHOI
+                                    ): ?>
+
+                                        <form
+                                            method="POST"
+                                            action="<?= BASE_URL ?>/index.php?route=recruiter/update-status"
+                                            class="d-inline"
+                                        >
+
+                                            <input
+                                                type="hidden"
+                                                name="maHS"
+                                                value="<?= htmlspecialchars($hs['MaHS']) ?>"
+                                            >
+
+                                            <input
+                                                type="hidden"
+                                                name="trangThai"
+                                                value="TuChoi"
+                                            >
+
+                                            <button
+                                                type="submit"
+                                                class="btn btn-outline-danger btn-sm mb-1"
+                                                onclick="return confirm('Xác nhận từ chối?')"
+                                            >
+
+                                                <i class="fa-solid fa-user-xmark"></i>
+                                                Từ chối
+
+                                            </button>
+
+                                        </form>
+
+                                    <?php endif; ?>
                             </td>
                         </tr>
                         <?php endforeach; ?>
