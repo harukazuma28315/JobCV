@@ -35,7 +35,7 @@ class UserModel {
 	 * @return array|null Mảng chứa thông tin cá nhân chi tiết hoặc null nếu không tồn tại.
 	 */
 	public function getUserById($maUser) {
-		$sql = "SELECT MaUser, Role, HoTen, NgaySinh, GioiTinh, Email, SDT, DiaChi FROM user WHERE MaUser = ?";
+		$sql = "SELECT MaUser, Email, Role, HoTen, NgaySinh, GioiTinh, SDT, DiaChi FROM user WHERE MaUser = ?";
 		$stmt = $this->db->prepare($sql);
 		$stmt->bind_param("s", $maUser);
 		$stmt->execute();
@@ -100,7 +100,7 @@ class UserModel {
 
 		try {
 			// Thứ tự cột chuẩn CSDL: MaUser, Email, MatKhau, Role, HoTen, NgaySinh, GioiTinh, SDT, DiaChi
-			$sqlUser = "INSERT INTO user (MaUser, MatKhau, Role, HoTen, NgaySinh, GioiTinh, Email, SDT, DiaChi) 
+			$sqlUser = "INSERT INTO user (MaUser, Email, MatKhau, Role, HoTen, NgaySinh, GioiTinh, SDT, DiaChi) 
 						VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 			$stmtUser = $this->db->prepare($sqlUser);
 			
@@ -143,19 +143,19 @@ class UserModel {
 		$this->db->begin_transaction();
 
 		try {
-			$sqlUser = "INSERT INTO user (MaUser, MatKhau, Role, HoTen, NgaySinh, GioiTinh, Email, SDT, DiaChi) 
+			$sqlUser = "INSERT INTO user (MaUser, Email, MatKhau, Role, HoTen, NgaySinh, GioiTinh, SDT, DiaChi) 
 						VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 			$stmtUser = $this->db->prepare($sqlUser);
 			
 			$stmtUser->bind_param(
 				"sssississ", 
 				$userData['maUser'], 
+				$userData['email'], 
 				$userData['matKhauHashed'], 
 				$userData['role'], 
 				$userData['hoTen'], 
 				$userData['ngaySinh'], 
 				$userData['gioiTinh'], 
-				$userData['email'], 
 				$userData['sdt'], 
 				$userData['diaChi']
 			);
