@@ -1,16 +1,6 @@
 <!-- views/jobs/search.php -->
 <?php
 $baseUrl = '/JobCV';
-
-$keyword = $_GET['keyword'] ?? '';
-$location = $_GET['location'] ?? '';
-$category = $_GET['category'] ?? '';
-$salary = $_GET['salary'] ?? '';
-$level = $_GET['level'] ?? '';
-$jobType = $_GET['job_type'] ?? '';
-$experience = $_GET['experience'] ?? '';
-$postedDate = $_GET['posted_date'] ?? '';
-
 include_once __DIR__ . '/../layouts/header.php';
 ?>
 
@@ -43,19 +33,21 @@ include_once __DIR__ . '/../layouts/header.php';
                         <select name="location" class="form-select border-0 py-2 fw-semibold">
                             <option value="">Chọn Địa Điểm</option>
 
-                            <?php if (!empty($locations)): ?>
-                                <?php foreach ($locations as $location): ?>
-                                    <?php 
-                                        $selected = (($_GET['location'] ?? '') === $location) ? 'selected' : '';
-                                    ?>
-                                    <option value="<?= htmlspecialchars($location) ?>" <?= $selected ?>>
-                                        <?= htmlspecialchars($location) ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            <?php endif; ?>
+                            <?php 
+                            $locations = [
+                                'Cần Thơ' => 'Cần Thơ',
+                                'Hồ Chí Minh' => 'Hồ Chí Minh',
+                                'Hà Nội' => 'Hà Nội',
+                                'Đà Nẵng' => 'Đà Nẵng'
+                            ];
 
-                            </select>
-
+                            foreach ($locations as $val => $lbl): 
+                                $selected = (($_GET['location'] ?? '') === $val) ? 'selected' : '';
+                            ?>
+                                <option value="<?= htmlspecialchars($val) ?>" <?= $selected ?>>
+                                    <?= htmlspecialchars($lbl) ?>
+                                </option>
+                            <?php endforeach; ?>
                         </select>
                     </div>
 
@@ -319,6 +311,9 @@ include_once __DIR__ . '/../layouts/header.php';
                                     </div>
                                 </div>
                                 <div class="col-md-auto text-end d-flex flex-md-column align-items-center justify-content-between gap-3 mt-3 mt-md-0">
+                                    <button class="btn btn-light btn-heart border-0 rounded-circle py-2 px-2" onclick="alertLoginRequirement()" title="Lưu việc làm">
+                                        <i class="fa-regular fa-heart fs-5"></i>
+                                    </button>
                                     <a href="<?= $baseUrl ?>/index.php?route=jobs/detail&maTinTuyenDung=<?= urlencode($job['id']) ?>"
                                     class="btn btn-outline-primary btn-sm px-3 fw-bold">
                                         Xem Chi Tiết
@@ -339,4 +334,9 @@ include_once __DIR__ . '/../layouts/header.php';
         </div>
     </div>
 </div>
+<script>
+    function alertLoginRequirement() {
+        alert("Bạn cần Đăng Nhập với tài khoản Ứng viên để thực hiện chức năng này!");
+    }
+</script>
 <?php include_once __DIR__ . '/../layouts/footer.php'; ?>
