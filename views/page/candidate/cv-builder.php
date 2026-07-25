@@ -14,7 +14,7 @@ require_once __DIR__ . '/../layouts/header.php';
 
     <div class="container">
 
-        <?php if (!$cv): ?>
+            <?php if (!$cv): ?>
 
             <!-- ================================================= -->
             <!-- CHƯA CÓ CV -->
@@ -277,18 +277,31 @@ require_once __DIR__ . '/../layouts/header.php';
 
                             <div class="col-md-6">
 
-                                <label class="form-label fw-bold">
+                                <div class="h-100 p-3 rounded-3 bg-light">
 
-                                    Sở thích
+                                    <h5 class="fw-bold text-primary mb-3">
+                                        <i class="fa-solid fa-heart me-2"></i>
+                                        Sở thích
+                                    </h5>
 
-                                </label>
+                                    <div
+                                        class="text-muted"
+                                        style="
+                                            white-space: normal;
+                                            overflow-wrap: anywhere;
+                                            word-break: break-word;
+                                        "
+                                    >
+                                        <?= nl2br(
+                                            htmlspecialchars(
+                                                $cv['SoThich'] ?? '',
+                                                ENT_QUOTES,
+                                                'UTF-8'
+                                            )
+                                        ) ?>
+                                    </div>
 
-                                <textarea
-                                    name="soThich"
-                                    class="form-control"
-                                    rows="4"
-                                    placeholder="Đọc sách, chơi thể thao..."
-                                ></textarea>
+                                </div>
 
                             </div>
 
@@ -599,16 +612,17 @@ require_once __DIR__ . '/../layouts/header.php';
 
                     </div>
 
-
                     <!-- FILE CV -->
 
-                    <?php if (!empty($cv['DuongDanFileCV'])): ?>
+                    <hr>
 
-                        <hr>
+                    <div class="card border-success">
 
-                        <div class="card border-success">
+                        <div class="card-body">
 
-                            <div class="card-body">
+                            <?php if (!empty($cv['DuongDanFileCV'])): ?>
+
+                                <!-- ĐÃ CÓ FILE -->
 
                                 <h5 class="fw-bold text-success mb-3">
 
@@ -722,11 +736,76 @@ require_once __DIR__ . '/../layouts/header.php';
 
                                 </div>
 
-                            </div>
+
+                            <?php else: ?>
+
+                                <!-- CHƯA CÓ FILE -->
+
+                                <h5 class="fw-bold text-warning mb-3">
+
+                                    <i class="fa-solid fa-file-arrow-up me-2"></i>
+
+                                    Bạn chưa tải file CV lên
+
+                                </h5>
+
+                                <p class="text-muted">
+
+                                    Bạn có thể tải lên file CV cá nhân để sử dụng khi ứng tuyển.
+
+                                </p>
+
+
+                                <!-- FORM UPLOAD FILE -->
+
+                                <form
+                                    action="<?= $baseUrl ?>/index.php?route=cv/upload-submit"
+                                    method="POST"
+                                    enctype="multipart/form-data"
+                                >
+
+                                    <input
+                                        type="hidden"
+                                        name="maCV"
+                                        value="<?= htmlspecialchars($cv['MaCV']) ?>"
+                                    >
+
+                                    <div class="mb-3">
+
+                                        <label class="form-label fw-bold">
+
+                                            Chọn file CV
+
+                                        </label>
+
+                                        <input
+                                            type="file"
+                                            name="file"
+                                            class="form-control"
+                                            accept=".pdf,.doc,.docx"
+                                            required
+                                        >
+
+                                    </div>
+
+                                    <button
+                                        type="submit"
+                                        class="btn btn-success"
+                                    >
+
+                                        <i class="fa-solid fa-upload me-2"></i>
+
+                                        Tải CV lên
+
+                                    </button>
+
+                                </form>
+
+                            <?php endif; ?>
 
                         </div>
 
-                    <?php endif; ?>
+                    </div>
 
 
                     <!-- BUTTON -->

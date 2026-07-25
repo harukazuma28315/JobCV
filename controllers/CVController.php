@@ -339,7 +339,7 @@ class CVController
     /**
      * Upload CV cá nhân
      */
-    public function uploadSubmit($file)
+    public function uploadSubmit($file, $post = [])
     {
         if (!isset($_SESSION['user_id'])) {
 
@@ -399,6 +399,87 @@ class CVController
             exit;
         }
 
+
+        /*
+        |--------------------------------------------------------------------------
+        | TRƯỜNG HỢP 1:
+        | ĐÃ CÓ CV -> UPLOAD FILE VÀO CV HIỆN TẠI
+        |--------------------------------------------------------------------------
+        */
+
+        $maCV = trim($post['maCV'] ?? '');
+
+
+        if (!empty($maCV)) {
+
+            $cv = $this->cvModel->getById($maCV);
+
+
+            if (!$cv) {
+
+                exit('Không tìm thấy CV.');
+
+            }
+
+
+            // Kiểm tra CV có đúng user hiện tại không
+
+            if ($cv['MaUngVien'] != $_SESSION['user_id']) {
+
+                exit('Bạn không có quyền cập nhật CV này.');
+
+            }
+
+
+            // Upload file vào CV hiện tại
+
+            $success = $this->uploadCV(
+
+                $maCV,
+
+                $file
+
+            );
+
+
+            if ($success) {
+
+                echo "
+                    <script>
+
+                        alert('Tải CV lên thành công!');
+
+                        window.location.href =
+                            '/JobCV/index.php?route=cv/create';
+
+                    </script>
+                ";
+
+            } else {
+
+                echo "
+                    <script>
+
+                        alert('Không thể tải file lên.');
+
+                        window.history.back();
+
+                    </script>
+                ";
+
+            }
+
+            exit;
+
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | TRƯỜNG HỢP 2:
+        | CHƯA CÓ CV -> TẠO CV MỚI RỒI UPLOAD FILE
+        |--------------------------------------------------------------------------
+        */
 
         $maCV = 'CV' . time();
 
@@ -621,7 +702,7 @@ class CVController
 
         $fileData = [
             "maCV" => $maCV,
-            "tenFileCV" => $file["name"],
+            "tenFileCV" => $fileName,
             "duongDanFileCV" => "uploads/" . $fileName,
             "loaiFile" => $extension
         ];
