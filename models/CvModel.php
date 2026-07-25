@@ -7,7 +7,7 @@
  *            Không xử lý HTML, không chứa business logic điều hướng.
  */
 
-require_once ROOT_PATH . '/config/Database.php';
+require_once ROOT_PATH . '/config/db.php';
 
 class CvModel
 {

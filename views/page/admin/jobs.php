@@ -63,7 +63,7 @@ if (session_status() === PHP_SESSION_NONE) {
         </div>
     </div>
     <div class="px-4">
-        <a href="<?= BASE_URL ?>/index.php?route=home" class="btn btn-outline-danger w-100">
+        <a href="<?= BASE_URL ?>/index.php?route=auth/logout" class="btn btn-outline-danger w-100">
             <i class="fa-solid fa-arrow-right-from-bracket me-2"></i>Thoát giao diện Admin
         </a>
     </div>

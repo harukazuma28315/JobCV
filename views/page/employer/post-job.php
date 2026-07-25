@@ -51,21 +51,31 @@ include_once __DIR__ . '/../layouts/header.php';
                                         <th>Trạng thái</th>
                                         <th>Thao tác</th>
                                     </tr>
-
                                     </thead>
-
                                     <tbody>
-
-                                    <?php while($job = $jobs->fetch_assoc()): ?>
-
-                                    <tr>
-
-                                    ...
-
-                                    </tr>
-
-                                    <?php endwhile; ?>
-
+                                        <?php while ($job = $jobs->fetch_assoc()): ?>
+                                            <tr>
+                                                <td class="fw-semibold"><?= htmlspecialchars($job['TieuDe']) ?></td>
+                                                <td><?= date('d/m/Y', strtotime($job['NgayDang'])) ?></td>
+                                                <td><?= date('d/m/Y', strtotime($job['NgayHetHan'])) ?></td>
+                                                <td>
+                                                    <span class="badge bg-primary">
+                                                        <?= (int)$job['SoUngVien'] ?>
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <?php if ($job['TrangThai'] === 'DangMo'): ?>
+                                                        <span class="badge bg-success">Đang mở</span>
+                                                    <?php else: ?>
+                                                        <span class="badge bg-secondary"><?= htmlspecialchars($job['TrangThai']) ?></span>
+                                                    <?php endif; ?>
+                                                </td>
+                                                <td>
+                                                    <a href="#" class="btn btn-sm btn-outline-primary">Sửa</a>
+                                                    <!-- Thêm nút đóng/xóa sau -->
+                                                </td>
+                                            </tr>
+                                        <?php endwhile; ?>
                                     </tbody>
                             </table>
                         </div>
@@ -88,20 +98,15 @@ include_once __DIR__ . '/../layouts/header.php';
                                 </div>
                                 <div class="col-12 col-md-6">
                                     <label class="form-label fw-semibold text-dark">Lĩnh vực / Ngành nghề <span class="text-danger">*</span></label>
-                                    <select name="category"
-                                            class="form-select py-2"
-                                            required>
-
+                                    <select name="category" class="form-select py-2" required>
                                         <option value="">-- Chọn ngành nghề --</option>
-
-                                        <?php while ($category = $categories->fetch_assoc()): ?>
-
-                                            <option value="<?= htmlspecialchars($category['MaDanhMuc']) ?>">
-                                                <?= htmlspecialchars($category['TenDanhMuc']) ?>
-                                            </option>
-
-                                        <?php endwhile; ?>
-
+                                        <?php if (!empty($categories)): ?>
+                                            <?php foreach ($categories as $category): ?>
+                                                <option value="<?= htmlspecialchars($category['MaDanhMuc']) ?>">
+                                                    <?= htmlspecialchars($category['TenDanhMuc']) ?>
+                                                </option>
+                                            <?php endforeach; ?>
+                                        <?php endif; ?>
                                     </select>
                                 </div>
                                 <div class="col-12 col-md-6">
@@ -171,4 +176,4 @@ include_once __DIR__ . '/../layouts/header.php';
 </div>
 
 <!-- Nhúng Footer chung -->
-<?php include_once DIR . '/../layouts/footer.php'; ?>
+<?php include_once __DIR__ . '/../layouts/footer.php'; ?>

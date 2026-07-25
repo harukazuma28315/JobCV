@@ -185,37 +185,23 @@ class TinTuyenDungController
 		// Hiển thị trang đăng tin
 		require_once __DIR__ . '/../views/page/employer/post-job.php';
 	}
+
 	public function manage()
 	{
-
 		if (
 			!isset($_SESSION['user_id']) ||
-			($_SESSION['Role'] ?? 0) != 1
+			($_SESSION['user_role'] ?? 0) != 1
 		) {
 			exit("Bạn không có quyền.");
 		}
 
-
 		$maNhaTuyenDung = $_SESSION['user_id'];
 
+		$jobs = $this->tinTuyenDungModel->getByNhaTuyenDung($maNhaTuyenDung);
+		$categories = $this->tinTuyenDungModel->getCategories();
 
-
-		$jobs =
-			$this->tinTuyenDungModel
-			->getByNhaTuyenDung(
-				$maNhaTuyenDung
-			);
-
-
-		$categories =
-			$this->tinTuyenDungModel
-			->getCategories();
-
-
-
-		require_once
-		__DIR__ .
-		'/../views/page/employer/manage-jobs.php';
+		// Dùng chung view post-job.php (đã có tab Quản lý)
+		require_once __DIR__ . '/../views/page/employer/post-job.php';
 	}
 
 	/**
@@ -282,7 +268,7 @@ class TinTuyenDungController
 	 */
 	private function validateJobData(array $data)
 	{
-		if (empty(trim($data['tieuDe']))) {
+		if (empty(trim($data['category'] ?? ''))) {
 			return false;
 		}
 
