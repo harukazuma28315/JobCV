@@ -856,32 +856,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
                     </div>
 
-
-                    <div class="candidate-progress mt-4">
-
-                        <div class="d-flex justify-content-between mb-2">
-
-                            <span class="small fw-semibold">
-                                Hiệu quả tuyển dụng
-                            </span>
-
-                            <span class="small text-success fw-bold">
-                                Đang hoạt động
-                            </span>
-
-                        </div>
-
-                        <div class="progress">
-
-                            <div class="progress-bar bg-success"
-                                 style="width: 75%;">
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
                 </div>
 
             </div>
