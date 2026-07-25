@@ -30,46 +30,48 @@ $role = $_SESSION['user_role'] ?? 0;
         <!-- Thanh Tìm -->
         <div class="row justify-content-center">
             <div class="col-12 col-lg-10">
+                
+                <form action="<?= $baseUrl ?>/index.php" method="GET" class="p-4 bg-primary-blue rounded-4 shadow-lg" autocomplete="off">
 
-                <form action="<?= $baseUrl ?>/index.php"
-                    method="GET"
-                    class="p-4 bg-primary-blue rounded-4 shadow-lg">
-
+                    <!-- Giữ route MVC khi submit form -->
                     <input type="hidden" name="route" value="jobs/list">
-
-                    <!-- 1: NHẬP TỪ KHÓA  -->
+                    
+                    <!-- 1: NHẬP TỪ KHÓA -->
                     <div class="row mb-3 justify-content-center">
-                        <div class="col-12 col-md-8">
+                        <div class="col-12 col-md-6">
                             <div class="input-group">
-                                <span class="input-group-text bg-white border-0 py-2">
-                                    <i class="fa-solid fa-magnifying-glass text-muted"></i>
-                                </span>
-
-                                <input type="text"
-                                       name="keyword"
-                                       class="form-control border-0 py-2 text-center"
-                                       placeholder="Nhập từ khóa (Vị trí, kỹ năng, tên công ty...)"
-                                       value="<?= htmlspecialchars($_GET['keyword'] ?? '', ENT_QUOTES, 'UTF-8') ?>">
+                                <span class="input-group-text bg-white border-0 py-2"><i class="fa-solid fa-magnifying-glass text-muted"></i></span>
+                                <input type="text" name="keyword" class="form-control border-0 py-2 text-center" 
+                                    value="<?= isset($_GET['keyword']) ? htmlspecialchars($_GET['keyword']) : '' ?>" 
+                                    placeholder="Nhập từ khóa (Vị trí, kỹ năng, tên công ty...)">
                             </div>
                         </div>
                     </div>
 
-                    <!-- 2: BỘ LỌC ĐỊA ĐIỂM & NGÀNH NGHỀ  -->
+                    <!-- 2: BỘ LỌC ĐỊA ĐIỂM, NGÀNH NGHỀ & VỊ TRÍ -->
                     <div class="row g-3 mb-3">
 
                         <!-- Chọn địa điểm -->
                         <div class="col-12 col-md-4">
-                            <select name="location"
-                                    class="form-select border-0 py-2 fw-semibold">
+                            <select name="location" class="form-select border-0 py-2 fw-semibold">
                                 <option value="">Chọn Địa Điểm</option>
+
                                 <?php if (!empty($locations)): ?>
                                     <?php foreach ($locations as $location): ?>
+
                                         <?php 
-                                            $selected = (($_GET['location'] ?? '') === $location) ? 'selected' : '';
+                                        $selected = (($_GET['location'] ?? '') === $location['MaDanhMuc'])
+                                            ? 'selected'
+                                            : '';
                                         ?>
-                                        <option value="<?= htmlspecialchars($location) ?>" <?= $selected ?>>
-                                            <?= htmlspecialchars($location) ?>
+
+                                        <option
+                                            value="<?= htmlspecialchars($location['MaDanhMuc']) ?>"
+                                            <?= $selected ?>
+                                        >
+                                            <?= htmlspecialchars($location['TenDanhMuc']) ?>
                                         </option>
+
                                     <?php endforeach; ?>
                                 <?php endif; ?>
                             </select>
@@ -77,9 +79,9 @@ $role = $_SESSION['user_role'] ?? 0;
 
                         <!-- Chọn ngành nghề -->
                         <div class="col-12 col-md-4">
-                            <select name="category"
-                                    class="form-select border-0 py-2 fw-semibold">
+                            <select name="category" class="form-select border-0 py-2 fw-semibold">
                                 <option value="">Chọn Ngành Nghề</option>
+
                                 <?php if (!empty($categories)): ?>
                                     <?php foreach ($categories as $category): ?>
 
@@ -101,6 +103,7 @@ $role = $_SESSION['user_role'] ?? 0;
 
                             </select>
                         </div>
+
                         <!-- Chọn vị trí tuyển dụng -->
                         <div class="col-12 col-md-4">
                             <select name="position" class="form-select border-0 py-2 fw-semibold">
@@ -134,59 +137,32 @@ $role = $_SESSION['user_role'] ?? 0;
                     <!-- 3: NÚT TÌM VIỆC & BỘ LỌC NÂNG CAO -->
                     <div class="row">
                         <div class="col-12 d-flex justify-content-end gap-2">
-
-                            <button type="submit"
-                                    class="btn btn-warning fw-bold text-dark px-4 py-2">
-                                Tìm Việc
-                            </button>
-
-                            <button type="button"
-                                    class="btn btn-outline-light py-2 px-3"
-                                    data-bs-toggle="collapse"
-                                    data-bs-target="#advancedFilter"
-                                    aria-expanded="false"
-                                    title="Bộ lọc nâng cao">
-
+                            <button type="submit" class="btn btn-warning fw-bold text-dark px-4 py-2">Tìm Việc</button>
+                            <button type="button" class="btn btn-outline-light py-2 px-3" data-bs-toggle="collapse" data-bs-target="#advancedFilter" aria-expanded="false" title="Bộ lọc nâng cao">
                                 <i class="fa-solid fa-sliders"></i>
-
                             </button>
-
                         </div>
                     </div>
 
-                    <!-- 4: KHU VỰC SỔ BỘ LỌC NÂNG CAO  -->
-                    <div class="collapse" id="advancedFilter">
-
-                        <div class="row g-3 mt-2 pt-3 border-top border-white-50">
-
+                    <!-- 4: BỘ LỌC NÂNG CAO -->
+                    <div class="collapse <?= (isset($_GET['salary']) || isset($_GET['level']) || isset($_GET['job_type']) || isset($_GET['experience']) || isset($_GET['posted_date'])) ? 'show' : '' ?>" id="advancedFilter">
+                        <div class="row g-3 mt-2 border-top">
                             <!-- Lọc mức lương -->
                             <div class="col-12 col-sm-6 col-md-3">
-
-                                <label class="form-label text-white-50 small fw-semibold mb-1">
-                                    Mức Lương
-                                </label>
-
-                                <select name="salary"
-                                        class="form-select border-0 py-2 small text-dark fw-semibold">
+                                <label class="form-label text-white-50 small fw-semibold mb-1">Mức Lương</label>
+                                <select name="salary" class="form-select border-0 py-2 small text-dark fw-semibold">
                                     <option value="">Tất cả mức lương</option>
                                     <option value="under-10" <?= (isset($_GET['salary']) && $_GET['salary'] == 'under-10') ? 'selected' : '' ?>>Dưới 10 triệu</option>
                                     <option value="10-15" <?= (isset($_GET['salary']) && $_GET['salary'] == '10-15') ? 'selected' : '' ?>>10 - 15 triệu</option>
                                     <option value="15-20" <?= (isset($_GET['salary']) && $_GET['salary'] == '15-20') ? 'selected' : '' ?>>15 - 20 triệu</option>
                                     <option value="over-20" <?= (isset($_GET['salary']) && $_GET['salary'] == 'over-20') ? 'selected' : '' ?>>Trên 20 triệu</option>
-
                                 </select>
-
                             </div>
 
                             <!-- Lọc cấp bậc -->
                             <div class="col-6 col-sm-3 col-md-2">
-
-                                <label class="form-label text-white-50 small fw-semibold mb-1">
-                                    Cấp Bậc
-                                </label>
-
-                                <select name="level"
-                                        class="form-select border-0 py-2 small text-dark fw-semibold">
+                                <label class="form-label text-white-50 small fw-semibold mb-1">Cấp Bậc</label>
+                                <select name="level" class="form-select border-0 py-2 small text-dark fw-semibold">
                                     <option value="">Tất cả cấp bậc</option>
                                     <option value="Fresher" <?= ($_GET['level'] ?? '') == 'Fresher' ? 'selected' : '' ?>>
                                         Fresher
@@ -203,20 +179,13 @@ $role = $_SESSION['user_role'] ?? 0;
                                     <option value="Senior" <?= ($_GET['level'] ?? '') == 'Senior' ? 'selected' : '' ?>>
                                         Senior
                                     </option>
-
                                 </select>
-
                             </div>
 
                             <!-- Lọc hình thức làm việc -->
                             <div class="col-6 col-sm-3 col-md-2">
-
-                                <label class="form-label text-white-50 small fw-semibold mb-1">
-                                    Hình Thức
-                                </label>
-
-                                <select name="job_type"
-                                        class="form-select border-0 py-2 small text-dark fw-semibold">
+                                <label class="form-label text-white-50 small fw-semibold mb-1">Hình Thức</label>
+                                <select name="job_type" class="form-select border-0 py-2 small text-dark fw-semibold">
                                     <option value="">Tất cả hình thức</option>
                                     <option value="Full-time" <?= ($_GET['job_type'] ?? '') == 'Full-time' ? 'selected' : '' ?>>
                                         Full-time
@@ -233,20 +202,17 @@ $role = $_SESSION['user_role'] ?? 0;
                                     <option value="Part-time" <?= ($_GET['job_type'] ?? '') == 'Part-time' ? 'selected' : '' ?>>
                                         Part-time
                                     </option>
-
                                 </select>
-
                             </div>
 
                             <!-- Lọc kinh nghiệm -->
                             <div class="col-12 col-sm-6 col-md-3">
-
                                 <label class="form-label text-white-50 small fw-semibold mb-1">
                                     Kinh Nghiệm
                                 </label>
 
-                                <select name="experience"
-                                        class="form-select border-0 py-2 small text-dark fw-semibold">
+                                <select name="experience" class="form-select border-0 py-2 small text-dark fw-semibold">
+
                                     <option value="">Tất cả kinh nghiệm</option>
 
                                     <option value="0" <?= ($_GET['experience'] ?? '') === '0' ? 'selected' : '' ?>>
@@ -266,32 +232,20 @@ $role = $_SESSION['user_role'] ?? 0;
                                     </option>
 
                                 </select>
-
                             </div>
 
                             <!-- Lọc thời gian đăng tin -->
                             <div class="col-12 col-sm-6 col-md-2">
-
-                                <label class="form-label text-white-50 small fw-semibold mb-1">
-                                    Thời Gian Đăng
-                                </label>
-
-                                <select name="posted_date"
-                                        class="form-select border-0 py-2 small text-dark fw-semibold">
+                                <label class="form-label text-white-50 small fw-semibold mb-1">Thời Gian</label>
+                                <select name="posted_date" class="form-select border-0 py-2 small text-dark fw-semibold">
                                     <option value="">Mọi thời gian</option>
                                     <option value="24h" <?= (isset($_GET['posted_date']) && $_GET['posted_date'] == '24h') ? 'selected' : '' ?>>Trong 24 giờ</option>
                                     <option value="1week" <?= (isset($_GET['posted_date']) && $_GET['posted_date'] == '1week') ? 'selected' : '' ?>>Trong 1 tuần</option>
-
                                 </select>
-
                             </div>
-
                         </div>
-
                     </div>
-
                 </form>
-
             </div>
         </div>
 
