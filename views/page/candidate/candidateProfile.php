@@ -9,7 +9,6 @@ require_once __DIR__ . '/../../../controllers/LogoutController.php';
 include_once __DIR__ . '/../layouts/header.php';
 
 if (!isset($conn)) {
-    // Gọi hàm khởi tạo kết nối từ Class Database hệ thống của bạn
     $conn = Database::getConnection(); 
 }
 
@@ -61,13 +60,16 @@ $resetEmail = $_SESSION['user_email'] ?? $profileData['email'] ?? '';
                     <div class="card border-0 shadow-sm p-4 bg-white">
                         <h4 class="fw-bold mb-4 border-start border-4 border-primary ps-3 text-dark">Thông Tin Cá Nhân</h4>
                         
-                        <form action="<?= $baseUrl ?>/index.php?route=profile/update" method="POST" class="needs-validation" novalidate>
+                        <form action="<?= $baseUrl ?>/index.php?route=profile/update" method="POST" class="needs-validation" novalidate id="candidateForm">
                             <input type="hidden" name="action" value="update">
                             <div class="row g-3">
-                                <!-- Họ và tên -->
+                                <!-- Họ và tên (Giống trang Đăng ký) -->
                                 <div class="col-12 col-md-6">
                                     <label class="form-label fw-semibold text-dark">Họ và tên <span class="text-danger">*</span></label>
-                                    <input type="text" name="hoTen" class="form-control py-2" value="<?php echo htmlspecialchars($profileData['fullname'] ?? ''); ?>" required maxlength="100">
+                                    <input type="text" name="hoTen" id="HoTen" class="form-control py-2" value="<?php echo htmlspecialchars($profileData['fullname'] ?? ''); ?>" required maxlength="100"
+                                           pattern="^[a-zA-ZàáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđĐ\s\.]+$"
+                                           oninput="this.value = this.value.replace(/[^a-zA-ZàáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđĐ\s\.]/g, '').replace(/\s+/g, ' ');"
+                                           title="Họ và tên chỉ bao gồm chữ cái và khoảng trắng, không chứa ký tự đặc biệt">
                                 </div>
                                 
                                 <!-- Email (Chỉ đọc) -->
@@ -76,10 +78,10 @@ $resetEmail = $_SESSION['user_email'] ?? $profileData['email'] ?? '';
                                     <input type="email" name="email" class="form-control py-2" value="<?php echo htmlspecialchars($profileData['email'] ?? ''); ?>" readonly>
                                 </div>
 
-                                <!-- Số điện thoại -->
+                                <!-- Số điện thoại (Giống trang Đăng ký) -->
                                 <div class="col-12 col-md-6">
                                     <label class="form-label fw-semibold text-dark">Số điện thoại <span class="text-danger">*</span></label>
-                                    <input type="tel" name="sdt" class="form-control py-2" value="<?php echo htmlspecialchars($profileData['phone'] ?? ''); ?>" required inputmode="numeric" maxlength="10" pattern="(03|05|07|08|09)[0-9]{8}" oninput="this.value = this.value.replace(/\D/g, '')" title="Số điện thoại phải gồm 10 chữ số chuẩn nhà mạng Việt Nam">
+                                    <input type="text" name="sdt" class="form-control py-2" value="<?php echo htmlspecialchars($profileData['phone'] ?? ''); ?>" required placeholder="Nhập 10 chữ số (vd: 0912345678)" inputmode="numeric" maxlength="10" pattern="0[0-9]{9}" oninput="this.value = this.value.replace(/[^0-9]/g, '')" title="Số điện thoại phải bao gồm đúng 10 chữ số và bắt đầu bằng số 0">
                                 </div>
 
                                 <!-- Ngày sinh -->
@@ -97,10 +99,10 @@ $resetEmail = $_SESSION['user_email'] ?? $profileData['email'] ?? '';
                                     </select>
                                 </div>
 
-                                <!-- Địa chỉ -->
+                                <!-- Địa chỉ (Giống trang Đăng ký) -->
                                 <div class="col-12">
                                     <label class="form-label fw-semibold text-dark">Địa chỉ</label>
-                                    <input type="text" name="diaChi" class="form-control py-2" value="<?php echo htmlspecialchars($profileData['address'] ?? ''); ?>" maxlength="255">
+                                    <input type="text" name="diaChi" class="form-control py-2" value="<?php echo htmlspecialchars($profileData['address'] ?? ''); ?>" maxlength="255" pattern="^[a-zA-Z0-9àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđĐ\s,\/]+$" oninput="this.value = this.value.replace(/[^a-zA-Z0-9àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđĐ\s,\/]/g, '')" title="Địa chỉ chỉ được chứa chữ cái, số, khoảng trắng, dấu phẩy (,) và dấu xuyệt (/). Không chứa các ký tự đặc biệt khác">
                                 </div>
                             </div>
                             
@@ -123,15 +125,26 @@ $resetEmail = $_SESSION['user_email'] ?? $profileData['email'] ?? '';
     </div>
 </div>
 
-<style>
-    .border-dashed {
-        border-style: dashed !important;
-        border-color: #1e5ba6 !important;
-        transition: background-color 0.2s ease;
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const hoTenInput = document.getElementById('HoTen');
+    if (hoTenInput) {
+        hoTenInput.addEventListener('blur', function () {
+            this.value = this.value.trim().replace(/\s+/g, ' ');
+        });
     }
-    .border-dashed:hover {
-        background-color: #eef4fc !important;
+
+    const form = document.getElementById('candidateForm');
+    if (form) {
+        form.addEventListener('submit', function (event) {
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            form.classList.add('was-validated');
+        }, false);
     }
-</style>
+});
+</script>
 
 <?php include_once __DIR__ . '/../layouts/footer.php'; ?>

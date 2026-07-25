@@ -144,12 +144,21 @@ class ForgotPasswordController {
      * @return void
      */
     private function handleResetPassword() {
-        $email = trim($_POST['email'] ?? '');
-        $password = $_POST['matKhau'] ?? $_POST['new_password'] ?? '';
-        $confirmPassword = $_POST['matKhauConfirm'] ?? $_POST['confirm_password'] ?? '';
+        // Đảm bảo session đã được load
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
 
-        // Đảm bảo người dùng bắt buộc phải đi qua bước verify OTP thành công trước đó
-        if (!isset($_SESSION['forgot_verified']) || $_SESSION['forgot_verified'] !== true || $email !== ($_SESSION['forgot_email'] ?? '')) {
+        $email = trim($_POST['email'] ?? '');
+        $password = $_POST['matKhau'] ?? '';
+        $confirmPassword = $_POST['matKhauConfirm'] ?? '';
+
+        // Kiểm tra Session xác thực OTP
+        if (
+            !isset($_SESSION['forgot_verified']) || 
+            $_SESSION['forgot_verified'] !== true || 
+            strtolower($email) !== strtolower($_SESSION['forgot_email'] ?? '')
+        ) {
             echo json_encode(['status' => 'error', 'message' => 'Hành động không hợp lệ hoặc chưa qua bước xác thực OTP!']);
             exit();
         }
@@ -159,14 +168,18 @@ class ForgotPasswordController {
             exit();
         }
 
+        // Kiểm tra định dạng mật khẩu ở phía server (không được chỉ dựa vào validate của client,
+        // vì client có thể bị bypass bằng cách tắt JS hoặc gọi thẳng API bằng Postman/cURL).
+        // Phải khớp đúng rule đã khai báo ở input pattern="^\S{6,32}$" bên reset-password.php
+        if (!preg_match('/^\S{6,32}$/', $password)) {
+            echo json_encode(['status' => 'error', 'message' => 'Mật khẩu phải từ 6 đến 32 ký tự và không chứa khoảng trắng!']);
+            exit();
+        }
+
         $passwordHashed = password_hash($password, PASSWORD_DEFAULT);
         if ($this->userModel->updatePassword($email, $passwordHashed)) {
-            // Hủy toàn bộ session khôi phục mật khẩu để bảo mật thông tin
-            unset($_SESSION['forgot_otp']);
-            unset($_SESSION['forgot_email']);
-            unset($_SESSION['forgot_expired']);
-            unset($_SESSION['forgot_verified']);
-            unset($_SESSION['forgot_otp_last_sent_at']);
+            // Xóa sạch session sau khi đổi thành công
+            unset($_SESSION['forgot_otp'], $_SESSION['forgot_email'], $_SESSION['forgot_expired'], $_SESSION['forgot_verified'], $_SESSION['forgot_otp_last_sent_at']);
 
             echo json_encode(['status' => 'success', 'message' => 'Đổi mật khẩu thành công! Hệ thống sẽ chuyển về trang đăng nhập.']);
         } else {
