@@ -21,7 +21,7 @@ class AdminUserModel
      */
     public function getUserListForAdmin($keyword = '', $role = null, $status = null)
     {
-        $sql = "SELECT u.MaUser, u.HoTen, u.Email, u.Role, u.TaiKhoan, u.IsLocked, u.TrangThai,
+        $sql = "SELECT u.MaUser, u.HoTen, u.Email, u.Role, u.IsLocked, u.TrangThai,
                        COALESCE(ntd.TenCongTy, 'Cá nhân') as TenCongTy
                 FROM user u
                 LEFT JOIN nhatuyendung ntd ON u.MaUser = ntd.MaNhaTuyenDung
@@ -41,6 +41,9 @@ class AdminUserModel
             $sql .= " AND u.Role = ?";
             $params[] = $role;
             $types .= 'i';
+        }else {
+        // Mặc định: không hiện Admin
+        $sql .= " AND u.Role IN (0, 1)";
         }
 
         if ($status === 'active' || $status === 'HoatDong') {

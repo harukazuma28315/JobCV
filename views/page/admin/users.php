@@ -131,7 +131,7 @@ $status  = $status ?? null;
                                 <div class="d-flex align-items-center gap-2">
                                     <img src="https://api.dicebear.com/7.x/identicon/svg?seed=<?= htmlspecialchars($user['MaUser']) ?>" 
                                         class="rounded-circle border" style="width: 35px; height: 35px;">
-                                    <span class="fw-semibold"><?= htmlspecialchars($user['HoTen'] ?? $user['TaiKhoan'] ?? 'Không tên') ?></span>
+                                    <span class="fw-semibold"><?= htmlspecialchars($user['HoTen'] ?? $user['Email'] ?? 'Không tên') ?></span>
                                 </div>
                             </td>
                             <td><?= htmlspecialchars($user['Email']) ?></td>
@@ -156,32 +156,46 @@ $status  = $status ?? null;
                             </td>
                             <td class="text-end">
                                 <div class="btn-action-group d-inline-flex gap-1">
-                                    <?php if ($user['Role'] == 1 && $user['TrangThai'] === 'ChoDuyet'): ?>
-                                        <form method="POST" action="<?= BASE_URL ?>/index.php?route=admin/users/approve" style="display:inline;" 
-                                              onsubmit="return confirm('Xác nhận duyệt?')">
+
+                                    <?php if ($user['TrangThai'] === 'ChoDuyet'): ?>
+                                        <!-- Chờ duyệt: Duyệt + Khóa -->
+                                        <form method="POST" action="<?= BASE_URL ?>/index.php?route=admin/users/approve" style="display:inline;"
+                                            onsubmit="return confirm('Xác nhận duyệt tài khoản này?')">
                                             <input type="hidden" name="maUser" value="<?= htmlspecialchars($user['MaUser']) ?>">
                                             <button type="submit" class="btn btn-warning text-dark fw-semibold">
-                                                <i class="fa-solid fa-user-shield"></i> Duyệt
+                                                <i class="fa-solid fa-user-shield"></i> 
+                                            </button>
+                                        </form>
+
+                                        <form method="POST" action="<?= BASE_URL ?>/index.php?route=admin/users/lock" style="display:inline;"
+                                            onsubmit="return confirm('Xác nhận khóa tài khoản này?')">
+                                            <input type="hidden" name="maUser" value="<?= htmlspecialchars($user['MaUser']) ?>">
+                                            <button type="submit" class="btn btn-danger">
+                                                <i class="fa-solid fa-user-slash"></i> 
+                                            </button>
+                                        </form>
+
+                                    <?php elseif ($user['TrangThai'] === 'BiKhoa'): ?>
+                                        <!-- Bị khóa: chỉ Mở khóa -->
+                                        <form method="POST" action="<?= BASE_URL ?>/index.php?route=admin/users/unlock" style="display:inline;"
+                                            onsubmit="return confirm('Xác nhận mở khóa tài khoản này?')">
+                                            <input type="hidden" name="maUser" value="<?= htmlspecialchars($user['MaUser']) ?>">
+                                            <button type="submit" class="btn btn-success">
+                                                <i class="fa-solid fa-user-check"></i> 
+                                            </button>
+                                        </form>
+
+                                    <?php else: ?>
+                                        <!-- Đang hoạt động (HoatDong): chỉ Khóa -->
+                                        <form method="POST" action="<?= BASE_URL ?>/index.php?route=admin/users/lock" style="display:inline;"
+                                            onsubmit="return confirm('Xác nhận khóa tài khoản này?')">
+                                            <input type="hidden" name="maUser" value="<?= htmlspecialchars($user['MaUser']) ?>">
+                                            <button type="submit" class="btn btn-danger">
+                                                <i class="fa-solid fa-user-slash"></i> 
                                             </button>
                                         </form>
                                     <?php endif; ?>
 
-                                    <?php if ($user['TrangThai'] !== 'BiKhoa'): ?>
-                                        <form method="POST" action="<?= BASE_URL ?>/index.php?route=admin/users/lock" style="display:inline;" 
-                                              onsubmit="return confirm('Xác nhận khóa?')">
-                                            <input type="hidden" name="maUser" value="<?= htmlspecialchars($user['MaUser']) ?>">
-                                            <button type="submit" class="btn btn-danger">
-                                                <i class="fa-solid fa-user-slash"></i>
-                                            </button>
-                                        </form>
-                                    <?php else: ?>
-                                        <form method="POST" action="<?= BASE_URL ?>/index.php?route=admin/users/unlock" style="display:inline;">
-                                            <input type="hidden" name="maUser" value="<?= htmlspecialchars($user['MaUser']) ?>">
-                                            <button type="submit" class="btn btn-success">
-                                                <i class="fa-solid fa-user-check"></i>
-                                            </button>
-                                        </form>
-                                    <?php endif; ?>
                                 </div>
                             </td>
                         </tr>

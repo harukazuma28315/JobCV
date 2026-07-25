@@ -41,8 +41,9 @@ class AuthHelper
 		self::requireLogin();
 
 		$allowedRoles = is_array($roles) ? $roles : array($roles);
+		$currentRole = isset($_SESSION['role']) ? $_SESSION['role'] : ($_SESSION['user_role'] ?? null);
 
-		if (!in_array((int) $_SESSION['role'], $allowedRoles, true)) {
+		if (!in_array((int) $currentRole, $allowedRoles, true)) {
 			ResponseHelper::setFlash('error', 'Ban khong co quyen truy cap chuc nang nay.');
 			self::redirect(BASE_URL . '/index.php');
 		}
@@ -77,6 +78,9 @@ class AuthHelper
 	 */
 	public static function getCurrentRole()
 	{
-		return isset($_SESSION['role']) ? (int) $_SESSION['role'] : null;
+		if (isset($_SESSION['role'])) {
+			return (int) $_SESSION['role'];
+		}
+		return isset($_SESSION['user_role']) ? (int) $_SESSION['user_role'] : null;
 	}
 }

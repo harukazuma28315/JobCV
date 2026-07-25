@@ -500,18 +500,18 @@ $role = $_SESSION['user_role'] ?? 0;
                     </div>
 
                     <h5 class="fw-bold mb-1">
-                        <?= htmlspecialchars($comp['TenCongTy']) ?>
+                        <?= htmlspecialchars($comp['TenCongTy'] ?? '') ?>
                     </h5>
 
                     <span class="badge bg-light text-primary-blue mb-2">
-                        <?= htmlspecialchars($comp['LinhVuc']) ?>
+                        <?= htmlspecialchars($comp['LinhVuc'] ?? '') ?>
                     </span>
 
                     <p class="small text-muted mb-0">
-                        <?= htmlspecialchars($comp['MoTa']) ?>
+                        <?= htmlspecialchars($comp['MoTa'] ?? '') ?>
                     </p>
                     <small class="text-muted">
-                        <?= $comp['SoLuongTin'] ?> tin tuyển dụng
+                        <?= (int)($comp['SoLuongTin'] ?? 0) ?> tin tuyển dụng
                     </small>
 
                 </div>

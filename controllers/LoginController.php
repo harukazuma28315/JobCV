@@ -64,9 +64,18 @@ class LoginController
             $_SESSION['user_id'] = $user['MaUser'];
             $_SESSION['user_email'] = $user['Email'];
             $_SESSION['user_name'] = $user['HoTen'];
-            $_SESSION['user_role'] = $user['Role'];
 
-            header('Location: /JobCV/index.php?route=home');
+            $role = (int)$user['Role'];
+            
+            $_SESSION['user_role'] = $user['Role'];
+            $_SESSION['role'] = $user['Role']; // Đồng bộ với AuthHelper::requireRole() đang đọc key 'role'
+
+            // ===== Redirect theo quyền =====
+            if ($role === ROLE_ADMIN) {          // 2 = Admin
+                header('Location: /JobCV/index.php?route=admin/dashboard');
+            } else {
+                header('Location: /JobCV/index.php?route=home');
+            }
             exit;
 
         } else {

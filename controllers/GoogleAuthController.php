@@ -96,6 +96,7 @@ class GoogleAuthController {
 		$_SESSION['user_email'] = $user['Email'];
 		$_SESSION['user_name'] = $user['HoTen'];
 		$_SESSION['user_role'] = $user['Role'];
+		$_SESSION['role'] = $user['Role']; // Đồng bộ với AuthHelper::requireRole() đang đọc key 'role'
 
 		echo "<script>alert('Đăng nhập liên kết Google thành công!'); window.location.href='../views/trangchu.php';</script>";
 	}

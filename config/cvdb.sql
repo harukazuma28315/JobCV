@@ -240,7 +240,9 @@ CREATE TABLE `user` (
   `NgaySinh` date DEFAULT NULL,
   `GioiTinh` tinyint(1) DEFAULT NULL,
   `SDT` varchar(15) DEFAULT NULL,
-  `DiaChi` varchar(255) DEFAULT NULL
+  `DiaChi` varchar(255) DEFAULT NULL,
+  `IsLocked` tinyint(1) DEFAULT 0,
+  `TrangThai` varchar(20) DEFAULT 'HoatDong'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
