@@ -52,6 +52,7 @@ class CVController
             "chungChi" => $this->chungChiModel->getByCV($maCV)
         ];
     }
+
     /**
      * Tạo mới CV.
      *
@@ -66,6 +67,7 @@ class CVController
 
         return $this->cvModel->create($cvData);
     }
+
     /**
      * Hiển thị trang tạo CV
      */
@@ -95,60 +97,59 @@ class CVController
 
         $maUngVien = $_SESSION['user_id'];
 
+        // Chuẩn hóa và validate dữ liệu phía server
+        $tieuDe = trim(preg_replace('/\s+/', ' ', $post['tieuDe'] ?? ''));
+        $viTriMongMuon = trim(preg_replace('/\s+/', ' ', $post['viTriMongMuon'] ?? ''));
+        $sdt = trim($post['sdt'] ?? '');
+        $email = $_SESSION['user_email'] ?? ''; // Email cố định từ session, không lấy từ $post
+
+        if (empty($tieuDe)) {
+            echo "<script>alert('Tiêu đề CV không được bỏ trống!'); window.history.back();</script>";
+            exit;
+        }
+
+        if (empty($viTriMongMuon)) {
+            echo "<script>alert('Vị trí mong muốn không được bỏ trống!'); window.history.back();</script>";
+            exit;
+        }
+
+        if (!preg_match('/^0[0-9]{9}$/', $sdt)) {
+            echo "<script>alert('Số điện thoại phải gồm đúng 10 chữ số và bắt đầu bằng số 0!'); window.history.back();</script>";
+            exit;
+        }
+
         $cvData = [
-
             'maCV' => 'CV' . time(),
-
             'maUngVien' => $maUngVien,
-
-            'tieuDe' => trim($post['tieuDe'] ?? ''),
-
+            'tieuDe' => $tieuDe,
             'kyNang' => trim($post['kyNang'] ?? ''),
-
             'soThich' => trim($post['soThich'] ?? ''),
-
             'mucTieu' => trim($post['mucTieu'] ?? ''),
-
             'trangThai' => 1,
-
-            'viTriMongMuon' => trim($post['viTriMongMuon'] ?? ''),
-
-            'email' => trim($post['email'] ?? ''),
-
-            'sdt' => trim($post['sdt'] ?? '')
-
+            'viTriMongMuon' => $viTriMongMuon,
+            'email' => $email,
+            'sdt' => $sdt
         ];
-
 
         $success = $this->cvModel->create($cvData);
 
         if ($success) {
-
             echo "
                 <script>
-
                     alert('Tạo CV thành công!');
-
-                    window.location.href =
-                        '/JobCV/index.php?route=cv/create';
-
+                    window.location.href = '/JobCV/index.php?route=cv/create';
                 </script>
             ";
-
         } else {
-
             echo "
                 <script>
-
                     alert('Không thể tạo CV.');
-
                     window.history.back();
-
                 </script>
             ";
-
         }
     }
+
     public function updateSubmit($post)
     {
         if (!isset($_SESSION['user_id'])) {
@@ -175,55 +176,54 @@ class CVController
             exit('Bạn không có quyền chỉnh sửa CV này.');
         }
 
+        // Chuẩn hóa và validate dữ liệu phía server
+        $tieuDe = trim(preg_replace('/\s+/', ' ', $post['tieuDe'] ?? ''));
+        $viTriMongMuon = trim(preg_replace('/\s+/', ' ', $post['viTriMongMuon'] ?? ''));
+        $sdt = trim($post['sdt'] ?? '');
+        $email = $_SESSION['user_email'] ?? $cv['Email']; // Email cố định từ session/DB
+
+        if (empty($tieuDe)) {
+            echo "<script>alert('Tiêu đề CV không được bỏ trống!'); window.history.back();</script>";
+            exit;
+        }
+
+        if (empty($viTriMongMuon)) {
+            echo "<script>alert('Vị trí mong muốn không được bỏ trống!'); window.history.back();</script>";
+            exit;
+        }
+
+        if (!preg_match('/^0[0-9]{9}$/', $sdt)) {
+            echo "<script>alert('Số điện thoại phải gồm đúng 10 chữ số và bắt đầu bằng số 0!'); window.history.back();</script>";
+            exit;
+        }
+
         $cvData = [
-
             'maCV' => $maCV,
-
             'maUngVien' => $_SESSION['user_id'],
-
-            'tieuDe' => trim($post['tieuDe'] ?? ''),
-
+            'tieuDe' => $tieuDe,
             'kyNang' => trim($post['kyNang'] ?? ''),
-
             'soThich' => trim($post['soThich'] ?? ''),
-
             'mucTieu' => trim($post['mucTieu'] ?? ''),
-
             'trangThai' => 1,
-
-            'viTriMongMuon' => trim($post['viTriMongMuon'] ?? ''),
-
-            'email' => trim($post['email'] ?? ''),
-
-            'sdt' => trim($post['sdt'] ?? '')
-
+            'viTriMongMuon' => $viTriMongMuon,
+            'email' => $email,
+            'sdt' => $sdt
         ];
-
 
         $success = $this->cvModel->update($cvData);
 
         if ($success) {
-
             echo "
                 <script>
-
                     alert('Cập nhật CV thành công!');
-
-                    window.location.href =
-                        '/JobCV/index.php?route=cv/create';
-
+                    window.location.href = '/JobCV/index.php?route=cv/create';
                 </script>
             ";
-
         } else {
-
             echo "
                 <script>
-
                     alert('Không thể cập nhật CV.');
-
                     window.history.back();
-
                 </script>
             ";
         }
@@ -251,86 +251,55 @@ class CVController
             exit('Bạn không có quyền chỉnh sửa CV này.');
         }
 
-        $extension = strtolower(
-            pathinfo($file['name'], PATHINFO_EXTENSION)
-        );
+        $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
 
-        $allowedExtensions = [
-            'pdf',
-            'doc',
-            'docx'
-        ];
+        $allowedExtensions = ['pdf', 'doc', 'docx'];
 
         if (!in_array($extension, $allowedExtensions)) {
             exit('Chỉ hỗ trợ file PDF, DOC hoặc DOCX.');
         }
 
-
         $oldPath = null;
-
         if (!empty($cv['DuongDanFileCV'])) {
             $oldPath = __DIR__ . '/../' . $cv['DuongDanFileCV'];
         }
 
-
         $fileName = $maCV . '_' . time() . '.' . $extension;
-
         $uploadPath = __DIR__ . '/../uploads/' . $fileName;
-
-
 
         if (!move_uploaded_file($file['tmp_name'], $uploadPath)) {
             exit('Không thể upload file mới.');
         }
 
-
-
         $fileData = [
-
             'maCV' => $maCV,
-
             'tenFileCV' => $fileName,
-
             'duongDanFileCV' => 'uploads/' . $fileName,
-
             'loaiFile' => $extension
-
         ];
 
         $success = $this->cvModel->updateFile($fileData);
 
         if ($success) {
-
-
             if ($oldPath && file_exists($oldPath)) {
                 unlink($oldPath);
             }
 
             echo "
                 <script>
-
                     alert('Thay đổi file CV thành công!');
-
-                    window.location.href =
-                        '/JobCV/index.php?route=cv/create';
-
+                    window.location.href = '/JobCV/index.php?route=cv/create';
                 </script>
             ";
-
         } else {
-
-
             if (file_exists($uploadPath)) {
                 unlink($uploadPath);
             }
 
             echo "
                 <script>
-
                     alert('Không thể cập nhật file CV.');
-
                     window.history.back();
-
                 </script>
             ";
         }
@@ -339,223 +308,75 @@ class CVController
     /**
      * Upload CV cá nhân
      */
-    public function uploadSubmit($file, $post = [])
+    public function uploadSubmit($file)
     {
         if (!isset($_SESSION['user_id'])) {
-
-            header(
-                'Location: /JobCV/index.php?route=auth/login'
-            );
-
+            header('Location: /JobCV/index.php?route=auth/login');
             exit;
         }
-
 
         if (!$file || $file['error'] !== 0) {
-
             echo "
                 <script>
-
                     alert('File upload không hợp lệ.');
-
                     window.history.back();
-
                 </script>
             ";
-
             exit;
         }
 
-
-        $extension = strtolower(
-            pathinfo(
-                $file['name'],
-                PATHINFO_EXTENSION
-            )
-        );
-
-
-        $allowed = [
-
-            'pdf',
-            'doc',
-            'docx'
-
-        ];
-
+        $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+        $allowed = ['pdf', 'doc', 'docx'];
 
         if (!in_array($extension, $allowed)) {
-
             echo "
                 <script>
-
                     alert('Chỉ hỗ trợ file PDF, DOC hoặc DOCX.');
-
                     window.history.back();
-
                 </script>
             ";
-
             exit;
         }
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | TRƯỜNG HỢP 1:
-        | ĐÃ CÓ CV -> UPLOAD FILE VÀO CV HIỆN TẠI
-        |--------------------------------------------------------------------------
-        */
-
-        $maCV = trim($post['maCV'] ?? '');
-
-
-        if (!empty($maCV)) {
-
-            $cv = $this->cvModel->getById($maCV);
-
-
-            if (!$cv) {
-
-                exit('Không tìm thấy CV.');
-
-            }
-
-
-            // Kiểm tra CV có đúng user hiện tại không
-
-            if ($cv['MaUngVien'] != $_SESSION['user_id']) {
-
-                exit('Bạn không có quyền cập nhật CV này.');
-
-            }
-
-
-            // Upload file vào CV hiện tại
-
-            $success = $this->uploadCV(
-
-                $maCV,
-
-                $file
-
-            );
-
-
-            if ($success) {
-
-                echo "
-                    <script>
-
-                        alert('Tải CV lên thành công!');
-
-                        window.location.href =
-                            '/JobCV/index.php?route=cv/create';
-
-                    </script>
-                ";
-
-            } else {
-
-                echo "
-                    <script>
-
-                        alert('Không thể tải file lên.');
-
-                        window.history.back();
-
-                    </script>
-                ";
-
-            }
-
-            exit;
-
-        }
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | TRƯỜNG HỢP 2:
-        | CHƯA CÓ CV -> TẠO CV MỚI RỒI UPLOAD FILE
-        |--------------------------------------------------------------------------
-        */
 
         $maCV = 'CV' . time();
 
-
         $cvData = [
-
             'maCV' => $maCV,
-
             'maUngVien' => $_SESSION['user_id'],
-
-            'tieuDe' => 'CV cá nhân - ' . $_SESSION['user_name'],
-
+            'tieuDe' => 'CV cá nhân - ' . ($_SESSION['user_name'] ?? 'Ứng viên'),
             'kyNang' => '',
-
             'soThich' => '',
-
             'mucTieu' => '',
-
             'trangThai' => 1,
-
             'viTriMongMuon' => '',
-
-            'email' => $_SESSION['user_email'],
-
+            'email' => $_SESSION['user_email'] ?? '',
             'sdt' => ''
-
         ];
-
 
         $created = $this->cvModel->create($cvData);
 
-
         if (!$created) {
-
             die('Không thể tạo CV.');
-
         }
 
-
-        $success = $this->uploadCV(
-
-            $maCV,
-
-            $file
-
-        );
-
+        $success = $this->uploadCV($maCV, $file);
 
         if ($success) {
-
             echo "
                 <script>
-
                     alert('Tải CV lên thành công!');
-
-                    window.location.href =
-                        '/JobCV/index.php?route=cv/create';
-
+                    window.location.href = '/JobCV/index.php?route=cv/create';
                 </script>
             ";
-
         } else {
-
             $this->cvModel->delete($maCV);
 
-
             echo "
                 <script>
-
                     alert('Không thể tải file lên.');
-
                     window.history.back();
-
                 </script>
             ";
-
         }
     }
 
@@ -573,6 +394,7 @@ class CVController
 
         return $this->cvModel->update($cvData);
     }
+
     /**
      * Xóa CV.
      *
@@ -583,6 +405,7 @@ class CVController
     {
         return $this->cvModel->delete($maCV);
     }
+
     /**
      * Tạo đầy đủ hồ sơ CV.
      *
@@ -625,6 +448,7 @@ class CVController
 
         return true;
     }
+
     /**
      * Cập nhật toàn bộ hồ sơ CV.
      *
@@ -667,6 +491,7 @@ class CVController
 
         return true;
     }
+
     /**
      * Upload file CV.
      *
@@ -682,11 +507,7 @@ class CVController
 
         $extension = strtolower(pathinfo($file["name"], PATHINFO_EXTENSION));
 
-        $allowExtensions = [
-            "pdf",
-            "doc",
-            "docx"
-        ];
+        $allowExtensions = ["pdf", "doc", "docx"];
 
         if (!in_array($extension, $allowExtensions)) {
             return false;
@@ -702,13 +523,14 @@ class CVController
 
         $fileData = [
             "maCV" => $maCV,
-            "tenFileCV" => $fileName,
+            "tenFileCV" => $file["name"],
             "duongDanFileCV" => "uploads/" . $fileName,
             "loaiFile" => $extension
         ];
 
         return $this->cvModel->updateFile($fileData);
     }
+
     /**
      * Lấy thông tin file CV đã upload.
      *
@@ -729,6 +551,7 @@ class CVController
             "loaiFile" => $cv["LoaiFile"]
         ];
     }
+
     /**
      * Tải file CV theo mã CV.
      *
@@ -762,6 +585,7 @@ class CVController
 
         exit();
     }
+
     /**
      * Xóa file CV đã upload.
      *
@@ -777,7 +601,6 @@ class CVController
         }
 
         if (!empty($cv["DuongDanFileCV"])) {
-
             $filePath = __DIR__ . "/../" . $cv["DuongDanFileCV"];
 
             if (file_exists($filePath)) {
@@ -794,6 +617,7 @@ class CVController
 
         return $this->cvModel->updateFile($fileData);
     }
+
     /**
      * Kiểm tra dữ liệu CV.
      *
@@ -810,7 +634,7 @@ class CVController
             return false;
         }
 
-        if (!preg_match("/^[0-9]{10,11}$/", $cvData["sdt"])) {
+        if (!preg_match("/^0[0-9]{9}$/", $cvData["sdt"])) {
             return false;
         }
 
