@@ -831,142 +831,131 @@ require_once __DIR__ . '/../layouts/header.php';
                 class="card border-0 shadow-sm mt-4"
                 style="display: none;"
             >
-
                 <div class="card-header bg-warning">
-
                     <h4 class="mb-0 fw-bold">
-
                         <i class="fa-solid fa-pen-to-square me-2"></i>
-
                         Chỉnh sửa thông tin CV
-
                     </h4>
-
                 </div>
 
                 <div class="card-body p-4">
-
                     <form
                         action="<?= $baseUrl ?>/index.php?route=cv/update-submit"
                         method="POST"
                     >
-
                         <input
                             type="hidden"
                             name="maCV"
-                            value="<?= htmlspecialchars($cv['MaCV']) ?>"
+                            value="<?= htmlspecialchars($cv['MaCV'] ?? '') ?>"
                         >
 
                         <div class="row g-4">
 
+                            <!-- TIÊU ĐỀ (BẮT BUỘC) -->
                             <div class="col-12">
-
                                 <label class="form-label fw-bold">
                                     Tiêu đề CV
+                                    <span class="text-danger">*</span>
                                 </label>
-
                                 <input
                                     type="text"
                                     name="tieuDe"
                                     class="form-control"
-                                    value="<?= htmlspecialchars($cv['TieuDe']) ?>"
+                                    value="<?= htmlspecialchars($cv['TieuDe'] ?? '') ?>"
                                     required
                                 >
-
                             </div>
 
+                            <!-- VỊ TRÍ MONG MUỐN (BẮT BUỘC) -->
                             <div class="col-md-6">
-
                                 <label class="form-label fw-bold">
                                     Vị trí mong muốn
+                                    <span class="text-danger">*</span>
                                 </label>
-
                                 <input
                                     type="text"
                                     name="viTriMongMuon"
                                     class="form-control"
-                                    value="<?= htmlspecialchars($cv['ViTriMongMuon']) ?>"
+                                    value="<?= htmlspecialchars($cv['ViTriMongMuon'] ?? '') ?>"
+                                    required
                                 >
-
                             </div>
 
+                            <!-- EMAIL (BẮT BUỘC) -->
                             <div class="col-md-6">
-
                                 <label class="form-label fw-bold">
                                     Email
+                                    <span class="text-danger">*</span>
                                 </label>
-
                                 <input
                                     type="email"
                                     name="email"
                                     class="form-control"
-                                    value="<?= htmlspecialchars($cv['Email']) ?>"
+                                    value="<?= htmlspecialchars($cv['Email'] ?? '') ?>"
                                     required
                                 >
-
                             </div>
 
+                            <!-- SỐ ĐIỆN THOẠI (BẮT BUỘC) -->
                             <div class="col-md-6">
-
                                 <label class="form-label fw-bold">
                                     Số điện thoại
+                                    <span class="text-danger">*</span>
                                 </label>
-
                                 <input
                                     type="text"
                                     name="sdt"
                                     class="form-control"
-                                    value="<?= htmlspecialchars($cv['SDT']) ?>"
+                                    value="<?= htmlspecialchars($cv['SDT'] ?? '') ?>"
+                                    required
                                 >
-
                             </div>
 
+                            <!-- KỸ NĂNG -->
                             <div class="col-12">
-
                                 <label class="form-label fw-bold">
                                     Kỹ năng
+                                    <span class="text-danger">*</span>
                                 </label>
-
                                 <textarea
                                     name="kyNang"
                                     class="form-control"
                                     rows="4"
-                                ><?= htmlspecialchars($cv['KyNang']) ?></textarea>
-
+                                    required
+                                ><?= htmlspecialchars($cv['KyNang'] ?? '') ?></textarea>
                             </div>
 
+                            <!-- SỞ THÍCH (BẮT BUỘC) -->
                             <div class="col-md-6">
-
                                 <label class="form-label fw-bold">
                                     Sở thích
+                                    <span class="text-danger">*</span>
                                 </label>
-
                                 <textarea
                                     name="soThich"
                                     class="form-control"
                                     rows="4"
-                                ><?= htmlspecialchars($cv['SoThich']) ?></textarea>
-
+                                    required
+                                ><?= htmlspecialchars($cv['SoThich'] ?? '') ?></textarea>
                             </div>
 
+                            <!-- MỤC TIÊU NGHỀ NGHIỆP (BẮT BUỘC) -->
                             <div class="col-md-6">
-
                                 <label class="form-label fw-bold">
                                     Mục tiêu nghề nghiệp
+                                    <span class="text-danger">*</span>
                                 </label>
-
                                 <textarea
                                     name="mucTieu"
                                     class="form-control"
                                     rows="4"
-                                ><?= htmlspecialchars($cv['MucTieu']) ?></textarea>
-
+                                    required
+                                ><?= htmlspecialchars($cv['MucTieu'] ?? '') ?></textarea>
                             </div>
 
                         </div>
 
                         <div class="text-end mt-4">
-
                             <button
                                 type="button"
                                 class="btn btn-secondary me-2"
@@ -982,13 +971,9 @@ require_once __DIR__ . '/../layouts/header.php';
                                 <i class="fa-solid fa-save me-2"></i>
                                 Lưu thay đổi
                             </button>
-
                         </div>
-
                     </form>
-
                 </div>
-
             </div>
 
         <?php endif; ?>
