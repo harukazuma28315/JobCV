@@ -223,6 +223,23 @@ $routes = [
 		'constructor' => 'default',
 		'parameters' => []
 	],
+	'jobs/edit' => [
+		'controller' => 'TinTuyenDungController',
+		'method' => 'editPage',
+		'constructor' => 'default',
+		'parameters' => [
+			'maTinTuyenDung'
+		]
+	],
+
+	'jobs/update' => [
+		'controller' => 'TinTuyenDungController',
+		'method' => 'update',
+		'constructor' => 'default',
+		'parameters' => [
+			'post'
+		]
+	],
 
 	// =========================
 	// ỨNG TUYỂN

@@ -178,10 +178,14 @@ class TinTuyenDungController
 			exit('Đăng tin tuyển dụng thất bại.');
 		}
 
-		// Lấy danh sách ngành nghề từ database
+		// Lấy danh sách ngành nghề & địa điểm từ database
 		$categories = $this->tinTuyenDungModel->getCategories();
+		$locations = $this->tinTuyenDungModel->getLocations();
 		$jobs = $this->tinTuyenDungModel
         ->getByNhaTuyenDung($maNhaTuyenDung);
+
+		// Vào từ route đăng tin -> mở sẵn tab "Đăng tin mới"
+		$activeTab = 'post';
 
 		// Hiển thị trang đăng tin
 		require_once __DIR__ . '/../views/page/employer/post-job.php';
@@ -200,9 +204,31 @@ class TinTuyenDungController
 
 		$jobs = $this->tinTuyenDungModel->getByNhaTuyenDung($maNhaTuyenDung);
 		$categories = $this->tinTuyenDungModel->getCategories();
+		$locations = $this->tinTuyenDungModel->getLocations();
+
+		// Vào từ route quản lý -> mở sẵn tab "Quản lý tin tuyển dụng"
+		$activeTab = 'manage';
 
 		// Dùng chung view post-job.php (đã có tab Quản lý)
 		require_once __DIR__ . '/../views/page/employer/post-job.php';
+	}
+
+	/**
+	 * Hiển thị trang chỉnh sửa tin tuyển dụng.
+	 *
+	 * @param string $maTinTuyenDung
+	 */
+	public function editPage($maTinTuyenDung)
+	{
+		// authorizeJobOwner đã tự kiểm tra đăng nhập, vai trò và quyền sở hữu
+		$job = $this->authorizeJobOwner($maTinTuyenDung);
+
+		$categories = $this->tinTuyenDungModel->getCategories();
+		$locations = $this->tinTuyenDungModel->getLocations();
+		$selectedCategoryId = $this->tinTuyenDungModel->getCategoryIdByJob($maTinTuyenDung);
+		$selectedLocationId = $this->tinTuyenDungModel->getLocationIdByJob($maTinTuyenDung);
+
+		require_once __DIR__ . '/../views/page/employer/edit-job.php';
 	}
 
 	/**
@@ -213,11 +239,44 @@ class TinTuyenDungController
 	 */
 	public function update(array $tinTuyenDungData)
 	{
+		$maTinTuyenDung = $tinTuyenDungData['maTinTuyenDung'] ?? '';
+
+		$this->authorizeJobOwner($maTinTuyenDung);
+
 		if (!$this->validateJobData($tinTuyenDungData)) {
-			return false;
+			echo "<script>alert('Dữ liệu chỉnh sửa không hợp lệ.'); window.history.back();</script>";
+			exit;
 		}
 
-		return $this->tinTuyenDungModel->update($tinTuyenDungData);
+		$result = $this->tinTuyenDungModel->update($tinTuyenDungData);
+
+		// Đồng bộ lại ngành nghề & địa điểm dù nội dung chính có đổi hay không
+		$this->tinTuyenDungModel->syncJobDanhMuc(
+			$maTinTuyenDung,
+			$tinTuyenDungData['category'] ?? '',
+			'NganhNghe'
+		);
+		$this->tinTuyenDungModel->syncJobDanhMuc(
+			$maTinTuyenDung,
+			$tinTuyenDungData['location'] ?? '',
+			'diadiem'
+		);
+
+		if ($result) {
+			echo "
+				<script>
+					alert('Cập nhật tin tuyển dụng thành công!');
+					window.location.href = '/JobCV/index.php?route=jobs/manage';
+				</script>
+			";
+		} else {
+			echo "
+				<script>
+					alert('Cập nhật tin tuyển dụng thất bại.');
+					window.history.back();
+				</script>
+			";
+		}
 	}
 
 	/**
@@ -228,6 +287,8 @@ class TinTuyenDungController
 	 */
 	public function delete($maTinTuyenDung)
 	{
+		$this->authorizeJobOwner($maTinTuyenDung);
+
 		return $this->tinTuyenDungModel->delete($maTinTuyenDung);
 	}
 
@@ -244,6 +305,8 @@ class TinTuyenDungController
 			return false;
 		}
 
+		$this->authorizeJobOwner($maTinTuyenDung);
+
 		return $this->tinTuyenDungModel->extendDeadline(
 			$maTinTuyenDung,
 			$ngayHetHan
@@ -258,7 +321,43 @@ class TinTuyenDungController
 	 */
 	public function closeJob($maTinTuyenDung)
 	{
+		$this->authorizeJobOwner($maTinTuyenDung);
+
 		return $this->tinTuyenDungModel->closeJob($maTinTuyenDung);
+	}
+
+	/**
+	 * Kiểm tra người dùng đã đăng nhập, đúng vai trò nhà tuyển dụng,
+	 * và là chủ sở hữu của tin tuyển dụng đang thao tác.
+	 * Nếu không hợp lệ thì dừng thực thi ngay.
+	 *
+	 * @param string $maTinTuyenDung
+	 * @return array Dữ liệu tin tuyển dụng
+	 */
+	private function authorizeJobOwner($maTinTuyenDung)
+	{
+		if (
+			!isset($_SESSION['user_id']) ||
+			($_SESSION['user_role'] ?? 0) != 1
+		) {
+			exit('Bạn không có quyền truy cập.');
+		}
+
+		if (empty($maTinTuyenDung)) {
+			exit('Mã tin tuyển dụng không hợp lệ.');
+		}
+
+		$job = $this->tinTuyenDungModel->getById($maTinTuyenDung);
+
+		if (!$job) {
+			exit('Không tìm thấy tin tuyển dụng.');
+		}
+
+		if ($job['MaNhaTuyenDung'] != $_SESSION['user_id']) {
+			exit('Bạn không có quyền thao tác với tin tuyển dụng này.');
+		}
+
+		return $job;
 	}
 
 	/**
@@ -269,31 +368,55 @@ class TinTuyenDungController
 	 */
 	private function validateJobData(array $data)
 	{
+		if (empty(trim($data['tieuDe'] ?? ''))) {
+			return false;
+		}
+
 		if (empty(trim($data['category'] ?? ''))) {
 			return false;
 		}
 
-		if (empty(trim($data['moTaCongViec']))) {
+		if (empty(trim($data['moTaCongViec'] ?? ''))) {
 			return false;
 		}
 
-		if (empty(trim($data['yeuCauCongViec']))) {
+		if (empty(trim($data['yeuCauCongViec'] ?? ''))) {
 			return false;
 		}
 
-		if (empty($data['ngayHetHan'])) {
+		if (empty($data['ngayHetHan'] ?? '')) {
 			return false;
 		}
 
-		if (empty($data['mucLuong'])) {
+		if (empty($data['mucLuong'] ?? '')) {
 			return false;
 		}
 
-		if (empty(trim($data['diaChiLamViec']))) {
+		if (empty(trim($data['diaChiLamViec'] ?? ''))) {
 			return false;
 		}
 
-		if (empty(trim($data['hinhThucLamViec']))) {
+		if (empty(trim($data['hinhThucLamViec'] ?? ''))) {
+			return false;
+		}
+
+		if (empty(trim($data['viTriTuyenDung'] ?? ''))) {
+			return false;
+		}
+
+		if (empty(trim($data['capBac'] ?? ''))) {
+			return false;
+		}
+
+		if (!isset($data['soNamKinhNghiem']) || $data['soNamKinhNghiem'] === '') {
+			return false;
+		}
+
+		if (empty($data['soLuongTuyen'] ?? '')) {
+			return false;
+		}
+
+		if (empty(trim($data['location'] ?? ''))) {
 			return false;
 		}
 

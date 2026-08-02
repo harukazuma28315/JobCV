@@ -277,31 +277,18 @@ require_once __DIR__ . '/../layouts/header.php';
 
                             <div class="col-md-6">
 
-                                <div class="h-100 p-3 rounded-3 bg-light">
+                                <label class="form-label fw-bold">
 
-                                    <h5 class="fw-bold text-primary mb-3">
-                                        <i class="fa-solid fa-heart me-2"></i>
-                                        Sở thích
-                                    </h5>
+                                    Sở thích
 
-                                    <div
-                                        class="text-muted"
-                                        style="
-                                            white-space: normal;
-                                            overflow-wrap: anywhere;
-                                            word-break: break-word;
-                                        "
-                                    >
-                                        <?= nl2br(
-                                            htmlspecialchars(
-                                                $cv['SoThich'] ?? '',
-                                                ENT_QUOTES,
-                                                'UTF-8'
-                                            )
-                                        ) ?>
-                                    </div>
+                                </label>
 
-                                </div>
+                                <textarea
+                                    name="soThich"
+                                    class="form-control"
+                                    rows="4"
+                                    placeholder="Đọc sách, du lịch, thể thao..."
+                                ></textarea>
 
                             </div>
 
@@ -866,18 +853,16 @@ require_once __DIR__ . '/../layouts/header.php';
                                 >
                             </div>
 
-                            <!-- VỊ TRÍ MONG MUỐN (BẮT BUỘC) -->
+                            <!-- VỊ TRÍ MONG MUỐN -->
                             <div class="col-md-6">
                                 <label class="form-label fw-bold">
                                     Vị trí mong muốn
-                                    <span class="text-danger">*</span>
                                 </label>
                                 <input
                                     type="text"
                                     name="viTriMongMuon"
                                     class="form-control"
                                     value="<?= htmlspecialchars($cv['ViTriMongMuon'] ?? '') ?>"
-                                    required
                                 >
                             </div>
 
@@ -915,41 +900,35 @@ require_once __DIR__ . '/../layouts/header.php';
                             <div class="col-12">
                                 <label class="form-label fw-bold">
                                     Kỹ năng
-                                    <span class="text-danger">*</span>
                                 </label>
                                 <textarea
                                     name="kyNang"
                                     class="form-control"
                                     rows="4"
-                                    required
                                 ><?= htmlspecialchars($cv['KyNang'] ?? '') ?></textarea>
                             </div>
 
-                            <!-- SỞ THÍCH (BẮT BUỘC) -->
+                            <!-- SỞ THÍCH -->
                             <div class="col-md-6">
                                 <label class="form-label fw-bold">
                                     Sở thích
-                                    <span class="text-danger">*</span>
                                 </label>
                                 <textarea
                                     name="soThich"
                                     class="form-control"
                                     rows="4"
-                                    required
                                 ><?= htmlspecialchars($cv['SoThich'] ?? '') ?></textarea>
                             </div>
 
-                            <!-- MỤC TIÊU NGHỀ NGHIỆP (BẮT BUỘC) -->
+                            <!-- MỤC TIÊU NGHỀ NGHIỆP -->
                             <div class="col-md-6">
                                 <label class="form-label fw-bold">
                                     Mục tiêu nghề nghiệp
-                                    <span class="text-danger">*</span>
                                 </label>
                                 <textarea
                                     name="mucTieu"
                                     class="form-control"
                                     rows="4"
-                                    required
                                 ><?= htmlspecialchars($cv['MucTieu'] ?? '') ?></textarea>
                             </div>
 

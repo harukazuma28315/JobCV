@@ -49,12 +49,13 @@ class TinTuyenDung
 			die("Lỗi prepare: " . $this->conn->error);
 		}
 
-		$viTriTuyenDung  = $data['tieuDe'];
-		$capBac          = "Intern";
-		$soNamKinhNghiem = 0;
-		$doTuoiYeuCau    = "";
-		$soLuongTuyen    = 1;
-		$thoiGianThuViec = 0;
+		// Lấy dữ liệu thật từ form, có giá trị mặc định hợp lý nếu thiếu
+		$viTriTuyenDung  = !empty($data['viTriTuyenDung']) ? $data['viTriTuyenDung'] : $data['tieuDe'];
+		$capBac          = $data['capBac'] ?? '';
+		$soNamKinhNghiem = (int) ($data['soNamKinhNghiem'] ?? 0);
+		$doTuoiYeuCau    = $data['doTuoiYeuCau'] ?? '';
+		$soLuongTuyen    = (int) ($data['soLuongTuyen'] ?? 1);
+		$thoiGianThuViec = (int) ($data['thoiGianThuViec'] ?? 0);
 		$trangThai       = "DangMo";
 
 		$stmt->bind_param(
@@ -84,19 +85,12 @@ class TinTuyenDung
 
 		// Lưu ngành nghề vào bảng chitietdanhmuc (nếu có)
 		if (!empty($data['category'])) {
-			$maCTDM = uniqid("CTDM");
-			$sqlCT = "INSERT INTO chitietdanhmuc (MaCTDM, MaTinTuyenDung, MaDanhMuc) VALUES (?, ?, ?)";
-			$stmtCT = $this->conn->prepare($sqlCT);
+			$this->syncJobDanhMuc($maTinTuyenDung, $data['category'], 'NganhNghe');
+		}
 
-			if (!$stmtCT) {
-				die("Lỗi prepare category: " . $this->conn->error);
-			}
-
-			$stmtCT->bind_param("sss", $maCTDM, $maTinTuyenDung, $data['category']);
-
-			if (!$stmtCT->execute()) {
-				die("Lỗi lưu category: " . $stmtCT->error);
-			}
+		// Lưu địa điểm (thành phố) vào bảng chitietdanhmuc (nếu có)
+		if (!empty($data['location'])) {
+			$this->syncJobDanhMuc($maTinTuyenDung, $data['location'], 'diadiem');
 		}
 
 		return true;
@@ -662,6 +656,78 @@ class TinTuyenDung
 
 		return $statement->get_result();
 	}
+	/**
+	 * Lấy mã ngành nghề hiện tại đang gắn với 1 tin tuyển dụng.
+	 * Trả về null nếu chưa có.
+	 */
+	public function getCategoryIdByJob($maTinTuyenDung)
+	{
+		return $this->getDanhMucIdByJob($maTinTuyenDung, 'NganhNghe');
+	}
+
+	/**
+	 * Lấy mã địa điểm (thành phố) hiện tại đang gắn với 1 tin tuyển dụng.
+	 * Trả về null nếu chưa có.
+	 */
+	public function getLocationIdByJob($maTinTuyenDung)
+	{
+		return $this->getDanhMucIdByJob($maTinTuyenDung, 'diadiem');
+	}
+
+	/**
+	 * Lấy mã danh mục (theo loại) đang gắn với 1 tin tuyển dụng
+	 * thông qua bảng trung gian chitietdanhmuc.
+	 */
+	private function getDanhMucIdByJob($maTinTuyenDung, $loaiDanhMuc)
+	{
+		$sql = "SELECT ctdm.MaDanhMuc
+				FROM chitietdanhmuc ctdm
+				INNER JOIN danhmuc dm ON ctdm.MaDanhMuc = dm.MaDanhMuc
+				WHERE ctdm.MaTinTuyenDung = ? AND dm.LoaiDanhMuc = ?
+				LIMIT 1";
+
+		$stmt = $this->conn->prepare($sql);
+		$stmt->bind_param("ss", $maTinTuyenDung, $loaiDanhMuc);
+		$stmt->execute();
+
+		$row = $stmt->get_result()->fetch_assoc();
+
+		return $row['MaDanhMuc'] ?? null;
+	}
+
+	/**
+	 * Đồng bộ lại 1 loại danh mục (ngành nghề HOẶC địa điểm) của 1 tin tuyển dụng:
+	 * xoá liên kết cũ (chỉ của loại đó), ghi liên kết mới trong bảng chitietdanhmuc.
+	 *
+	 * @param string $maTinTuyenDung
+	 * @param string $maDanhMuc     Mã danh mục mới (rỗng = chỉ xoá, không gán mới)
+	 * @param string $loaiDanhMuc   'NganhNghe' hoặc 'diadiem'
+	 * @return bool
+	 */
+	public function syncJobDanhMuc($maTinTuyenDung, $maDanhMuc, $loaiDanhMuc)
+	{
+		$del = $this->conn->prepare(
+			"DELETE ctdm FROM chitietdanhmuc ctdm
+			 INNER JOIN danhmuc dm ON ctdm.MaDanhMuc = dm.MaDanhMuc
+			 WHERE ctdm.MaTinTuyenDung = ? AND dm.LoaiDanhMuc = ?"
+		);
+		$del->bind_param("ss", $maTinTuyenDung, $loaiDanhMuc);
+		$del->execute();
+
+		if (empty($maDanhMuc)) {
+			return true;
+		}
+
+		$maCTDM = uniqid("CTDM");
+
+		$ins = $this->conn->prepare(
+			"INSERT INTO chitietdanhmuc (MaCTDM, MaTinTuyenDung, MaDanhMuc) VALUES (?, ?, ?)"
+		);
+		$ins->bind_param("sss", $maCTDM, $maTinTuyenDung, $maDanhMuc);
+
+		return $ins->execute();
+	}
+
 	public function getCategories()
 		{
 			$sql = "SELECT MaDanhMuc, TenDanhMuc

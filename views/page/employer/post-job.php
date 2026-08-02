@@ -1,6 +1,6 @@
-<!-- Nhúng Header chung -->
 <?php 
 $total = $jobs->num_rows;
+$activeTab = $activeTab ?? 'manage';
 
 
 include_once __DIR__ . '/../layouts/header.php'; 
@@ -13,12 +13,12 @@ include_once __DIR__ . '/../layouts/header.php';
             <!-- Điều hướng Tab giữa Quản lý và Đăng tin -->
             <ul class="nav nav-pills mb-4 gap-2 bg-white p-2 rounded-3 shadow-sm border" id="pills-tab" role="tablist">
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link active fw-bold px-4 py-2.5" id="pills-manage-tab" data-bs-toggle="pill" data-bs-target="#pills-manage" type="button" role="tab">
+                    <button class="nav-link <?= $activeTab === 'manage' ? 'active' : '' ?> fw-bold px-4 py-2.5" id="pills-manage-tab" data-bs-toggle="pill" data-bs-target="#pills-manage" type="button" role="tab">
                         <i class="fa-solid fa-list-check me-2"></i>Quản lý tin tuyển dụng
                     </button>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link fw-bold px-4 py-2.5 text-primary-blue" id="pills-post-tab" data-bs-toggle="pill" data-bs-target="#pills-post" type="button" role="tab">
+                    <button class="nav-link <?= $activeTab === 'post' ? 'active' : '' ?> fw-bold px-4 py-2.5 text-primary-blue" id="pills-post-tab" data-bs-toggle="pill" data-bs-target="#pills-post" type="button" role="tab">
                         <i class="fa-solid fa-file-signature me-2"></i>Đăng tin mới
                     </button>
                 </li>
@@ -27,7 +27,7 @@ include_once __DIR__ . '/../layouts/header.php';
             <div class="tab-content" id="pills-tabContent">
                 
                 <!-- TAB 1: DANH SÁCH QUẢN LÝ TIN ĐÃ ĐĂNG -->
-                <div class="tab-pane fade show active" id="pills-manage" role="tabpanel">
+                <div class="tab-pane fade <?= $activeTab === 'manage' ? 'show active' : '' ?>" id="pills-manage" role="tabpanel">
                     <div class="card border-0 shadow-sm p-4 bg-white rounded-3">
                         <div class="d-flex justify-content-between align-items-center mb-4">
                             <h5 class="fw-bold text-dark mb-0"><i class="fa-solid fa-layer-group me-2 text-primary-blue"></i>Danh sách tin tuyển dụng</h5>
@@ -48,7 +48,8 @@ include_once __DIR__ . '/../layouts/header.php';
                                         <th>Ngày đăng</th>
                                         <th>Hạn nộp</th>
                                         <th>Ứng viên</th>
-                                        <th>Trạng thái</th>
+                                        <th>Trạng thái duyệt</th>
+                                        <th>Trạng thái Mở-Đóng</th>
                                         <th>Thao tác</th>
                                     </tr>
                                     </thead>
@@ -63,15 +64,30 @@ include_once __DIR__ . '/../layouts/header.php';
                                                         <?= (int)$job['SoUngVien'] ?>
                                                     </span>
                                                 </td>
+                                                <?php
+                                                    $duyet = $job['TrangThaiDuyet'] ?? '';
+                                                    $moDong = $job['TrangThai'] ?? '';
+
+                                                    $duyetBadge = match ($duyet) {
+                                                        'ChoDuyet' => ['bg-warning text-dark', 'Chờ duyệt'],
+                                                        'TuChoi'   => ['bg-danger', 'Bị từ chối'],
+                                                        'dago'     => ['bg-dark', 'Đã gỡ'],
+                                                        'DaDuyet'  => ['bg-success', 'Đã duyệt'],
+                                                        default    => ['bg-secondary', $duyet ?: 'Không rõ'],
+                                                    };
+
+                                                    $moDongBadge = $moDong === 'DangMo'
+                                                        ? ['bg-success', 'Đang mở']
+                                                        : ['bg-secondary', 'Đã đóng'];
+                                                ?>
                                                 <td>
-                                                    <?php if ($job['TrangThai'] === 'DangMo'): ?>
-                                                        <span class="badge bg-success">Đang mở</span>
-                                                    <?php else: ?>
-                                                        <span class="badge bg-secondary"><?= htmlspecialchars($job['TrangThai']) ?></span>
-                                                    <?php endif; ?>
+                                                    <span class="badge <?= $duyetBadge[0] ?>"><?= $duyetBadge[1] ?></span>
                                                 </td>
                                                 <td>
-                                                    <a href="#" class="btn btn-sm btn-outline-primary">Sửa</a>
+                                                    <span class="badge <?= $moDongBadge[0] ?>"><?= $moDongBadge[1] ?></span>
+                                                </td>
+                                                <td>
+                                                    <a href="/JobCV/index.php?route=jobs/edit&maTinTuyenDung=<?= urlencode($job['MaTinTuyenDung']) ?>" class="btn btn-sm btn-outline-primary">Sửa</a>
                                                     <!-- Thêm nút đóng/xóa sau -->
                                                 </td>
                                             </tr>
@@ -83,7 +99,7 @@ include_once __DIR__ . '/../layouts/header.php';
                 </div>
 
                 <!-- TAB 2: FORM ĐĂNG TIN TUYỂN DỤNG MỚI -->
-                <div class="tab-pane fade" id="pills-post" role="tabpanel">
+                <div class="tab-pane fade <?= $activeTab === 'post' ? 'show active' : '' ?>" id="pills-post" role="tabpanel">
                     <div class="card border-0 shadow-sm p-4 bg-white rounded-3">
                         <div class="border-bottom pb-3 mb-4">
                             <h5 class="fw-bold text-dark mb-1"><i class="fa-solid fa-file-pen text-primary-blue me-2"></i>Đăng tin tuyển dụng mới</h5>
@@ -95,6 +111,14 @@ include_once __DIR__ . '/../layouts/header.php';
                                 <div class="col-12">
                                     <label class="form-label fw-semibold text-dark">Tiêu đề tin tuyển dụng <span class="text-danger">*</span></label>
                                     <input type="text" name="tieuDe" class="form-control py-2" placeholder="Ví dụ: Thực Tập Sinh Web Developer (PHP/Laravel)" required>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label fw-semibold text-dark">Vị trí tuyển dụng <span class="text-danger">*</span></label>
+                                    <input type="text"
+                                            name="viTriTuyenDung"
+                                            class="form-control py-2"
+                                            placeholder="Ví dụ: Web Developer"
+                                            required>
                                 </div>
                                 <div class="col-12 col-md-6">
                                     <label class="form-label fw-semibold text-dark">Lĩnh vực / Ngành nghề <span class="text-danger">*</span></label>
@@ -110,13 +134,61 @@ include_once __DIR__ . '/../layouts/header.php';
                                     </select>
                                 </div>
                                 <div class="col-12 col-md-6">
+                                    <label class="form-label fw-semibold text-dark">Cấp bậc <span class="text-danger">*</span></label>
+                                    <select name="capBac" class="form-select py-2" required>
+                                        <option value="" selected disabled>-- Chọn cấp bậc --</option>
+                                        <option value="Intern">Thực tập sinh</option>
+                                        <option value="Fresher">Fresher</option>
+                                        <option value="Junior">Junior</option>
+                                        <option value="Middle">Middle</option>
+                                        <option value="Senior">Senior</option>
+                                        <option value="Manager">Quản lý</option>
+                                    </select>
+                                </div>
+                                <div class="col-12 col-md-6">
                                     <label class="form-label fw-semibold text-dark">Hình thức làm việc <span class="text-danger">*</span></label>
                                     <select name="hinhThucLamViec" class="form-select py-2" required>
-                                        <option value="">-- Chọn hình thức --</option>
+                                        <option value="" selected disabled>-- Chọn hình thức --</option>
                                         <option value="Full-time">Toàn thời gian (Full-time)</option>
                                         <option value="Part-time">Bán thời gian (Part-time)</option>
-                                        <option value="Internship" selected>Thực tập sinh (Internship)</option>
+                                        <option value="Internship">Thực tập sinh (Internship)</option>
                                     </select>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label fw-semibold text-dark">Số năm kinh nghiệm <span class="text-danger">*</span></label>
+                                    <input type="number"
+                                            name="soNamKinhNghiem"
+                                            class="form-control py-2"
+                                            placeholder="Ví dụ: 1"
+                                            min="0"
+                                            value="0"
+                                            required>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label fw-semibold text-dark">Độ tuổi yêu cầu</label>
+                                    <input type="text"
+                                            name="doTuoiYeuCau"
+                                            class="form-control py-2"
+                                            placeholder="Ví dụ: 22-30">
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label fw-semibold text-dark">Số lượng tuyển <span class="text-danger">*</span></label>
+                                    <input type="number"
+                                            name="soLuongTuyen"
+                                            class="form-control py-2"
+                                            placeholder="Ví dụ: 2"
+                                            min="1"
+                                            value="1"
+                                            required>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label fw-semibold text-dark">Thời gian thử việc (tháng)</label>
+                                    <input type="number"
+                                            name="thoiGianThuViec"
+                                            class="form-control py-2"
+                                            placeholder="Ví dụ: 2"
+                                            min="0"
+                                            value="0">
                                 </div>
                                 <div class="col-12 col-md-6">
                                     <label class="form-label fw-semibold text-dark">Mức lương mong muốn <span class="text-danger">*</span></label>
@@ -134,12 +206,25 @@ include_once __DIR__ . '/../layouts/header.php';
                                                 class="form-control py-2"
                                                 required>
                                 </div>
-                                <div class="col-12">
-                                    <label class="form-label fw-semibold text-dark">Địa điểm làm việc <span class="text-danger">*</span></label>
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label fw-semibold text-dark">Tỉnh / Thành phố <span class="text-danger">*</span></label>
+                                    <select name="location" class="form-select py-2" required>
+                                        <option value="">-- Chọn tỉnh / thành phố --</option>
+                                        <?php if (!empty($locations)): ?>
+                                            <?php foreach ($locations as $location): ?>
+                                                <option value="<?= htmlspecialchars($location['MaDanhMuc']) ?>">
+                                                    <?= htmlspecialchars($location['TenDanhMuc']) ?>
+                                                </option>
+                                            <?php endforeach; ?>
+                                        <?php endif; ?>
+                                    </select>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label fw-semibold text-dark">Địa chỉ chi tiết <span class="text-danger">*</span></label>
                                     <input type="text"
                                             name="diaChiLamViec"
                                             class="form-control py-2"
-                                            placeholder="Ví dụ: Quận Ninh Kiều, Cần Thơ"
+                                            placeholder="Ví dụ: Quận Ninh Kiều"
                                             required>
                                 </div>
                             </div>
@@ -175,5 +260,4 @@ include_once __DIR__ . '/../layouts/header.php';
     </div>
 </div>
 
-<!-- Nhúng Footer chung -->
 <?php include_once __DIR__ . '/../layouts/footer.php'; ?>
