@@ -82,10 +82,44 @@ class JobModel {
 	 * Lấy danh sách tin tuyển dụng cho Admin (có lọc)
 	 */
 	public function getJobListForAdmin($keyword = '', $status = null) {
-		$sql = "SELECT t.MaTinTuyenDung, t.TieuDe, t.NgayDang, t.NgayHetHan, 
-					   t.TrangThaiDuyet, ntd.TenCongTy
+		// t.* để lấy đủ toàn bộ thông tin tin tuyển dụng (mô tả, yêu cầu, cấp bậc,
+		// mức lương, địa chỉ, hình thức làm việc...) cho modal xem chi tiết bên
+		// admin/jobs.php, thay vì chỉ 7 cột cơ bản như trước.
+		//
+		// Lĩnh vực/ngành nghề không có cột riêng trong tintuyendung, phải lấy qua
+		// bảng trung gian chitietdanhmuc -> danhmuc (LoaiDanhMuc = 'NganhNghe').
+		// Dùng subquery lọc sẵn LoaiDanhMuc = 'NganhNghe' rồi mới LEFT JOIN theo
+		// MaTinTuyenDung (thay vì LEFT JOIN thẳng chitietdanhmuc rồi lọc dm sau),
+		// để tránh nhân đôi dòng kết quả: một tin có thể có 2 dòng chitietdanhmuc
+		// (1 cho ngành nghề, 1 cho địa điểm), nếu lọc loại danh mục sau khi JOIN
+		// thì mỗi tin sẽ bị lặp thành 2 dòng trong kết quả trả về.
+		$sql = "SELECT
+					t.*,
+					ntd.TenCongTy,
+					nganhNghe.TenDanhMuc AS LinhVucNganhNghe,
+					diaDiem.TenDanhMuc AS DiaDiemLamViec
 				FROM tintuyendung t
-				JOIN nhatuyendung ntd ON t.MaNhaTuyenDung = ntd.MaNhaTuyenDung
+				JOIN nhatuyendung ntd
+					ON t.MaNhaTuyenDung = ntd.MaNhaTuyenDung
+
+				LEFT JOIN (
+					SELECT ctdm.MaTinTuyenDung, dm.TenDanhMuc
+					FROM chitietdanhmuc ctdm
+					INNER JOIN danhmuc dm
+						ON dm.MaDanhMuc = ctdm.MaDanhMuc
+						AND LOWER(dm.LoaiDanhMuc) = 'nganhnghe'
+				) nganhNghe
+					ON nganhNghe.MaTinTuyenDung = t.MaTinTuyenDung
+
+				LEFT JOIN (
+					SELECT ctdm.MaTinTuyenDung, dm.TenDanhMuc
+					FROM chitietdanhmuc ctdm
+					INNER JOIN danhmuc dm
+						ON dm.MaDanhMuc = ctdm.MaDanhMuc
+						AND LOWER(dm.LoaiDanhMuc) = 'diadiem'
+				) diaDiem
+					ON diaDiem.MaTinTuyenDung = t.MaTinTuyenDung
+
 				WHERE 1=1";
 
 		$params = [];

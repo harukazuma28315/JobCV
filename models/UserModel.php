@@ -80,7 +80,7 @@ class UserModel {
 	 */
 	public function getUserByEmail($email) {
 		$stmt = $this->db->prepare(
-			"SELECT MaUser, Email, MatKhau, Role, HoTen, IsLocked, TrangThai 
+			"SELECT MaUser, Email, MatKhau, Role, HoTen, IsLocked
 			FROM user WHERE Email = ?"
 		);
 		$stmt->bind_param("s", $email);

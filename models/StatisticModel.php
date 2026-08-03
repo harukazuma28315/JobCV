@@ -16,12 +16,12 @@ class StatisticModel {
 	// ===================== THỐNG KÊ TỔNG QUÁT =====================
 
 	/**
-	 * Đếm tổng số người dùng (mọi vai trò) trong hệ thống.
+	 * Đếm tổng số người dùng (Ứng viên + Nhà tuyển dụng, KHÔNG tính tài khoản Admin) trong hệ thống.
 	 *
 	 * @return int
 	 */
 	public function getTotalUsers() {
-		$sql = "SELECT COUNT(*) as total FROM user";
+		$sql = "SELECT COUNT(*) as total FROM user WHERE Role != 2";
 		$row = mysqli_fetch_assoc(mysqli_query($this->link, $sql));
 		return (int)$row['total'];
 	}
@@ -64,16 +64,20 @@ class StatisticModel {
 
 		switch ($loai) {
 			case 'users':
-				$sql = "SELECT 
-							SUM(CASE WHEN Role = 0 THEN 1 ELSE 0 END) as ungVien,
-							SUM(CASE WHEN Role = 1 THEN 1 ELSE 0 END) as nhaTuyenDung,
-							SUM(CASE WHEN Role = 2 THEN 1 ELSE 0 END) as admin
-						FROM user";
+				$sql = "SELECT
+							SUM(CASE WHEN Role = 0 THEN 1 ELSE 0 END) AS ungVien,
+							SUM(CASE WHEN Role = 1 THEN 1 ELSE 0 END) AS nhaTuyenDung
+						FROM user
+						WHERE Role IN (0,1)";
+
 				$row = mysqli_fetch_assoc(mysqli_query($this->link, $sql));
 
 				return [
-					'labels' => ['Ứng viên', 'Nhà tuyển dụng', 'Admin'],
-					'data' => [(int)$row['ungVien'], (int)$row['nhaTuyenDung'], (int)$row['admin']],
+					'labels' => ['Ứng viên', 'Nhà tuyển dụng'],
+					'data' => [
+						(int)$row['ungVien'],
+						(int)$row['nhaTuyenDung']
+					],
 					'pieTitle' => 'Tỷ lệ người dùng theo vai trò (%)',
 					'barTitle' => 'Số lượng người dùng theo vai trò'
 				];

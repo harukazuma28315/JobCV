@@ -147,7 +147,13 @@ class JobPosting {
 		$sql = "SELECT 
 					t.*,
 					n.TenCongTy,
-					n.Logo
+					n.Logo,
+					n.AnhBia,
+					n.Website,
+					n.LinhVuc,
+					n.QuyMo,
+					n.DiaChi AS DiaChiCongTy,
+					n.MoTa AS MoTaCongTy
 				FROM tintuyendung t
 				INNER JOIN nhatuyendung n
 					ON t.MaNhaTuyenDung = n.MaNhaTuyenDung

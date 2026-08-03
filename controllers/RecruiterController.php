@@ -204,8 +204,9 @@ class RecruiterController {
 	 * @return void
 	 */
 	public function updateStatus() {
+		
 		if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-			AuthHelper::redirect(BASE_URL . '/index.php?route=recruiter/list');
+			AuthHelper::redirect(BASE_URL . '/index.php?route=applications/manage');
 		}
 
 		AuthHelper::requireRole(ROLE_NHATUYENDUNG);
@@ -214,6 +215,8 @@ class RecruiterController {
 
 		$maHoSo = isset($_POST['maHS']) ? trim($_POST['maHS']) : '';
 		$trangThaiMoi = isset($_POST['trangThai']) ? trim($_POST['trangThai']) : '';
+		$maTin = isset($_POST['maTin']) ? trim($_POST['maTin']) : '';
+		$trangThaiLoc = isset($_POST['trangThaiLoc']) ? trim($_POST['trangThaiLoc']) : '';
 
 		try {
 			if ($maHoSo === '' || $trangThaiMoi === '') {
@@ -258,7 +261,17 @@ class RecruiterController {
 			ResponseHelper::setFlash('error', $e->getMessage());
 		}
 
-		AuthHelper::redirect(BASE_URL . '/index.php?route=recruiter/list');
+		$url = BASE_URL . '/index.php?route=applications/manage';
+
+		if (isset($_POST['maTin'])) {
+			$url .= '&maTin=' . urlencode($maTin);
+		}
+
+		if (isset($_POST['trangThaiLoc'])) {
+			$url .= '&trangThai=' . urlencode($trangThaiLoc);
+		}
+
+		AuthHelper::redirect($url);
 	}
 	/**
 	 * Chọn hàm gửi mail phù hợp theo trạng thái mới của hồ sơ.

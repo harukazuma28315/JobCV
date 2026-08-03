@@ -75,24 +75,4 @@ class UserManagementController {
 		}
 		AuthHelper::redirect(BASE_URL . '/index.php?route=admin/users');
 	}
-
-	/**
-	 * Admin duyệt hồ sơ công ty của một nhà tuyển dụng.
-	 *
-	 * @return void
-	 */
-	public function approveUser() {
-		$_SESSION['role'] = 2; // Giả lập Admin
-		// AuthHelper::requireRole(ROLE_ADMIN);  // Tạm comment khi test
-
-		$maUser = isset($_POST['maUser']) ? trim($_POST['maUser']) : '';
-
-		if (!empty($maUser) && $this->userModel->approveCompany($maUser)) {
-			ResponseHelper::setFlash('success', 'Đã duyệt thông tin nhà tuyển dụng thành công.');
-		} else {
-			ResponseHelper::setFlash('error', 'Duyệt thông tin thất bại.');
-		}
-		
-		AuthHelper::redirect(BASE_URL . '/index.php?route=admin/users');
-	}
 }

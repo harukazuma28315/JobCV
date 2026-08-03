@@ -85,6 +85,7 @@ class CategoryController {
 
 	/**
 	 * Thêm mới một danh mục (Ngành nghề hoặc Địa điểm) từ form Admin.
+	 * Mã danh mục (MaDanhMuc) được hệ thống tự sinh, không cần admin nhập tay.
 	 *
 	 * @return void
 	 */
@@ -93,13 +94,12 @@ class CategoryController {
 
 		$loai = isset($_POST['loai']) ? trim($_POST['loai']) : '';
 		$ten  = isset($_POST['ten']) ? trim($_POST['ten']) : '';
-		$ma   = isset($_POST['ma']) ? trim($_POST['ma']) : '';
 
-		if ($ten && $ma && in_array($loai, ['nganhnghe', 'diadiem'])) {
-			if ($this->categoryModel->addCategoryItem($ten, $ma, $loai)) {
+		if ($ten && in_array($loai, ['nganhnghe', 'diadiem'])) {
+			if ($this->categoryModel->addCategoryItem($ten, $loai)) {
 				ResponseHelper::setFlash('success', 'Thêm danh mục thành công!');
 			} else {
-				ResponseHelper::setFlash('error', 'Thêm thất bại (Mã danh mục đã tồn tại?)');
+				ResponseHelper::setFlash('error', 'Thêm danh mục thất bại.');
 			}
 		} else {
 			ResponseHelper::setFlash('error', 'Dữ liệu không hợp lệ.');
@@ -108,4 +108,3 @@ class CategoryController {
 		AuthHelper::redirect(BASE_URL . '/index.php?route=admin/categories');
 	}
 }
-

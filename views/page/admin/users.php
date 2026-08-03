@@ -96,7 +96,6 @@ $status  = $status ?? null;
 						<option value="">-- Trạng thái --</option>
 						<option value="active"   <?= $status === 'active'   ? 'selected' : '' ?>>Đang hoạt động</option>
 						<option value="blocked"  <?= $status === 'blocked'  ? 'selected' : '' ?>>Bị khóa</option>
-						<option value="pending"  <?= $status === 'pending'  ? 'selected' : '' ?>>Chờ duyệt</option>
 					</select>
 				</div>
 				<div class="col-md-1">
@@ -144,10 +143,8 @@ $status  = $status ?? null;
 								<?php
 								$statusText = 'Đang hoạt động';
 								$statusClass = 'bg-success-subtle text-success';
-								if ($user['TrangThai'] === 'ChoDuyet') {
-									$statusText = 'Chờ duyệt';
-									$statusClass = 'bg-warning-subtle text-warning';
-								} elseif ($user['TrangThai'] === 'BiKhoa') {
+
+								if (!empty($user['IsLocked'])) {
 									$statusText = 'Bị khóa';
 									$statusClass = 'bg-danger-subtle text-danger';
 								}
@@ -157,25 +154,7 @@ $status  = $status ?? null;
 							<td class="text-end">
 								<div class="btn-action-group d-inline-flex gap-1">
 
-									<?php if ($user['TrangThai'] === 'ChoDuyet'): ?>
-										<!-- Chờ duyệt: Duyệt + Khóa -->
-										<form method="POST" action="<?= BASE_URL ?>/index.php?route=admin/users/approve" style="display:inline;"
-											onsubmit="return confirm('Xác nhận duyệt tài khoản này?')">
-											<input type="hidden" name="maUser" value="<?= htmlspecialchars($user['MaUser']) ?>">
-											<button type="submit" class="btn btn-warning text-dark fw-semibold">
-												<i class="fa-solid fa-user-shield"></i> 
-											</button>
-										</form>
-
-										<form method="POST" action="<?= BASE_URL ?>/index.php?route=admin/users/lock" style="display:inline;"
-											onsubmit="return confirm('Xác nhận khóa tài khoản này?')">
-											<input type="hidden" name="maUser" value="<?= htmlspecialchars($user['MaUser']) ?>">
-											<button type="submit" class="btn btn-danger">
-												<i class="fa-solid fa-user-slash"></i> 
-											</button>
-										</form>
-
-									<?php elseif ($user['TrangThai'] === 'BiKhoa'): ?>
+									<?php if (!empty($user['IsLocked'])): ?>
 										<!-- Bị khóa: chỉ Mở khóa -->
 										<form method="POST" action="<?= BASE_URL ?>/index.php?route=admin/users/unlock" style="display:inline;"
 											onsubmit="return confirm('Xác nhận mở khóa tài khoản này?')">

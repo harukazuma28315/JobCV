@@ -93,22 +93,48 @@ class CategoryModel {
 	}
 
 	/**
-	 * Thêm một bản ghi danh mục dùng chung cho mọi loại (hàm tổng quát hơn
-	 * addIndustry/addLocation, dùng khi loại danh mục được truyền động từ form admin).
+	 * Sinh mã danh mục mới, không trùng với mã đã có trong bảng.
+	 * Tiền tố theo loại: DM_NN (ngành nghề) / DM_DD (địa điểm).
+	 *
+	 * @param string $loai 'nganhnghe' hoặc 'diadiem'
+	 * @return string Mã danh mục chưa tồn tại trong bảng
+	 */
+	private function generateMaDanhMuc($loai) {
+		$prefix = ($loai === 'diadiem') ? 'DM_DD' : 'DM_NN';
+
+		do {
+			$ma = $prefix . strtoupper(substr(bin2hex(random_bytes(3)), 0, 5));
+
+			$sql = "SELECT 1 FROM danhmuc WHERE MaDanhMuc = ? LIMIT 1";
+			$stmt = mysqli_prepare($this->link, $sql);
+			mysqli_stmt_bind_param($stmt, 's', $ma);
+			mysqli_stmt_execute($stmt);
+			$exists = mysqli_stmt_get_result($stmt) && mysqli_stmt_num_rows($stmt) > 0;
+			mysqli_stmt_close($stmt);
+		} while ($exists);
+
+		return $ma;
+	}
+
+	/**
+	 * Thêm một bản ghi danh mục dùng chung cho mọi loại. Mã danh mục (MaDanhMuc)
+	 * được hệ thống tự sinh, admin không cần tự nhập.
 	 *
 	 * @param string $ten  Tên danh mục hiển thị
-	 * @param string $ma   Mã danh mục (khóa chính)
 	 * @param string $loai Loại danh mục: 'nganhnghe' hoặc 'diadiem'
-	 * @return bool
+	 * @return string|false Mã danh mục vừa tạo, hoặc false nếu thêm thất bại
 	 */
-	public function addCategoryItem($ten, $ma, $loai) {
+	public function addCategoryItem($ten, $loai) {
+		$ma = $this->generateMaDanhMuc($loai);
+
 		$sql = "INSERT INTO danhmuc (MaDanhMuc, TenDanhMuc, LoaiDanhMuc, NgayTao) 
 				VALUES (?, ?, ?, NOW())";
 		$stmt = mysqli_prepare($this->link, $sql);
 		mysqli_stmt_bind_param($stmt, 'sss', $ma, $ten, $loai);
 		$success = mysqli_stmt_execute($stmt);
 		mysqli_stmt_close($stmt);
-		return $success;
+
+		return $success ? $ma : false;
 	}
 
 	/**
@@ -131,4 +157,3 @@ class CategoryModel {
 		return $success;
 	}
 }
-

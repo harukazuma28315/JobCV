@@ -94,7 +94,7 @@ $diaDiemList   = $diaDiemList ?? [];
 					<thead class="table-light">
 						<tr>
 							<th>Tên ngành nghề</th>
-							<th>Mã ngành</th>
+							<th>Mã danh mục</th>
 							<th>Ngày tạo</th>
 							<th class="text-end">Hành động</th>
 						</tr>
@@ -142,7 +142,7 @@ $diaDiemList   = $diaDiemList ?? [];
 					<thead class="table-light">
 						<tr>
 							<th>Tên địa điểm</th>
-							<th>Mã vùng</th>
+							<th>Mã danh mục</th>
 							<th>Ngày tạo</th>
 							<th class="text-end">Hành động</th>
 						</tr>
@@ -205,9 +205,8 @@ $diaDiemList   = $diaDiemList ?? [];
 						<label>Tên danh mục</label>
 						<input type="text" name="ten" class="form-control" required>
 					</div>
-					<div class="mb-3">
-						<label>Mã danh mục</label>
-						<input type="text" name="ma" class="form-control" required>
+					<div class="form-text text-muted mb-0">
+						Mã danh mục sẽ được hệ thống tự động sinh.
 					</div>
 				</div>
 				<div class="modal-footer">

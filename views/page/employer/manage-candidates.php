@@ -133,6 +133,8 @@ $currentTrangThai = $currentFilters['trangThai'] ?? ($_GET['trangThai'] ?? '');
 											action="<?= BASE_URL ?>/index.php?route=recruiter/update-status"
 											class="d-inline"
 										>
+										<input type="hidden" name="maTin" value="<?= htmlspecialchars($currentMaTin) ?>">
+										<input type="hidden" name="trangThaiLoc" value="<?= htmlspecialchars($currentTrangThai) ?>">
 
 											<input
 												type="hidden"
@@ -166,6 +168,8 @@ $currentTrangThai = $currentFilters['trangThai'] ?? ($_GET['trangThai'] ?? '');
 											action="<?= BASE_URL ?>/index.php?route=recruiter/update-status"
 											class="d-inline"
 										>
+										<input type="hidden" name="maTin" value="<?= htmlspecialchars($currentMaTin) ?>">
+										<input type="hidden" name="trangThaiLoc" value="<?= htmlspecialchars($currentTrangThai) ?>">
 
 											<input
 												type="hidden"
@@ -203,6 +207,8 @@ $currentTrangThai = $currentFilters['trangThai'] ?? ($_GET['trangThai'] ?? '');
 											action="<?= BASE_URL ?>/index.php?route=recruiter/update-status"
 											class="d-inline"
 										>
+										<input type="hidden" name="maTin" value="<?= htmlspecialchars($currentMaTin) ?>">
+										<input type="hidden" name="trangThaiLoc" value="<?= htmlspecialchars($currentTrangThai) ?>">
 
 											<input
 												type="hidden"
@@ -240,6 +246,8 @@ $currentTrangThai = $currentFilters['trangThai'] ?? ($_GET['trangThai'] ?? '');
 											action="<?= BASE_URL ?>/index.php?route=recruiter/update-status"
 											class="d-inline"
 										>
+										<input type="hidden" name="maTin" value="<?= htmlspecialchars($currentMaTin) ?>">
+										<input type="hidden" name="trangThaiLoc" value="<?= htmlspecialchars($currentTrangThai) ?>">
 
 											<input
 												type="hidden"
@@ -280,6 +288,8 @@ $currentTrangThai = $currentFilters['trangThai'] ?? ($_GET['trangThai'] ?? '');
 											action="<?= BASE_URL ?>/index.php?route=recruiter/update-status"
 											class="d-inline"
 										>
+										<input type="hidden" name="maTin" value="<?= htmlspecialchars($currentMaTin) ?>">
+										<input type="hidden" name="trangThaiLoc" value="<?= htmlspecialchars($currentTrangThai) ?>">
 
 											<input
 												type="hidden"

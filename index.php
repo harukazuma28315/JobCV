@@ -338,12 +338,6 @@ $routes = [
 		'constructor' => 'default'
 	],
 
-	'admin/users/approve' => [
-		'controller' => 'UserManagementController',
-		'method' => 'approveUser',
-		'constructor' => 'default'
-	],
-
 	'admin/jobs' => [
 		'controller' => 'JobManagementController',
 		'method' => 'showJobList',

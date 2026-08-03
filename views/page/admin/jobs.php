@@ -6,6 +6,54 @@
 if (session_status() === PHP_SESSION_NONE) { 
 	session_start(); 
 }
+
+/**
+ * Gộp trạng thái duyệt + trạng thái mở/đóng + hết hạn thành 1 badge duy nhất.
+ * Dùng chung cho cả bảng danh sách và modal xem chi tiết.
+ */
+if (!function_exists('getJobStatusBadge')) {
+function getJobStatusBadge($tin) {
+	$duyet = $tin['TrangThaiDuyet'] ?? '';
+	$moDong = $tin['TrangThai'] ?? '';
+	$daHetHan = !empty($tin['NgayHetHan'])
+		&& strtotime($tin['NgayHetHan']) < strtotime('today');
+
+	if ($duyet === 'ChoDuyet') {
+		return ['bg-warning text-dark', 'fa-solid fa-hourglass-half', 'Chờ duyệt'];
+	} elseif ($duyet === 'TuChoi') {
+		return ['bg-danger', 'fa-solid fa-circle-xmark', 'Bị từ chối'];
+	} elseif ($duyet === 'DaGo') {
+		return ['bg-dark', 'fa-solid fa-eye-slash', 'Đã gỡ'];
+	} elseif ($daHetHan) {
+		return ['bg-danger', 'fa-solid fa-clock-rotate-left', 'Đã hết hạn'];
+	} elseif ($moDong !== 'DangMo') {
+		return ['bg-secondary', 'fa-solid fa-ban', 'Đã đóng'];
+	}
+	return ['bg-success', 'fa-solid fa-circle-check', 'Đang hoạt động'];
+}
+}
+
+/**
+ * Nhãn hiển thị tiếng Việt cho cấp bậc / hình thức làm việc (dữ liệu DB lưu dạng mã).
+ */
+if (!function_exists('getCapBacLabel')) {
+function getCapBacLabel($ma) {
+	$map = [
+		'Intern' => 'Thực tập sinh', 'Fresher' => 'Fresher', 'Junior' => 'Junior',
+		'Middle' => 'Middle', 'Senior' => 'Senior', 'Manager' => 'Quản lý',
+	];
+	return $map[$ma] ?? ($ma ?: '—');
+}
+}
+if (!function_exists('getHinhThucLabel')) {
+function getHinhThucLabel($ma) {
+	$map = [
+		'Full-time' => 'Toàn thời gian (Full-time)', 'Part-time' => 'Bán thời gian (Part-time)',
+		'Internship' => 'Thực tập sinh (Internship)',
+	];
+	return $map[$ma] ?? ($ma ?: '—');
+}
+}
 ?>
 <!DOCTYPE html>
 <html lang="vi">
@@ -22,21 +70,29 @@ if (session_status() === PHP_SESSION_NONE) {
 		.main-content { margin-left: var(--sidebar-width); padding: 20px; }
 		.nav-link-admin { display: flex; align-items: center; padding: 12px 20px; color: #555; text-decoration: none; font-weight: 500; border-radius: 8px; margin: 4px 15px; }
 		.nav-link-admin.active { background-color: #f0f4f9; color: var(--primary-blue); }
-		.action-grid {
-			display: grid;
-			grid-template-columns: 75px 85px 85px;
-			gap: 8px;
-			justify-content: center;
-		}
-		.action-grid .btn {
-			height: 31px;
-			font-size: 0.85rem;
-			padding: 4px 8px;
-			display: inline-flex;
-			align-items: center;
-			justify-content: center;
-			border-radius: 6px;
-		}
+		.action-grid{
+    display:grid;
+    grid-template-columns:80px 95px 95px;
+    gap:8px;
+    justify-content:start;
+}
+
+.action-grid form{
+    margin:0;
+    display:flex;
+}
+
+.action-grid .btn{
+    width:100%;
+    height:31px;
+    padding:4px 8px;
+    font-size:.85rem;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    white-space:nowrap;
+    border-radius:6px;
+}
 		.btn-span-2 { grid-column: span 2; width: 100%; }
 	</style>
 </head>
@@ -133,35 +189,17 @@ if (session_status() === PHP_SESSION_NONE) {
 								<td><?= htmlspecialchars($tin['TieuDe'] ?? '') ?></td>
 								<td><?= !empty($tin['NgayDang']) ? date('d/m/Y', strtotime($tin['NgayDang'])) : '' ?></td>
 								<td>
-									<?php 
-									$badgeClass = 'bg-secondary';
-									$badgeText = $tin['TrangThaiDuyet'] ?? 'Không xác định';
-									switch ($tin['TrangThaiDuyet'] ?? '') {
-										case 'ChoDuyet':
-											$badgeClass = 'bg-warning-subtle text-warning';
-											$badgeText  = 'Chờ duyệt';
-											break;
-										case 'DaDuyet':
-											$badgeClass = 'bg-success-subtle text-success';
-											$badgeText  = 'Đã duyệt';
-											break;
-										case 'TuChoi':
-											$badgeClass = 'bg-danger-subtle text-danger';
-											$badgeText  = 'Từ chối duyệt';
-											break;
-										case 'DaGo':
-											$badgeClass = 'bg-secondary-subtle text-secondary';
-											$badgeText  = 'Đã gỡ';
-											break;
-									}
-									?>
-									<span class="badge <?= $badgeClass ?> py-1.5 px-3 rounded-pill">
-										<i class="fa-solid fa-circle me-1"></i><?= $badgeText ?>
+									<?php $statusBadge = getJobStatusBadge($tin); ?>
+									<span class="badge <?= $statusBadge[0] ?> py-1.5 px-3 rounded-pill">
+										<i class="<?= $statusBadge[1] ?> me-1"></i><?= $statusBadge[2] ?>
 									</span>
 								</td>
 								<td>
 									<div class="action-grid">
-										<button class="btn btn-outline-primary" title="Xem chi tiết">
+										<button class="btn btn-outline-primary" title="Xem chi tiết"
+												type="button"
+												data-bs-toggle="modal"
+												data-bs-target="#viewJobModal-<?= htmlspecialchars($tin['MaTinTuyenDung']) ?>">
 											<i class="fa-solid fa-eye me-1"></i>Xem
 										</button>
 
@@ -201,6 +239,137 @@ if (session_status() === PHP_SESSION_NONE) {
 				</tbody>
 			</table>
 		</div>
+
+		<!-- Modal xem chi tiet tin tuyen dung: dat ngoai <table> vi <div> khong duoc
+			 phep la con truc tiep cua <tbody> (tranh vo layout) -->
+		<?php foreach ($danhSachTin as $tin): $vStatus = getJobStatusBadge($tin); ?>
+			<div class="modal fade" id="viewJobModal-<?= htmlspecialchars($tin['MaTinTuyenDung']) ?>" tabindex="-1" aria-hidden="true">
+				<div class="modal-dialog modal-dialog-scrollable modal-lg">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title fw-bold">
+								<i class="fa-solid fa-file-lines text-primary-blue me-2"></i>Chi tiết tin tuyển dụng
+							</h5>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						</div>
+						<div class="modal-body">
+							<div class="d-flex justify-content-between align-items-start mb-3 pb-3 border-bottom">
+								<div>
+									<h5 class="fw-bold text-dark mb-1"><?= htmlspecialchars($tin['TieuDe'] ?? '') ?></h5>
+									<div class="text-muted">
+										<i class="fa-solid fa-building me-1"></i><?= htmlspecialchars($tin['TenCongTy'] ?? '') ?>
+									</div>
+								</div>
+								<span class="badge <?= $vStatus[0] ?> py-1.5 px-3 rounded-pill">
+									<i class="<?= $vStatus[1] ?> me-1"></i><?= $vStatus[2] ?>
+								</span>
+							</div>
+
+							<div class="row g-3 mb-3">
+								<div class="col-12 col-md-6">
+									<div class="text-muted small fw-semibold">Vị trí tuyển dụng</div>
+									<div><?= htmlspecialchars($tin['ViTriTuyenDung'] ?? '') ?: '—' ?></div>
+								</div>
+								<div class="col-12 col-md-6">
+									<div class="text-muted small fw-semibold">Lĩnh vực / Ngành nghề</div>
+									<div><?= htmlspecialchars($tin['LinhVucNganhNghe'] ?? $tin['TenDanhMuc'] ?? '') ?: '—' ?></div>
+								</div>
+								<div class="col-12 col-md-6">
+									<div class="text-muted small fw-semibold">Cấp bậc</div>
+									<div><?= htmlspecialchars(getCapBacLabel($tin['CapBac'] ?? '')) ?></div>
+								</div>
+								<div class="col-12 col-md-6">
+									<div class="text-muted small fw-semibold">Hình thức làm việc</div>
+									<div><?= htmlspecialchars(getHinhThucLabel($tin['HinhThucLamViec'] ?? '')) ?></div>
+								</div>
+								<div class="col-12 col-md-6">
+									<div class="text-muted small fw-semibold">Số năm kinh nghiệm</div>
+									<div><?= isset($tin['SoNamKinhNghiem']) && $tin['SoNamKinhNghiem'] !== null && $tin['SoNamKinhNghiem'] !== '' ? htmlspecialchars($tin['SoNamKinhNghiem']) . ' năm' : '—' ?></div>
+								</div>
+								<div class="col-12 col-md-6">
+									<div class="text-muted small fw-semibold">Độ tuổi yêu cầu</div>
+									<div><?= htmlspecialchars($tin['DoTuoiYeuCau'] ?? '') ?: '—' ?></div>
+								</div>
+								<div class="col-12 col-md-6">
+									<div class="text-muted small fw-semibold">Số lượng tuyển</div>
+									<div><?= isset($tin['SoLuongTuyen']) && $tin['SoLuongTuyen'] !== null && $tin['SoLuongTuyen'] !== '' ? htmlspecialchars($tin['SoLuongTuyen']) : '—' ?></div>
+								</div>
+								<div class="col-12 col-md-6">
+									<div class="text-muted small fw-semibold">Thời gian thử việc</div>
+									<div><?= isset($tin['ThoiGianThuViec']) && $tin['ThoiGianThuViec'] !== null && $tin['ThoiGianThuViec'] !== '' ? htmlspecialchars($tin['ThoiGianThuViec']) . ' tháng' : '—' ?></div>
+								</div>
+								<div class="col-12 col-md-6">
+									<div class="text-muted small fw-semibold">Mức lương</div>
+									<div class="text-success fw-semibold">
+										<?= !empty($tin['MucLuong']) ? number_format((float) $tin['MucLuong'], 0, ',', '.') . ' đ' : '—' ?>
+									</div>
+								</div>
+								<div class="col-12 col-md-6">
+									<div class="text-muted small fw-semibold">Hạn chót nhận hồ sơ</div>
+									<div><?= !empty($tin['NgayHetHan']) ? date('d/m/Y', strtotime($tin['NgayHetHan'])) : '—' ?></div>
+								</div>
+								<div class="col-12 col-md-6">
+									<div class="text-muted small fw-semibold">Ngày đăng</div>
+									<div><?= !empty($tin['NgayDang']) ? date('d/m/Y', strtotime($tin['NgayDang'])) : '—' ?></div>
+								</div>
+								<div class="col-12 col-md-6">
+								<div class="text-muted small fw-semibold">Địa điểm</div>
+								<div>
+									<i class="fa-solid fa-map-marker-alt me-1 text-primary"></i>
+									<?= htmlspecialchars($tin['DiaDiemLamViec'] ?? '') ?: '—' ?>
+								</div>
+							</div>
+
+							<div class="col-12 col-md-6">
+								<div class="text-muted small fw-semibold">Địa chỉ chi tiết</div>
+								<div>
+									<i class="fa-solid fa-location-dot me-1 text-danger"></i>
+									<?= htmlspecialchars($tin['DiaChiLamViec'] ?? '') ?: '—' ?>
+								</div>
+							</div>
+							</div>
+
+							<h6 class="fw-bold text-primary-blue text-uppercase border-top pt-3 mb-2">Mô tả công việc (JD)</h6>
+							<p class="mb-3" style="white-space: pre-line;"><?= htmlspecialchars($tin['MoTaCongViec'] ?? '') ?: '—' ?></p>
+
+							<h6 class="fw-bold text-primary-blue text-uppercase border-top pt-3 mb-2">Yêu cầu ứng viên</h6>
+							<p class="mb-0" style="white-space: pre-line;"><?= htmlspecialchars($tin['YeuCauCongViec'] ?? '') ?: '—' ?></p>
+						</div>
+						<div class="modal-footer">
+							<?php if ($tin['TrangThaiDuyet'] === 'ChoDuyet'): ?>
+								<form method="POST" action="<?= BASE_URL ?>/index.php?route=admin/jobs/reject" class="d-inline">
+									<input type="hidden" name="maTin" value="<?= htmlspecialchars($tin['MaTinTuyenDung']) ?>">
+									<button type="submit" class="btn btn-danger" onclick="return confirm('Từ chối tin này?')">
+										<i class="fa-solid fa-xmark me-1"></i>Từ chối
+									</button>
+								</form>
+								<form method="POST" action="<?= BASE_URL ?>/index.php?route=admin/jobs/approve" class="d-inline">
+									<input type="hidden" name="maTin" value="<?= htmlspecialchars($tin['MaTinTuyenDung']) ?>">
+									<button type="submit" class="btn btn-success" onclick="return confirm('Duyệt tin này?')">
+										<i class="fa-solid fa-check me-1"></i>Duyệt
+									</button>
+								</form>
+							<?php elseif ($tin['TrangThaiDuyet'] === 'DaDuyet'): ?>
+								<form method="POST" action="<?= BASE_URL ?>/index.php?route=admin/jobs/remove" class="d-inline">
+									<input type="hidden" name="maTin" value="<?= htmlspecialchars($tin['MaTinTuyenDung']) ?>">
+									<button type="submit" class="btn btn-outline-danger" onclick="return confirm('Gỡ tin này?')">
+										<i class="fa-solid fa-ban me-1"></i>Gỡ tin
+									</button>
+								</form>
+							<?php elseif ($tin['TrangThaiDuyet'] === 'TuChoi'): ?>
+								<form method="POST" action="<?= BASE_URL ?>/index.php?route=admin/jobs/approve" class="d-inline">
+									<input type="hidden" name="maTin" value="<?= htmlspecialchars($tin['MaTinTuyenDung']) ?>">
+									<button type="submit" class="btn btn-outline-success" onclick="return confirm('Xem xét lại và duyệt?')">
+										<i class="fa-solid fa-rotate-left me-1"></i>Xem xét lại
+									</button>
+								</form>
+							<?php endif; ?>
+							<button type="button" class="btn btn-light" data-bs-dismiss="modal">Đóng</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		<?php endforeach; ?>
 	</div>
 </div>
 

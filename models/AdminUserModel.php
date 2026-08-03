@@ -18,7 +18,7 @@ class AdminUserModel {
 	 * Lấy danh sách người dùng cho Admin
 	 */
 	public function getUserListForAdmin($keyword = '', $role = null, $status = null) {
-		$sql = "SELECT u.MaUser, u.HoTen, u.Email, u.Role, u.IsLocked, u.TrangThai,
+		$sql = "SELECT u.MaUser, u.HoTen, u.Email, u.Role, u.IsLocked,
 					   COALESCE(ntd.TenCongTy, 'Cá nhân') as TenCongTy
 				FROM user u
 				LEFT JOIN nhatuyendung ntd ON u.MaUser = ntd.MaNhaTuyenDung
@@ -44,11 +44,9 @@ class AdminUserModel {
 		}
 
 		if ($status === 'active' || $status === 'HoatDong') {
-			$sql .= " AND u.TrangThai = 'HoatDong'";
+			$sql .= " AND u.IsLocked = 0";
 		} elseif ($status === 'blocked' || $status === 'BiKhoa') {
-			$sql .= " AND u.TrangThai = 'BiKhoa'";
-		} elseif ($status === 'pending' || $status === 'ChoDuyet') {
-			$sql .= " AND u.TrangThai = 'ChoDuyet'";
+			$sql .= " AND u.IsLocked = 1";
 		}
 
 		$sql .= " ORDER BY u.MaUser DESC";
@@ -77,7 +75,7 @@ class AdminUserModel {
 	 * @return bool
 	 */
 	public function lockUser($maUser) {
-		$sql = "UPDATE user SET TrangThai = 'BiKhoa', IsLocked = 1 WHERE MaUser = ?";
+		$sql = "UPDATE user SET IsLocked = 1 WHERE MaUser = ?";
 		$stmt = mysqli_prepare($this->link, $sql);
 		mysqli_stmt_bind_param($stmt, 's', $maUser);
 		$success = mysqli_stmt_execute($stmt);
@@ -92,24 +90,7 @@ class AdminUserModel {
 	 * @return bool
 	 */
 	public function unlockUser($maUser) {
-		$sql = "UPDATE user SET TrangThai = 'HoatDong', IsLocked = 0 WHERE MaUser = ?";
-		$stmt = mysqli_prepare($this->link, $sql);
-		mysqli_stmt_bind_param($stmt, 's', $maUser);
-		$success = mysqli_stmt_execute($stmt);
-		mysqli_stmt_close($stmt);
-		return $success;
-	}
-
-	/**
-	 * Duyệt hồ sơ công ty của nhà tuyển dụng để tài khoản được hoạt động.
-	 * Dùng chung câu lệnh với unlockUser() vì bản chất "duyệt" cũng là
-	 * chuyển tài khoản sang trạng thái hoạt động và bỏ cờ khóa.
-	 *
-	 * @param string $maUser
-	 * @return bool
-	 */
-	public function approveCompany($maUser) {
-		$sql = "UPDATE user SET TrangThai = 'HoatDong', IsLocked = 0 WHERE MaUser = ?";
+		$sql = "UPDATE user SET IsLocked = 0 WHERE MaUser = ?";
 		$stmt = mysqli_prepare($this->link, $sql);
 		mysqli_stmt_bind_param($stmt, 's', $maUser);
 		$success = mysqli_stmt_execute($stmt);
