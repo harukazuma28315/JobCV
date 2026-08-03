@@ -17,11 +17,11 @@ require_once __DIR__ . '/controllers/HomeController.php';
 require_once __DIR__ . '/controllers/JobManagementController.php';
 require_once __DIR__ . '/controllers/LoginController.php';
 require_once __DIR__ . '/controllers/LogoutController.php';
-require_once __DIR__ . '/controllers/NhaTuyenDungController.php';
+require_once __DIR__ . '/controllers/EmployerProfileController.php';
 require_once __DIR__ . '/controllers/ProfileController.php';
 require_once __DIR__ . '/controllers/RegisterController.php';
 require_once __DIR__ . '/controllers/RecruiterController.php';
-require_once __DIR__ . '/controllers/TinTuyenDungController.php';
+require_once __DIR__ . '/controllers/JobPostingController.php';
 require_once __DIR__ . '/controllers/UserManagementController.php';
 require_once __DIR__ . '/controllers/ForgotPasswordController.php';
 require_once __DIR__ . '/controllers/OtpController.php';
@@ -80,9 +80,9 @@ $routes = [
 	],
 
 	'auth/register' => [
-    'controller' => 'RegisterController',
-    'method' => 'showRegister',
-    'constructor' => 'database'
+	'controller' => 'RegisterController',
+	'method' => 'showRegister',
+	'constructor' => 'database'
 	],
 
 	'auth/register-submit' => [
@@ -181,13 +181,13 @@ $routes = [
 	// =========================
 
 	'jobs/list' => [
-		'controller' => 'TinTuyenDungController',
+		'controller' => 'JobPostingController',
 		'method' => 'index',
 		'constructor' => 'default'
 	],
 
 	'jobs/detail' => [
-		'controller' => 'TinTuyenDungController',
+		'controller' => 'JobPostingController',
 		'method' => 'detail',
 		'constructor' => 'default',
 		'parameters' => [
@@ -201,7 +201,7 @@ $routes = [
 	// =========================
 
 	'jobs/create' => [
-		'controller' => 'TinTuyenDungController',
+		'controller' => 'JobPostingController',
 		'method' => 'create',
 		'constructor' => 'default',
 		'parameters' => [
@@ -210,7 +210,7 @@ $routes = [
 	],
 	// Quản lý bài đăng
 	'jobs/manage' => [
-		'controller' => 'TinTuyenDungController',
+		'controller' => 'JobPostingController',
 		'method' => 'manage',
 		'constructor' => 'default',
 		'parameters' => []
@@ -224,7 +224,7 @@ $routes = [
 		'parameters' => []
 	],
 	'jobs/edit' => [
-		'controller' => 'TinTuyenDungController',
+		'controller' => 'JobPostingController',
 		'method' => 'editPage',
 		'constructor' => 'default',
 		'parameters' => [
@@ -233,7 +233,7 @@ $routes = [
 	],
 
 	'jobs/update' => [
-		'controller' => 'TinTuyenDungController',
+		'controller' => 'JobPostingController',
 		'method' => 'update',
 		'constructor' => 'default',
 		'parameters' => [
@@ -264,23 +264,23 @@ $routes = [
 	// NHÀ TUYỂN DỤNG - QUẢN LÝ ỨNG VIÊN
 	// =========================
 	'recruiter/list' => [
-        'controller' => 'RecruiterController',
-        'method' => 'showList',
-        'constructor' => 'default'
-    ],
+		'controller' => 'RecruiterController',
+		'method' => 'showList',
+		'constructor' => 'default'
+	],
 
-    'recruiter/detail' => [
-        'controller' => 'RecruiterController',
-        'method' => 'showDetail',
-        'constructor' => 'default',
-        'parameters' => ['maHS']
-    ],
+	'recruiter/detail' => [
+		'controller' => 'RecruiterController',
+		'method' => 'showDetail',
+		'constructor' => 'default',
+		'parameters' => ['maHS']
+	],
 
-    'recruiter/update-status' => [
-        'controller' => 'RecruiterController',
-        'method' => 'updateStatus',
-        'constructor' => 'default'
-    ],
+	'recruiter/update-status' => [
+		'controller' => 'RecruiterController',
+		'method' => 'updateStatus',
+		'constructor' => 'default'
+	],
 
 
 	// =========================
@@ -342,9 +342,9 @@ $routes = [
 	],
 	// Route quản lý danh mục (ngành nghề, địa điểm)
 	'admin/categories' => [
-    'controller' => 'CategoryController',
-    'method' => 'showCategories',
-    'constructor' => 'default'
+	'controller' => 'CategoryController',
+	'method' => 'showCategories',
+	'constructor' => 'default'
 	],
 	// Thêm route delete danh mục
 	'admin/categories/delete' => [
@@ -361,25 +361,25 @@ $routes = [
 	],
 	//Thêm route update danh mục
 	'admin/categories/update' => [         
-        'controller' => 'CategoryController',
-        'method' => 'updateCategory',
-        'constructor' => 'default'
-    ],
+		'controller' => 'CategoryController',
+		'method' => 'updateCategory',
+		'constructor' => 'default'
+	],
 	//forgot password
 	'auth/forgot-password-submit' => [
-        'controller' => 'ForgotPasswordController',
-        'method' => 'handleRequest',
-        'constructor' => 'database'
-    ],
+		'controller' => 'ForgotPasswordController',
+		'method' => 'handleRequest',
+		'constructor' => 'database'
+	],
 
 	// =========================
-    // XÁC THỰC OTP ĐĂNG KÝ
-    // =========================
+	// XÁC THỰC OTP ĐĂNG KÝ
+	// =========================
 	'auth/send-otp' => [
-        'controller' => 'OtpController',
-        'method' => 'handleRequest',
-        'constructor' => 'database'
-    ],
+		'controller' => 'OtpController',
+		'method' => 'handleRequest',
+		'constructor' => 'database'
+	],
 ];
 
 // ==========================================================

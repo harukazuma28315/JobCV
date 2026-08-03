@@ -5,12 +5,10 @@ require_once __DIR__ . "/../config/db.php";
 /**
  * Model quản lý thông tin nhà tuyển dụng.
  */
-class NhaTuyenDung
-{
+class Employer {
 	private $conn;
 
-	public function __construct()
-	{
+	public function __construct() {
 		global $conn;
 		$this->conn = $conn;
 	}
@@ -21,8 +19,7 @@ class NhaTuyenDung
 	 * @param string $maNhaTuyenDung
 	 * @return array|null
 	 */
-	public function getById($maNhaTuyenDung)
-	{
+	public function getById($maNhaTuyenDung) {
 		$sql = "SELECT *
 				FROM NhaTuyenDung
 				WHERE MaNhaTuyenDung = ?";
@@ -47,8 +44,7 @@ class NhaTuyenDung
 	 * @param array $nhaTuyenDungData
 	 * @return bool
 	 */
-	public function update(array $nhaTuyenDungData)
-	{
+	public function update(array $nhaTuyenDungData) {
 		$sql = "UPDATE NhaTuyenDung
 				SET
 					TenCongTy = ?,
@@ -84,8 +80,7 @@ class NhaTuyenDung
 	 * @param string $logo
 	 * @return bool
 	 */
-	public function updateLogo($maNhaTuyenDung, $logo)
-	{
+	public function updateLogo($maNhaTuyenDung, $logo) {
 		$sql = "UPDATE NhaTuyenDung
 				SET
 					Logo = ?
@@ -109,8 +104,7 @@ class NhaTuyenDung
 	 * @param string $cover
 	 * @return bool
 	 */
-	public function updateCover($maNhaTuyenDung, $cover)
-	{
+	public function updateCover($maNhaTuyenDung, $cover) {
 		$sql = "UPDATE NhaTuyenDung
 				SET
 					AnhBia = ?
@@ -127,40 +121,38 @@ class NhaTuyenDung
 		return $statement->execute();
 	}
 	    /**
-     * Đếm tổng số tin tuyển dụng của nhà tuyển dụng
-     */
-    public function countJobs($maNhaTuyenDung)
-    {
-        $sql = "
-            SELECT COUNT(*) AS total
-            FROM tintuyendung
-            WHERE MaNhaTuyenDung = ?
-        ";
+	 * Đếm tổng số tin tuyển dụng của nhà tuyển dụng
+	 */
+	public function countJobs($maNhaTuyenDung) {
+		$sql = "
+			SELECT COUNT(*) AS total
+			FROM tintuyendung
+			WHERE MaNhaTuyenDung = ?
+		";
 
-        $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param("s", $maNhaTuyenDung);
-        $stmt->execute();
+		$stmt = $this->conn->prepare($sql);
+		$stmt->bind_param("s", $maNhaTuyenDung);
+		$stmt->execute();
 
-        return $stmt->get_result()->fetch_assoc()['total'];
-    }
+		return $stmt->get_result()->fetch_assoc()['total'];
+	}
 
-    /**
-     * Đếm tổng số ứng viên đã ứng tuyển vào tin của nhà tuyển dụng
-     */
-    public function countApplications($maNhaTuyenDung)
-    {
-        $sql = "
-            SELECT COUNT(*) AS total
-            FROM hosotuyendung h
-            INNER JOIN tintuyendung t
-                ON h.MaTinTuyenDung = t.MaTinTuyenDung
-            WHERE t.MaNhaTuyenDung = ?
-        ";
+	/**
+	 * Đếm tổng số ứng viên đã ứng tuyển vào tin của nhà tuyển dụng
+	 */
+	public function countApplications($maNhaTuyenDung) {
+		$sql = "
+			SELECT COUNT(*) AS total
+			FROM hosotuyendung h
+			INNER JOIN tintuyendung t
+				ON h.MaTinTuyenDung = t.MaTinTuyenDung
+			WHERE t.MaNhaTuyenDung = ?
+		";
 
-        $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param("s", $maNhaTuyenDung);
-        $stmt->execute();
+		$stmt = $this->conn->prepare($sql);
+		$stmt->bind_param("s", $maNhaTuyenDung);
+		$stmt->execute();
 
-        return $stmt->get_result()->fetch_assoc()['total'];
-    }
+		return $stmt->get_result()->fetch_assoc()['total'];
+	}
 }

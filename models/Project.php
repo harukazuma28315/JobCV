@@ -5,12 +5,10 @@ require_once __DIR__ . "/../config/db.php";
 /**
  * Model quản lý thông tin dự án.
  */
-class DuAn
-{
+class Project {
 	private $conn;
 
-	public function __construct()
-	{
+	public function __construct() {
 		global $conn;
 		$this->conn = $conn;
 	}
@@ -21,8 +19,7 @@ class DuAn
 	 * @param array $duAnData Thông tin dự án.
 	 * @return bool True nếu thêm thành công.
 	 */
-	public function create(array $duAnData)
-	{
+	public function create(array $duAnData) {
 		$sql = "INSERT INTO DuAn
 				(
 					MaDuAn,
@@ -60,8 +57,7 @@ class DuAn
 	 * @param string $maCV
 	 * @return mysqli_result
 	 */
-	public function getByCV($maCV)
-	{
+	public function getByCV($maCV) {
 		$sql = "SELECT *
 				FROM DuAn
 				WHERE MaCV = ?";
@@ -81,8 +77,7 @@ class DuAn
 	 * @param array $duAnData Thông tin dự án.
 	 * @return bool True nếu cập nhật thành công.
 	 */
-	public function update(array $duAnData)
-	{
+	public function update(array $duAnData) {
 		$sql = "UPDATE DuAn
 				SET
 					TenDuAn = ?,
@@ -115,8 +110,7 @@ class DuAn
 	 * @param string $maDuAn
 	 * @return bool True nếu xóa thành công.
 	 */
-	public function delete($maDuAn)
-	{
+	public function delete($maDuAn) {
 		$sql = "DELETE
 				FROM DuAn
 				WHERE MaDuAn = ?";

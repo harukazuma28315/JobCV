@@ -1,17 +1,15 @@
 <?php
 
-require_once __DIR__ . "/../models/NhaTuyenDung.php";
+require_once __DIR__ . "/../models/Employer.php";
 
 /**
  * Controller quản lý thông tin nhà tuyển dụng.
  */
-class NhaTuyenDungController
-{
+class EmployerProfileController {
 	private $nhaTuyenDungModel;
 
-	public function __construct()
-	{
-		$this->nhaTuyenDungModel = new NhaTuyenDung();
+	public function __construct() {
+		$this->nhaTuyenDungModel = new Employer();
 	}
 
 	/**
@@ -20,8 +18,7 @@ class NhaTuyenDungController
 	 * @param string $maNhaTuyenDung
 	 * @return array|null
 	 */
-	public function detail($maNhaTuyenDung)
-	{
+	public function detail($maNhaTuyenDung) {
 		return $this->nhaTuyenDungModel->getById($maNhaTuyenDung);
 	}
 
@@ -31,8 +28,7 @@ class NhaTuyenDungController
 	 * @param array $nhaTuyenDungData
 	 * @return bool
 	 */
-	public function update(array $nhaTuyenDungData)
-	{
+	public function update(array $nhaTuyenDungData) {
 		return $this->nhaTuyenDungModel->update(
 			$nhaTuyenDungData
 		);
@@ -45,8 +41,7 @@ class NhaTuyenDungController
 	 * @param array $file
 	 * @return bool
 	 */
-	public function uploadLogo($maNhaTuyenDung, $file)
-	{
+	public function uploadLogo($maNhaTuyenDung, $file) {
 		if ($file["error"] != 0) {
 			return false;
 		}
@@ -58,6 +53,7 @@ class NhaTuyenDungController
 			)
 		);
 
+		// Chỉ cho phép ảnh, tránh upload file thực thi giả dạng ảnh
 		$allowExtensions = [
 			"jpg",
 			"jpeg",
@@ -74,6 +70,8 @@ class NhaTuyenDungController
 			mkdir($directory, 0777, true);
 		}
 
+		// Đặt tên file theo mã nhà tuyển dụng (không theo tên file gốc) để mỗi lần
+		// upload mới sẽ tự động ghi đè logo cũ, tránh tích tụ file rác trên server.
 		$fileName = $maNhaTuyenDung . "." . $extension;
 
 		$uploadPath = $directory . $fileName;
@@ -98,8 +96,7 @@ class NhaTuyenDungController
 	 * @param array $file
 	 * @return bool
 	 */
-	public function uploadCover($maNhaTuyenDung, $file)
-	{
+	public function uploadCover($maNhaTuyenDung, $file) {
 		if ($file["error"] != 0) {
 			return false;
 		}
@@ -111,6 +108,7 @@ class NhaTuyenDungController
 			)
 		);
 
+		// Chỉ cho phép ảnh, tránh upload file thực thi giả dạng ảnh
 		$allowExtensions = [
 			"jpg",
 			"jpeg",
@@ -127,6 +125,8 @@ class NhaTuyenDungController
 			mkdir($directory, 0777, true);
 		}
 
+		// Đặt tên file theo mã nhà tuyển dụng để lần upload sau tự động ghi đè
+		// ảnh bìa cũ, tránh tích tụ file rác trên server.
 		$fileName = $maNhaTuyenDung . "." . $extension;
 
 		$uploadPath = $directory . $fileName;

@@ -72,8 +72,8 @@ class UserModel {
 		
 		return $exists;
 	}
-    
-    /**
+	
+	/**
 	 * Lấy thông tin tài khoản chi tiết dựa theo địa chỉ Email
 	 * @param string $email Địa chỉ email đăng nhập của người dùng
 	 * @return array|null Mảng chứa thông tin cơ bản của User hoặc null nếu không tồn tại
@@ -90,7 +90,7 @@ class UserModel {
 		$stmt->close();
 		return $user ? $user : null;
 	}
-    
+	
 	/**
 	 * Thực hiện đăng ký tài khoản cho Ứng viên (Role = 0)
 	 * @param array $userData Mảng chứa thông tin chung của User theo Database
@@ -141,6 +141,9 @@ class UserModel {
 	 * @return bool True nếu đăng ký thành công, ngược lại False
 	 */
 	public function registerEmployer($userData, $employerData) {
+		// Dùng transaction vì cần ghi vào 2 bảng (user + nhatuyendung): nếu bảng
+		// thứ 2 lỗi thì phải rollback bảng đầu, tránh tạo ra tài khoản user
+		// không có hồ sơ doanh nghiệp đi kèm.
 		$this->db->begin_transaction();
 
 		try {

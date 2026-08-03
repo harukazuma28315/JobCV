@@ -1,21 +1,19 @@
 <?php
 
-require_once __DIR__ . "/../models/TinTuyenDung.php";
+require_once __DIR__ . "/../models/JobPosting.php";
 require_once __DIR__ . '/../models/JobApply.php';
 require_once __DIR__ . '/../models/CV.php';
 
 /**
  * Controller quản lý tin tuyển dụng.
  */
-class TinTuyenDungController
-{
+class JobPostingController {
 	private $tinTuyenDungModel;
 	private $jobApplyModel;
 	private $cvModel;
 
-	public function __construct()
-	{
-		$this->tinTuyenDungModel = new TinTuyenDung();
+	public function __construct() {
+		$this->tinTuyenDungModel = new JobPosting();
 		$this->jobApplyModel = new JobApply();
 		$this->cvModel = new CV();
 	}
@@ -26,8 +24,7 @@ class TinTuyenDungController
 	 *
 	 * @return mysqli_result
 	 */
-	public function index()
-	{
+	public function index() {
 		$salary = $_GET['salary'] ?? '';
 		$sort = $_GET['sort'] ?? 'newest';
 
@@ -109,8 +106,7 @@ class TinTuyenDungController
 	 * @param string $maTinTuyenDung
 	 * @return array|null
 	 */
-	public function detail($maTinTuyenDung)
-	{
+	public function detail($maTinTuyenDung) {
 		// Lấy thông tin tin tuyển dụng từ database
 		$job = $this->tinTuyenDungModel->getById($maTinTuyenDung);
 
@@ -124,7 +120,7 @@ class TinTuyenDungController
 
 		if (isset($_SESSION['user_id'])) {
 
-			$cv = $this->cvModel->getByUngVien($_SESSION['user_id']);
+			$cv = $this->cvModel->getByCandidate($_SESSION['user_id']);
 
 			if ($cv) {
 				$hasApplied = $this->jobApplyModel->hasApplied(
@@ -144,8 +140,7 @@ class TinTuyenDungController
 	 * @param array $tinTuyenDungData
 	 * @return bool
 	 */
-	public function create(array $tinTuyenDungData = [])
-	{
+	public function create(array $tinTuyenDungData = []) {
 		// Chỉ cho nhà tuyển dụng truy cập
 		if (
 			!isset($_SESSION['user_id']) ||
@@ -182,7 +177,7 @@ class TinTuyenDungController
 		$categories = $this->tinTuyenDungModel->getCategories();
 		$locations = $this->tinTuyenDungModel->getLocations();
 		$jobs = $this->tinTuyenDungModel
-        ->getByNhaTuyenDung($maNhaTuyenDung);
+		->getByEmployer($maNhaTuyenDung);
 
 		// Vào từ route đăng tin -> mở sẵn tab "Đăng tin mới"
 		$activeTab = 'post';
@@ -191,8 +186,13 @@ class TinTuyenDungController
 		require_once __DIR__ . '/../views/page/employer/post-job.php';
 	}
 
-	public function manage()
-	{
+	/**
+	 * Hiển thị danh sách tin tuyển dụng do nhà tuyển dụng đang đăng nhập đã đăng,
+	 * để họ quản lý (sửa/xóa/gia hạn/đóng tin).
+	 *
+	 * @return void
+	 */
+	public function manage() {
 		if (
 			!isset($_SESSION['user_id']) ||
 			($_SESSION['user_role'] ?? 0) != 1
@@ -202,7 +202,7 @@ class TinTuyenDungController
 
 		$maNhaTuyenDung = $_SESSION['user_id'];
 
-		$jobs = $this->tinTuyenDungModel->getByNhaTuyenDung($maNhaTuyenDung);
+		$jobs = $this->tinTuyenDungModel->getByEmployer($maNhaTuyenDung);
 		$categories = $this->tinTuyenDungModel->getCategories();
 		$locations = $this->tinTuyenDungModel->getLocations();
 
@@ -218,8 +218,7 @@ class TinTuyenDungController
 	 *
 	 * @param string $maTinTuyenDung
 	 */
-	public function editPage($maTinTuyenDung)
-	{
+	public function editPage($maTinTuyenDung) {
 		// authorizeJobOwner đã tự kiểm tra đăng nhập, vai trò và quyền sở hữu
 		$job = $this->authorizeJobOwner($maTinTuyenDung);
 
@@ -237,8 +236,7 @@ class TinTuyenDungController
 	 * @param array $tinTuyenDungData
 	 * @return bool
 	 */
-	public function update(array $tinTuyenDungData)
-	{
+	public function update(array $tinTuyenDungData) {
 		$maTinTuyenDung = $tinTuyenDungData['maTinTuyenDung'] ?? '';
 
 		$this->authorizeJobOwner($maTinTuyenDung);
@@ -251,12 +249,12 @@ class TinTuyenDungController
 		$result = $this->tinTuyenDungModel->update($tinTuyenDungData);
 
 		// Đồng bộ lại ngành nghề & địa điểm dù nội dung chính có đổi hay không
-		$this->tinTuyenDungModel->syncJobDanhMuc(
+		$this->tinTuyenDungModel->syncJobCategory(
 			$maTinTuyenDung,
 			$tinTuyenDungData['category'] ?? '',
 			'NganhNghe'
 		);
-		$this->tinTuyenDungModel->syncJobDanhMuc(
+		$this->tinTuyenDungModel->syncJobCategory(
 			$maTinTuyenDung,
 			$tinTuyenDungData['location'] ?? '',
 			'diadiem'
@@ -285,8 +283,7 @@ class TinTuyenDungController
 	 * @param string $maTinTuyenDung
 	 * @return bool
 	 */
-	public function delete($maTinTuyenDung)
-	{
+	public function delete($maTinTuyenDung) {
 		$this->authorizeJobOwner($maTinTuyenDung);
 
 		return $this->tinTuyenDungModel->delete($maTinTuyenDung);
@@ -299,8 +296,7 @@ class TinTuyenDungController
 	 * @param string $ngayHetHan
 	 * @return bool
 	 */
-	public function extendDeadline($maTinTuyenDung, $ngayHetHan)
-	{
+	public function extendDeadline($maTinTuyenDung, $ngayHetHan) {
 		if (empty($ngayHetHan)) {
 			return false;
 		}
@@ -319,8 +315,7 @@ class TinTuyenDungController
 	 * @param string $maTinTuyenDung
 	 * @return bool
 	 */
-	public function closeJob($maTinTuyenDung)
-	{
+	public function closeJob($maTinTuyenDung) {
 		$this->authorizeJobOwner($maTinTuyenDung);
 
 		return $this->tinTuyenDungModel->closeJob($maTinTuyenDung);
@@ -334,8 +329,7 @@ class TinTuyenDungController
 	 * @param string $maTinTuyenDung
 	 * @return array Dữ liệu tin tuyển dụng
 	 */
-	private function authorizeJobOwner($maTinTuyenDung)
-	{
+	private function authorizeJobOwner($maTinTuyenDung) {
 		if (
 			!isset($_SESSION['user_id']) ||
 			($_SESSION['user_role'] ?? 0) != 1
@@ -353,6 +347,8 @@ class TinTuyenDungController
 			exit('Không tìm thấy tin tuyển dụng.');
 		}
 
+		// Chặn IDOR: nhà tuyển dụng chỉ được thao tác trên tin do chính mình đăng,
+		// không được sửa/xóa tin của nhà tuyển dụng khác dù biết mã tin.
 		if ($job['MaNhaTuyenDung'] != $_SESSION['user_id']) {
 			exit('Bạn không có quyền thao tác với tin tuyển dụng này.');
 		}
@@ -366,8 +362,7 @@ class TinTuyenDungController
 	 * @param array $tinTuyenDungData
 	 * @return bool
 	 */
-	private function validateJobData(array $data)
-	{
+	private function validateJobData(array $data) {
 		if (empty(trim($data['tieuDe'] ?? ''))) {
 			return false;
 		}

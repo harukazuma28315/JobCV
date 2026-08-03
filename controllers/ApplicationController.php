@@ -16,8 +16,7 @@ require_once ROOT_PATH . '/helpers/ResponseHelper.php';
 require_once ROOT_PATH . '/helpers/UploadHelper.php';
 require_once ROOT_PATH . '/helpers/IdHelper.php';
 
-class ApplicationController
-{
+class ApplicationController {
 	/**
 	 * @var ApplicationModel
 	 */
@@ -33,8 +32,7 @@ class ApplicationController
 	 */
 	private $tinTuyenDungModel;
 
-	public function __construct()
-	{
+	public function __construct() {
 		$this->hoSoUngTuyenModel = new ApplicationModel();
 		$this->cvModel = new CvModel();
 		$this->tinTuyenDungModel = new JobModel();
@@ -46,8 +44,7 @@ class ApplicationController
 	 *
 	 * @return void
 	 */
-	public function showApplyForm()
-	{
+	public function showApplyForm() {
 		AuthHelper::requireRole(ROLE_UNGVIEN);
 
 		$maTinTuyenDung = isset($_GET['maTin']) ? trim($_GET['maTin']) : '';
@@ -70,7 +67,7 @@ class ApplicationController
 		}
 
 		$maUngVien = AuthHelper::getCurrentUserId();
-		$danhSachCv = $this->cvModel->getActiveCvsByUngVien($maUngVien);
+		$danhSachCv = $this->cvModel->getActiveCvsByCandidate($maUngVien);
 
 		$thongBao = ResponseHelper::getFlash();
 
@@ -83,8 +80,7 @@ class ApplicationController
 	 *
 	 * @return void
 	 */
-	public function submitApplication()
-	{
+	public function submitApplication() {
 		AuthHelper::requireRole(ROLE_UNGVIEN);
 
 		if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -157,12 +153,11 @@ class ApplicationController
 	 *
 	 * @return void
 	 */
-	public function showHistory()
-	{
+	public function showHistory() {
 		AuthHelper::requireRole(ROLE_UNGVIEN);
 
 		$maUngVien = AuthHelper::getCurrentUserId();
-		$danhSachHoSoUngTuyen = $this->hoSoUngTuyenModel->getHistoryByUngVien($maUngVien);
+		$danhSachHoSoUngTuyen = $this->hoSoUngTuyenModel->getHistoryByCandidate($maUngVien);
 		$thongBao = ResponseHelper::getFlash();
 
 		require ROOT_PATH . '/views/applicant/applicationHistory.php';
@@ -173,8 +168,7 @@ class ApplicationController
 	 *
 	 * @return void
 	 */
-	public function showDetail()
-	{
+	public function showDetail() {
 		AuthHelper::requireRole(ROLE_UNGVIEN);
 
 		$maHoSo = isset($_GET['maHS']) ? trim($_GET['maHS']) : '';
@@ -189,8 +183,14 @@ class ApplicationController
 
 		require ROOT_PATH . '/views/applicant/applicationDetail.php';
 	}
-	public function manage()
-	{
+
+	/**
+	 * Hiển thị danh sách ứng viên đã ứng tuyển vào các tin của nhà tuyển dụng
+	 * đang đăng nhập, để họ theo dõi và cập nhật trạng thái hồ sơ.
+	 *
+	 * @return void
+	 */
+	public function manage() {
 		if (
 			!isset($_SESSION['user_id']) ||
 			($_SESSION['user_role'] ?? 0) != 1
@@ -205,9 +205,9 @@ class ApplicationController
 			->getListForRecruiter($maNhaTuyenDung);
 
 		// Danh sách tin tuyển dụng (để lọc)
-		require_once ROOT_PATH . '/models/TinTuyenDung.php';
-		$tinModel = new TinTuyenDung();
-		$resultTin = $tinModel->getByNhaTuyenDung($maNhaTuyenDung);
+		require_once ROOT_PATH . '/models/JobPosting.php';
+		$tinModel = new JobPosting();
+		$resultTin = $tinModel->getByEmployer($maNhaTuyenDung);
 
 		$danhSachTinTuyenDung = [];
 		if ($resultTin) {

@@ -9,15 +9,13 @@
 
 require_once ROOT_PATH . '/config/db.php';
 
-class ApplicationModel
-{
+class ApplicationModel {
 	/**
 	 * @var mysqli
 	 */
 	private $link;
 
-	public function __construct()
-	{
+	public function __construct() {
 		$this->link = Database::getConnection();
 	}
 
@@ -29,8 +27,7 @@ class ApplicationModel
 	 * @param string $maTinTuyenDung
 	 * @return bool true nếu đã tồn tại hồ sơ (trùng)
 	 */
-	public function isDuplicate($maCv, $maTinTuyenDung)
-	{
+	public function isDuplicate($maCv, $maTinTuyenDung) {
 		$sql = 'SELECT MaHS FROM hosotuyendung WHERE MaCV = ? AND MaTinTuyenDung = ? LIMIT 1';
 		$stmt = mysqli_prepare($this->link, $sql);
 		mysqli_stmt_bind_param($stmt, 'ss', $maCv, $maTinTuyenDung);
@@ -48,8 +45,7 @@ class ApplicationModel
 	 * @param array $data Gồm: maHS, maCV, maTinTuyenDung, coverLetter, coverLetterFile
 	 * @return bool
 	 */
-	public function create($data)
-	{
+	public function create($data) {
 		$sql = "INSERT INTO hosotuyendung
 				(MaHS, MaCV, MaTinTuyenDung, NgayNop, CoverLetter, CoverLetterFile, TrangThai)
 				VALUES (?, ?, ?, NOW(), ?, ?, ?)";
@@ -88,8 +84,7 @@ class ApplicationModel
 	 * @param string $maHoSo
 	 * @return array|null
 	 */
-	public function getById($maHoSo)
-	{
+	public function getById($maHoSo) {
 		$sql = 'SELECT * FROM hosotuyendung WHERE MaHS = ? LIMIT 1';
 		$stmt = mysqli_prepare($this->link, $sql);
 		mysqli_stmt_bind_param($stmt, 's', $maHoSo);
@@ -109,8 +104,7 @@ class ApplicationModel
 	 * @param string $maUngVien
 	 * @return array|null
 	 */
-	public function getDetailForApplicant($maHoSo, $maUngVien)
-	{
+	public function getDetailForApplicant($maHoSo, $maUngVien) {
 		$sql = 'SELECT hs.*, cv.TieuDe AS CvTieuDe, cv.ViTriMongMuon,
 					tin.TieuDe AS TenTin, tin.DiaChiLamViec, tin.MucLuong, tin.NgayHetHan,
 					ntd.TenCongTy
@@ -136,8 +130,7 @@ class ApplicationModel
 	 * @param string $maUngVien
 	 * @return array
 	 */
-	public function getHistoryByUngVien($maUngVien)
-	{
+	public function getHistoryByCandidate($maUngVien) {
 		$sql = 'SELECT hs.MaHS, hs.NgayNop, hs.TrangThai,
 					cv.TieuDe AS CvTieuDe,
 					tin.TieuDe AS TenTin, tin.DiaChiLamViec,
@@ -172,29 +165,28 @@ class ApplicationModel
 	 * @param string|null $trangThai Lọc theo trạng thái, null = tất cả
 	 * @return array
 	 */
-	public function getListForRecruiter($maNhaTuyenDung, $maTinLoc = null, $trangThaiLoc = null)
-	{
+	public function getListForRecruiter($maNhaTuyenDung, $maTinLoc = null, $trangThaiLoc = null) {
 		$sql = "SELECT 
-            hs.MaHS,
-            hs.MaCV,
-            hs.MaTinTuyenDung,
-            hs.NgayNop,
-            hs.CoverLetter,
-            hs.TrangThai,
-            u.HoTen,
-            u.Email,
-            u.MaUser AS MaUngVien,
-            cv.TenFileCV,
-            cv.DuongDanFileCV,
-            t.TieuDe AS TenTin
-        FROM hosotuyendung hs
-        INNER JOIN tintuyendung t 
-            ON hs.MaTinTuyenDung = t.MaTinTuyenDung
-        LEFT JOIN cv 
-            ON hs.MaCV = cv.MaCV
-        LEFT JOIN user u 
-            ON cv.MaUngVien = u.MaUser
-        WHERE t.MaNhaTuyenDung = ?";	
+			hs.MaHS,
+			hs.MaCV,
+			hs.MaTinTuyenDung,
+			hs.NgayNop,
+			hs.CoverLetter,
+			hs.TrangThai,
+			u.HoTen,
+			u.Email,
+			u.MaUser AS MaUngVien,
+			cv.TenFileCV,
+			cv.DuongDanFileCV,
+			t.TieuDe AS TenTin
+		FROM hosotuyendung hs
+		INNER JOIN tintuyendung t 
+			ON hs.MaTinTuyenDung = t.MaTinTuyenDung
+		LEFT JOIN cv 
+			ON hs.MaCV = cv.MaCV
+		LEFT JOIN user u 
+			ON cv.MaUngVien = u.MaUser
+		WHERE t.MaNhaTuyenDung = ?";	
 
 		$params = [$maNhaTuyenDung];
 		$types  = 's';
@@ -226,6 +218,7 @@ class ApplicationModel
 		mysqli_stmt_close($stmt);
 		return $list;
 	}
+
 	/**
 	 * Lấy chi tiết hồ sơ ứng tuyển cho Nhà tuyển dụng, đồng thời xác thực
 	 * hồ sơ thuộc về tin tuyển dụng của chính nhà tuyển dụng này.
@@ -234,8 +227,7 @@ class ApplicationModel
 	 * @param string $maNhaTuyenDung
 	 * @return array|null
 	 */
-	public function getDetailForRecruiter($maHoSo, $maNhaTuyenDung)
-	{
+	public function getDetailForRecruiter($maHoSo, $maNhaTuyenDung) {
 		$sql = 'SELECT 
 					hs.*,
 					cv.MaCV,
@@ -276,8 +268,7 @@ class ApplicationModel
 	 * @param string $trangThaiMoi
 	 * @return bool
 	 */
-	public function updateStatus($maHoSo, $trangThaiMoi)
-	{
+	public function updateStatus($maHoSo, $trangThaiMoi) {
 		$sql = 'UPDATE hosotuyendung SET TrangThai = ?, NgayCapNhatTrangThai = NOW() WHERE MaHS = ?';
 		$stmt = mysqli_prepare($this->link, $sql);
 		mysqli_stmt_bind_param($stmt, 'ss', $trangThaiMoi, $maHoSo);

@@ -5,12 +5,10 @@ require_once __DIR__ . "/../config/db.php";
 /**
  * Model quản lý thông tin kinh nghiệm làm việc.
  */
-class KinhNghiem
-{
+class Experience {
 	private $conn;
 
-	public function __construct()
-	{
+	public function __construct() {
 		global $conn;
 		$this->conn = $conn;
 	}
@@ -21,8 +19,7 @@ class KinhNghiem
 	 * @param array $kinhNghiemData Thông tin kinh nghiệm.
 	 * @return bool True nếu thêm thành công.
 	 */
-	public function create(array $kinhNghiemData)
-	{
+	public function create(array $kinhNghiemData) {
 		$sql = "INSERT INTO KinhNghiemLamViec
 				(
 					MaCongViec,
@@ -58,8 +55,7 @@ class KinhNghiem
 	 * @param string $maCV
 	 * @return mysqli_result
 	 */
-	public function getByCV($maCV)
-	{
+	public function getByCV($maCV) {
 		$sql = "SELECT *
 				FROM KinhNghiemLamViec
 				WHERE MaCV = ?";
@@ -79,8 +75,7 @@ class KinhNghiem
 	 * @param array $kinhNghiemData Thông tin kinh nghiệm.
 	 * @return bool True nếu cập nhật thành công.
 	 */
-	public function update(array $kinhNghiemData)
-	{
+	public function update(array $kinhNghiemData) {
 		$sql = "UPDATE KinhNghiemLamViec
 				SET
 					TenCongTy = ?,
@@ -111,8 +106,7 @@ class KinhNghiem
 	 * @param string $maCongViec
 	 * @return bool True nếu xóa thành công.
 	 */
-	public function delete($maCongViec)
-	{
+	public function delete($maCongViec) {
 		$sql = "DELETE
 				FROM KinhNghiemLamViec
 				WHERE MaCongViec = ?";

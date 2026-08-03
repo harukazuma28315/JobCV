@@ -26,7 +26,8 @@ class GoogleAuthController {
 	 */
 	public function handleGoogleAuth() {
 		if ($_SERVER["REQUEST_METHOD"] !== "POST" || empty($_POST['credential'])) {
-			echo "<script>alert('Yêu cầu không hợp lệ!'); window.location.href='/JobCV/index.php?route=auth/login';</script>";
+			echo "<script>alert('Yêu cầu không hợp lệ!');"
+				. " window.location.href='/JobCV/index.php?route=auth/login';</script>";
 			return;
 		}
 
@@ -82,7 +83,8 @@ class GoogleAuthController {
 				$newUser = $this->userModel->getUserByEmail($email);
 				$this->loginUserSession($newUser);
 			} else {
-				echo "<script>alert('Tự động tạo tài khoản liên kết Google thất bại!'); window.location.href='../views/trangchu.html';</script>";
+				echo "<script>alert('Tự động tạo tài khoản liên kết Google thất bại!');"
+					. " window.location.href='../views/trangchu.html';</script>";
 			}
 		}
 	}
@@ -98,7 +100,8 @@ class GoogleAuthController {
 		$_SESSION['user_role'] = $user['Role'];
 		$_SESSION['role'] = $user['Role']; // Đồng bộ với AuthHelper::requireRole() đang đọc key 'role'
 
-		echo "<script>alert('Đăng nhập liên kết Google thành công!'); window.location.href='../views/trangchu.php';</script>";
+		echo "<script>alert('Đăng nhập liên kết Google thành công!');"
+			. " window.location.href='../views/trangchu.php';</script>";
 	}
 }
 

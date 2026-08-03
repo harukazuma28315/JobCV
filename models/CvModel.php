@@ -9,15 +9,13 @@
 
 require_once ROOT_PATH . '/config/db.php';
 
-class CvModel
-{
+class CvModel {
 	/**
 	 * @var mysqli
 	 */
 	private $link;
 
-	public function __construct()
-	{
+	public function __construct() {
 		$this->link = Database::getConnection();
 	}
 
@@ -28,8 +26,7 @@ class CvModel
 	 * @param string $maUngVien
 	 * @return array
 	 */
-	public function getActiveCvsByUngVien($maUngVien)
-	{
+	public function getActiveCvsByCandidate($maUngVien) {
 		$sql = 'SELECT MaCV, TieuDe, ViTriMongMuon FROM cv WHERE MaUngVien = ? AND TrangThai = 1 ORDER BY TieuDe ASC';
 		$stmt = mysqli_prepare($this->link, $sql);
 		mysqli_stmt_bind_param($stmt, 's', $maUngVien);
@@ -53,8 +50,7 @@ class CvModel
 	 * @param string $maUngVien
 	 * @return array|null
 	 */
-	public function getOwnedCv($maCv, $maUngVien)
-	{
+	public function getOwnedCv($maCv, $maUngVien) {
 		$sql = 'SELECT * FROM cv WHERE MaCV = ? AND MaUngVien = ? LIMIT 1';
 		$stmt = mysqli_prepare($this->link, $sql);
 		mysqli_stmt_bind_param($stmt, 'ss', $maCv, $maUngVien);
@@ -73,8 +69,7 @@ class CvModel
 	 * @param string $maCv
 	 * @return array|null
 	 */
-	public function getById($maCv)
-	{
+	public function getById($maCv) {
 		$sql = 'SELECT * FROM cv WHERE MaCV = ? LIMIT 1';
 		$stmt = mysqli_prepare($this->link, $sql);
 		mysqli_stmt_bind_param($stmt, 's', $maCv);

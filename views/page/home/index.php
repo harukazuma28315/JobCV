@@ -1,6 +1,6 @@
 <?php
 if (session_status() === PHP_SESSION_NONE) {
-    session_start();
+	session_start();
 }
 
 $baseUrl = '/JobCV';
@@ -13,373 +13,373 @@ $role = $_SESSION['user_role'] ?? 0;
 <?php if ($role == 0): ?>
 
 <section class="position-relative py-5 d-flex align-items-center"
-    style="background: url('<?= $baseUrl ?>/assets/images/city-bg.png') no-repeat center center; background-size: cover; min-height: 450px;">
+	style="background: url('<?= $baseUrl ?>/assets/images/city-bg.png') no-repeat center center; background-size: cover; min-height: 450px;">
 
-    <!-- Lớp phủ nền -->
-    <div class="position-absolute top-0 start-0 w-100 h-100 bg-white opacity-75" style="z-index: 1;"></div>
+	<!-- Lớp phủ nền -->
+	<div class="position-absolute top-0 start-0 w-100 h-100 bg-white opacity-75" style="z-index: 1;"></div>
 
-    <div class="container position-relative text-center" style="z-index: 2;">
-        <h1 class="fw-bold text-dark mb-3" style="font-size: 2.5rem; letter-spacing: -0.5px;">
-            Kết Nối Nhân Tài, Xây Dựng Tương Lai
-        </h1>
+	<div class="container position-relative text-center" style="z-index: 2;">
+		<h1 class="fw-bold text-dark mb-3" style="font-size: 2.5rem; letter-spacing: -0.5px;">
+			Kết Nối Nhân Tài, Xây Dựng Tương Lai
+		</h1>
 
-        <p class="text-secondary fs-5 mb-5">
-            Hàng Ngàn Cơ Hội Việc Làm Hấp Dẫn Đang Chờ Bạn.
-        </p>
+		<p class="text-secondary fs-5 mb-5">
+			Hàng Ngàn Cơ Hội Việc Làm Hấp Dẫn Đang Chờ Bạn.
+		</p>
 
-        <!-- Thanh Tìm -->
-        <div class="row justify-content-center">
-            <div class="col-12 col-lg-10">
-                
-                <form action="<?= $baseUrl ?>/index.php" method="GET" class="p-4 bg-primary-blue rounded-4 shadow-lg" autocomplete="off">
+		<!-- Thanh Tìm -->
+		<div class="row justify-content-center">
+			<div class="col-12 col-lg-10">
+				
+				<form action="<?= $baseUrl ?>/index.php" method="GET" class="p-4 bg-primary-blue rounded-4 shadow-lg" autocomplete="off">
 
-                    <!-- Giữ route MVC khi submit form -->
-                    <input type="hidden" name="route" value="jobs/list">
-                    
-                    <!-- 1: NHẬP TỪ KHÓA -->
-                    <div class="row mb-3 justify-content-center">
-                        <div class="col-12 col-md-6">
-                            <div class="input-group">
-                                <span class="input-group-text bg-white border-0 py-2"><i class="fa-solid fa-magnifying-glass text-muted"></i></span>
-                                <input type="text" name="keyword" class="form-control border-0 py-2 text-center" 
-                                    value="<?= isset($_GET['keyword']) ? htmlspecialchars($_GET['keyword']) : '' ?>" 
-                                    placeholder="Nhập từ khóa (Vị trí, kỹ năng, tên công ty...)">
-                            </div>
-                        </div>
-                    </div>
+					<!-- Giữ route MVC khi submit form -->
+					<input type="hidden" name="route" value="jobs/list">
+					
+					<!-- 1: NHẬP TỪ KHÓA -->
+					<div class="row mb-3 justify-content-center">
+						<div class="col-12 col-md-6">
+							<div class="input-group">
+								<span class="input-group-text bg-white border-0 py-2"><i class="fa-solid fa-magnifying-glass text-muted"></i></span>
+								<input type="text" name="keyword" class="form-control border-0 py-2 text-center" 
+									value="<?= isset($_GET['keyword']) ? htmlspecialchars($_GET['keyword']) : '' ?>" 
+									placeholder="Nhập từ khóa (Vị trí, kỹ năng, tên công ty...)">
+							</div>
+						</div>
+					</div>
 
-                    <!-- 2: BỘ LỌC ĐỊA ĐIỂM, NGÀNH NGHỀ & VỊ TRÍ -->
-                    <div class="row g-3 mb-3">
+					<!-- 2: BỘ LỌC ĐỊA ĐIỂM, NGÀNH NGHỀ & VỊ TRÍ -->
+					<div class="row g-3 mb-3">
 
-                        <!-- Chọn địa điểm -->
-                        <div class="col-12 col-md-4">
-                            <select name="location" class="form-select border-0 py-2 fw-semibold">
-                                <option value="">Chọn Địa Điểm</option>
+						<!-- Chọn địa điểm -->
+						<div class="col-12 col-md-4">
+							<select name="location" class="form-select border-0 py-2 fw-semibold">
+								<option value="">Chọn Địa Điểm</option>
 
-                                <?php if (!empty($locations)): ?>
-                                    <?php foreach ($locations as $location): ?>
+								<?php if (!empty($locations)): ?>
+									<?php foreach ($locations as $location): ?>
 
-                                        <?php 
-                                        $selected = (($_GET['location'] ?? '') === $location['MaDanhMuc'])
-                                            ? 'selected'
-                                            : '';
-                                        ?>
+										<?php 
+										$selected = (($_GET['location'] ?? '') === $location['MaDanhMuc'])
+											? 'selected'
+											: '';
+										?>
 
-                                        <option
-                                            value="<?= htmlspecialchars($location['MaDanhMuc']) ?>"
-                                            <?= $selected ?>
-                                        >
-                                            <?= htmlspecialchars($location['TenDanhMuc']) ?>
-                                        </option>
+										<option
+											value="<?= htmlspecialchars($location['MaDanhMuc']) ?>"
+											<?= $selected ?>
+										>
+											<?= htmlspecialchars($location['TenDanhMuc']) ?>
+										</option>
 
-                                    <?php endforeach; ?>
-                                <?php endif; ?>
-                            </select>
-                        </div>
+									<?php endforeach; ?>
+								<?php endif; ?>
+							</select>
+						</div>
 
-                        <!-- Chọn ngành nghề -->
-                        <div class="col-12 col-md-4">
-                            <select name="category" class="form-select border-0 py-2 fw-semibold">
-                                <option value="">Chọn Ngành Nghề</option>
+						<!-- Chọn ngành nghề -->
+						<div class="col-12 col-md-4">
+							<select name="category" class="form-select border-0 py-2 fw-semibold">
+								<option value="">Chọn Ngành Nghề</option>
 
-                                <?php if (!empty($categories)): ?>
-                                    <?php foreach ($categories as $category): ?>
+								<?php if (!empty($categories)): ?>
+									<?php foreach ($categories as $category): ?>
 
-                                        <?php 
-                                        $selected = (($_GET['category'] ?? '') === $category['MaDanhMuc'])
-                                            ? 'selected'
-                                            : '';
-                                        ?>
+										<?php 
+										$selected = (($_GET['category'] ?? '') === $category['MaDanhMuc'])
+											? 'selected'
+											: '';
+										?>
 
-                                        <option 
-                                            value="<?= htmlspecialchars($category['MaDanhMuc']) ?>"
-                                            <?= $selected ?>
-                                        >
-                                            <?= htmlspecialchars($category['TenDanhMuc']) ?>
-                                        </option>
+										<option 
+											value="<?= htmlspecialchars($category['MaDanhMuc']) ?>"
+											<?= $selected ?>
+										>
+											<?= htmlspecialchars($category['TenDanhMuc']) ?>
+										</option>
 
-                                    <?php endforeach; ?>
-                                <?php endif; ?>
+									<?php endforeach; ?>
+								<?php endif; ?>
 
-                            </select>
-                        </div>
+							</select>
+						</div>
 
-                        <!-- Chọn vị trí tuyển dụng -->
-                        <div class="col-12 col-md-4">
-                            <select name="position" class="form-select border-0 py-2 fw-semibold">
+						<!-- Chọn vị trí tuyển dụng -->
+						<div class="col-12 col-md-4">
+							<select name="position" class="form-select border-0 py-2 fw-semibold">
 
-                                <option value="">Chọn Vị Trí Tuyển Dụng</option>
+								<option value="">Chọn Vị Trí Tuyển Dụng</option>
 
-                                <?php if (!empty($positions)): ?>
-                                    <?php foreach ($positions as $position): ?>
+								<?php if (!empty($positions)): ?>
+									<?php foreach ($positions as $position): ?>
 
-                                        <?php 
-                                        $selected = (($_GET['position'] ?? '') === $position)
-                                            ? 'selected'
-                                            : '';
-                                        ?>
+										<?php 
+										$selected = (($_GET['position'] ?? '') === $position)
+											? 'selected'
+											: '';
+										?>
 
-                                        <option 
-                                            value="<?= htmlspecialchars($position) ?>"
-                                            <?= $selected ?>
-                                        >
-                                            <?= htmlspecialchars($position) ?>
-                                        </option>
+										<option 
+											value="<?= htmlspecialchars($position) ?>"
+											<?= $selected ?>
+										>
+											<?= htmlspecialchars($position) ?>
+										</option>
 
-                                    <?php endforeach; ?>
-                                <?php endif; ?>
+									<?php endforeach; ?>
+								<?php endif; ?>
 
-                            </select>
-                        </div>
+							</select>
+						</div>
 
-                    </div>
+					</div>
 
-                    <!-- 3: NÚT TÌM VIỆC & BỘ LỌC NÂNG CAO -->
-                    <div class="row">
-                        <div class="col-12 d-flex justify-content-end gap-2">
-                            <button type="submit" class="btn btn-warning fw-bold text-dark px-4 py-2">Tìm Việc</button>
-                            <button type="button" class="btn btn-outline-light py-2 px-3" data-bs-toggle="collapse" data-bs-target="#advancedFilter" aria-expanded="false" title="Bộ lọc nâng cao">
-                                <i class="fa-solid fa-sliders"></i>
-                            </button>
-                        </div>
-                    </div>
+					<!-- 3: NÚT TÌM VIỆC & BỘ LỌC NÂNG CAO -->
+					<div class="row">
+						<div class="col-12 d-flex justify-content-end gap-2">
+							<button type="submit" class="btn btn-warning fw-bold text-dark px-4 py-2">Tìm Việc</button>
+							<button type="button" class="btn btn-outline-light py-2 px-3" data-bs-toggle="collapse" data-bs-target="#advancedFilter" aria-expanded="false" title="Bộ lọc nâng cao">
+								<i class="fa-solid fa-sliders"></i>
+							</button>
+						</div>
+					</div>
 
-                    <!-- 4: BỘ LỌC NÂNG CAO -->
-                    <div class="collapse <?= (isset($_GET['salary']) || isset($_GET['level']) || isset($_GET['job_type']) || isset($_GET['experience']) || isset($_GET['posted_date'])) ? 'show' : '' ?>" id="advancedFilter">
-                        <div class="row g-3 mt-2 border-top">
-                            <!-- Lọc mức lương -->
-                            <div class="col-12 col-sm-6 col-md-3">
-                                <label class="form-label text-white-50 small fw-semibold mb-1">Mức Lương</label>
-                                <select name="salary" class="form-select border-0 py-2 small text-dark fw-semibold">
-                                    <option value="">Tất cả mức lương</option>
-                                    <option value="under-10" <?= (isset($_GET['salary']) && $_GET['salary'] == 'under-10') ? 'selected' : '' ?>>Dưới 10 triệu</option>
-                                    <option value="10-15" <?= (isset($_GET['salary']) && $_GET['salary'] == '10-15') ? 'selected' : '' ?>>10 - 15 triệu</option>
-                                    <option value="15-20" <?= (isset($_GET['salary']) && $_GET['salary'] == '15-20') ? 'selected' : '' ?>>15 - 20 triệu</option>
-                                    <option value="over-20" <?= (isset($_GET['salary']) && $_GET['salary'] == 'over-20') ? 'selected' : '' ?>>Trên 20 triệu</option>
-                                </select>
-                            </div>
+					<!-- 4: BỘ LỌC NÂNG CAO -->
+					<div class="collapse <?= (isset($_GET['salary']) || isset($_GET['level']) || isset($_GET['job_type']) || isset($_GET['experience']) || isset($_GET['posted_date'])) ? 'show' : '' ?>" id="advancedFilter">
+						<div class="row g-3 mt-2 border-top">
+							<!-- Lọc mức lương -->
+							<div class="col-12 col-sm-6 col-md-3">
+								<label class="form-label text-white-50 small fw-semibold mb-1">Mức Lương</label>
+								<select name="salary" class="form-select border-0 py-2 small text-dark fw-semibold">
+									<option value="">Tất cả mức lương</option>
+									<option value="under-10" <?= (isset($_GET['salary']) && $_GET['salary'] == 'under-10') ? 'selected' : '' ?>>Dưới 10 triệu</option>
+									<option value="10-15" <?= (isset($_GET['salary']) && $_GET['salary'] == '10-15') ? 'selected' : '' ?>>10 - 15 triệu</option>
+									<option value="15-20" <?= (isset($_GET['salary']) && $_GET['salary'] == '15-20') ? 'selected' : '' ?>>15 - 20 triệu</option>
+									<option value="over-20" <?= (isset($_GET['salary']) && $_GET['salary'] == 'over-20') ? 'selected' : '' ?>>Trên 20 triệu</option>
+								</select>
+							</div>
 
-                            <!-- Lọc cấp bậc -->
-                            <div class="col-6 col-sm-3 col-md-2">
-                                <label class="form-label text-white-50 small fw-semibold mb-1">Cấp Bậc</label>
-                                <select name="level" class="form-select border-0 py-2 small text-dark fw-semibold">
-                                    <option value="">Tất cả cấp bậc</option>
-                                    <option value="Fresher" <?= ($_GET['level'] ?? '') == 'Fresher' ? 'selected' : '' ?>>
-                                        Fresher
-                                    </option>
+							<!-- Lọc cấp bậc -->
+							<div class="col-6 col-sm-3 col-md-2">
+								<label class="form-label text-white-50 small fw-semibold mb-1">Cấp Bậc</label>
+								<select name="level" class="form-select border-0 py-2 small text-dark fw-semibold">
+									<option value="">Tất cả cấp bậc</option>
+									<option value="Fresher" <?= ($_GET['level'] ?? '') == 'Fresher' ? 'selected' : '' ?>>
+										Fresher
+									</option>
 
-                                    <option value="Junior" <?= ($_GET['level'] ?? '') == 'Junior' ? 'selected' : '' ?>>
-                                        Junior
-                                    </option>
+									<option value="Junior" <?= ($_GET['level'] ?? '') == 'Junior' ? 'selected' : '' ?>>
+										Junior
+									</option>
 
-                                    <option value="Middle" <?= ($_GET['level'] ?? '') == 'Middle' ? 'selected' : '' ?>>
-                                        Middle
-                                    </option>
+									<option value="Middle" <?= ($_GET['level'] ?? '') == 'Middle' ? 'selected' : '' ?>>
+										Middle
+									</option>
 
-                                    <option value="Senior" <?= ($_GET['level'] ?? '') == 'Senior' ? 'selected' : '' ?>>
-                                        Senior
-                                    </option>
-                                </select>
-                            </div>
+									<option value="Senior" <?= ($_GET['level'] ?? '') == 'Senior' ? 'selected' : '' ?>>
+										Senior
+									</option>
+								</select>
+							</div>
 
-                            <!-- Lọc hình thức làm việc -->
-                            <div class="col-6 col-sm-3 col-md-2">
-                                <label class="form-label text-white-50 small fw-semibold mb-1">Hình Thức</label>
-                                <select name="job_type" class="form-select border-0 py-2 small text-dark fw-semibold">
-                                    <option value="">Tất cả hình thức</option>
-                                    <option value="Full-time" <?= ($_GET['job_type'] ?? '') == 'Full-time' ? 'selected' : '' ?>>
-                                        Full-time
-                                    </option>
+							<!-- Lọc hình thức làm việc -->
+							<div class="col-6 col-sm-3 col-md-2">
+								<label class="form-label text-white-50 small fw-semibold mb-1">Hình Thức</label>
+								<select name="job_type" class="form-select border-0 py-2 small text-dark fw-semibold">
+									<option value="">Tất cả hình thức</option>
+									<option value="Full-time" <?= ($_GET['job_type'] ?? '') == 'Full-time' ? 'selected' : '' ?>>
+										Full-time
+									</option>
 
-                                    <option value="Remote" <?= ($_GET['job_type'] ?? '') == 'Remote' ? 'selected' : '' ?>>
-                                        Remote
-                                    </option>
+									<option value="Remote" <?= ($_GET['job_type'] ?? '') == 'Remote' ? 'selected' : '' ?>>
+										Remote
+									</option>
 
-                                    <option value="Hybrid" <?= ($_GET['job_type'] ?? '') == 'Hybrid' ? 'selected' : '' ?>>
-                                        Hybrid
-                                    </option>
+									<option value="Hybrid" <?= ($_GET['job_type'] ?? '') == 'Hybrid' ? 'selected' : '' ?>>
+										Hybrid
+									</option>
 
-                                    <option value="Part-time" <?= ($_GET['job_type'] ?? '') == 'Part-time' ? 'selected' : '' ?>>
-                                        Part-time
-                                    </option>
-                                </select>
-                            </div>
+									<option value="Part-time" <?= ($_GET['job_type'] ?? '') == 'Part-time' ? 'selected' : '' ?>>
+										Part-time
+									</option>
+								</select>
+							</div>
 
-                            <!-- Lọc kinh nghiệm -->
-                            <div class="col-12 col-sm-6 col-md-3">
-                                <label class="form-label text-white-50 small fw-semibold mb-1">
-                                    Kinh Nghiệm
-                                </label>
+							<!-- Lọc kinh nghiệm -->
+							<div class="col-12 col-sm-6 col-md-3">
+								<label class="form-label text-white-50 small fw-semibold mb-1">
+									Kinh Nghiệm
+								</label>
 
-                                <select name="experience" class="form-select border-0 py-2 small text-dark fw-semibold">
+								<select name="experience" class="form-select border-0 py-2 small text-dark fw-semibold">
 
-                                    <option value="">Tất cả kinh nghiệm</option>
+									<option value="">Tất cả kinh nghiệm</option>
 
-                                    <option value="0" <?= ($_GET['experience'] ?? '') === '0' ? 'selected' : '' ?>>
-                                        Không yêu cầu kinh nghiệm
-                                    </option>
+									<option value="0" <?= ($_GET['experience'] ?? '') === '0' ? 'selected' : '' ?>>
+										Không yêu cầu kinh nghiệm
+									</option>
 
-                                    <option value="1-3" <?= ($_GET['experience'] ?? '') === '1-3' ? 'selected' : '' ?>>
-                                        1 - 3 năm
-                                    </option>
+									<option value="1-3" <?= ($_GET['experience'] ?? '') === '1-3' ? 'selected' : '' ?>>
+										1 - 3 năm
+									</option>
 
-                                    <option value="3-5" <?= ($_GET['experience'] ?? '') === '3-5' ? 'selected' : '' ?>>
-                                        3 - 5 năm
-                                    </option>
+									<option value="3-5" <?= ($_GET['experience'] ?? '') === '3-5' ? 'selected' : '' ?>>
+										3 - 5 năm
+									</option>
 
-                                    <option value="5+" <?= ($_GET['experience'] ?? '') === '5+' ? 'selected' : '' ?>>
-                                        Trên 5 năm
-                                    </option>
+									<option value="5+" <?= ($_GET['experience'] ?? '') === '5+' ? 'selected' : '' ?>>
+										Trên 5 năm
+									</option>
 
-                                </select>
-                            </div>
+								</select>
+							</div>
 
-                            <!-- Lọc thời gian đăng tin -->
-                            <div class="col-12 col-sm-6 col-md-2">
-                                <label class="form-label text-white-50 small fw-semibold mb-1">Thời Gian</label>
-                                <select name="posted_date" class="form-select border-0 py-2 small text-dark fw-semibold">
-                                    <option value="">Mọi thời gian</option>
-                                    <option value="24h" <?= (isset($_GET['posted_date']) && $_GET['posted_date'] == '24h') ? 'selected' : '' ?>>Trong 24 giờ</option>
-                                    <option value="1week" <?= (isset($_GET['posted_date']) && $_GET['posted_date'] == '1week') ? 'selected' : '' ?>>Trong 1 tuần</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
+							<!-- Lọc thời gian đăng tin -->
+							<div class="col-12 col-sm-6 col-md-2">
+								<label class="form-label text-white-50 small fw-semibold mb-1">Thời Gian</label>
+								<select name="posted_date" class="form-select border-0 py-2 small text-dark fw-semibold">
+									<option value="">Mọi thời gian</option>
+									<option value="24h" <?= (isset($_GET['posted_date']) && $_GET['posted_date'] == '24h') ? 'selected' : '' ?>>Trong 24 giờ</option>
+									<option value="1week" <?= (isset($_GET['posted_date']) && $_GET['posted_date'] == '1week') ? 'selected' : '' ?>>Trong 1 tuần</option>
+								</select>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
 
-    </div>
+	</div>
 </section>
 
 
 <!-- 2. VIỆC LÀM NỔI BẬT -->
 <section class="py-5 bg-light">
 
-    <div class="container">
+	<div class="container">
 
-        <div class="mb-4">
+		<div class="mb-4">
 
-            <span class="badge bg-primary-blue mb-2 px-3 py-2">
-                Dành Cho Bạn
-            </span>
+			<span class="badge bg-primary-blue mb-2 px-3 py-2">
+				Dành Cho Bạn
+			</span>
 
-            <h2 class="fw-bold">
-                Việc Làm Nổi Bật
-            </h2>
+			<h2 class="fw-bold">
+				Việc Làm Nổi Bật
+			</h2>
 
-        </div>
+		</div>
 
-        <div class="row g-4">
+		<div class="row g-4">
 
-            <!-- Sẽ lập trình vòng lặp để hiển thị từ DB sau này -->
+			<!-- Sẽ lập trình vòng lặp để hiển thị từ DB sau này -->
 
-            <?php
+			<?php
 
-            foreach ($jobs as $job):
+			foreach ($jobs as $job):
 
-            ?>
+			?>
 
-            <div class="col-12 col-md-6 col-lg-3">
+			<div class="col-12 col-md-6 col-lg-3">
 
-                <div class="card h-100 border-0 shadow-sm card-hover p-4 d-flex flex-column justify-content-between">
+				<div class="card h-100 border-0 shadow-sm card-hover p-4 d-flex flex-column justify-content-between">
 
-                    <div>
+					<div>
 
-                        <!-- Logo & Tên công ty -->
+						<!-- Logo & Tên công ty -->
 
-                        <div class="d-flex align-items-center mb-3">
+						<div class="d-flex align-items-center mb-3">
 
-                            <div class="bg-light rounded p-2 me-3"
-                                 style="width: 50px; height: 50px; display: flex; align-items: center; justify-content: center;">
+							<div class="bg-light rounded p-2 me-3"
+								 style="width: 50px; height: 50px; display: flex; align-items: center; justify-content: center;">
 
-                                <i class="fa-solid fa-briefcase text-secondary fs-4"></i>
+								<i class="fa-solid fa-briefcase text-secondary fs-4"></i>
 
-                            </div>
+							</div>
 
-                            <div class="overflow-hidden">
+							<div class="overflow-hidden">
 
-                                <h6 class="fw-bold mb-0 text-truncate">
-                                    <?= htmlspecialchars($job['TieuDe']) ?>
-                                </h6>
+								<h6 class="fw-bold mb-0 text-truncate">
+									<?= htmlspecialchars($job['TieuDe']) ?>
+								</h6>
 
-                                <small class="text-muted text-truncate d-block">
-                                    <?= htmlspecialchars($job['TenCongTy']) ?>
-                                </small>
+								<small class="text-muted text-truncate d-block">
+									<?= htmlspecialchars($job['TenCongTy']) ?>
+								</small>
 
-                            </div>
+							</div>
 
-                        </div>
+						</div>
 
-                        <!-- Thông tin phụ -->
+						<!-- Thông tin phụ -->
 
-                        <div class="mb-3">
+						<div class="mb-3">
 
-                            <div class="small text-secondary mb-1">
-                                <i class="fa-solid fa-location-dot me-2 text-primary-blue"></i>
-                                <?= htmlspecialchars($job['DiaChiLamViec']) ?>
-                            </div>
+							<div class="small text-secondary mb-1">
+								<i class="fa-solid fa-location-dot me-2 text-primary-blue"></i>
+								<?= htmlspecialchars($job['DiaChiLamViec']) ?>
+							</div>
 
-                            <div class="small fw-semibold text-success">
-                                <i class="fa-solid fa-money-bill-wave me-2"></i>
-                                <?= number_format($job['MucLuong'], 0, ',', '.') ?> VNĐ
-                            </div>
+							<div class="small fw-semibold text-success">
+								<i class="fa-solid fa-money-bill-wave me-2"></i>
+								<?= number_format($job['MucLuong'], 0, ',', '.') ?> VNĐ
+							</div>
 
-                        </div>
+						</div>
 
-                        <p class="small text-muted mb-4 line-clamp-3">
-                            <?= htmlspecialchars($job['MoTaCongViec']) ?>
-                        </p>
+						<p class="small text-muted mb-4 line-clamp-3">
+							<?= htmlspecialchars($job['MoTaCongViec']) ?>
+						</p>
 
-                    </div>
+					</div>
 
-                    <!-- Nút hành động -->
+					<!-- Nút hành động -->
 
-                    <div class="row g-2">
+					<div class="row g-2">
 
-                        <div class="col-6">
+						<div class="col-6">
 
-                            <a href="<?= $baseUrl ?>/index.php?route=jobs/detail&maTinTuyenDung=<?= urlencode($job['MaTinTuyenDung']) ?>"
-                               class="btn btn-outline-primary btn-sm w-100 py-2">
+							<a href="<?= $baseUrl ?>/index.php?route=jobs/detail&maTinTuyenDung=<?= urlencode($job['MaTinTuyenDung']) ?>"
+							   class="btn btn-outline-primary btn-sm w-100 py-2">
 
-                                Chi Tiết
+								Chi Tiết
 
-                            </a>
+							</a>
 
-                        </div>
+						</div>
 
-                        <div class="col-6">
+						<div class="col-6">
 
-                            <!-- Gọi hàm kiểm tra quyền khi ứng tuyển -->
-                            <?php if (isset($_SESSION['user_id'])): ?>
+							<!-- Gọi hàm kiểm tra quyền khi ứng tuyển -->
+							<?php if (isset($_SESSION['user_id'])): ?>
 
-                                <a href="<?= $baseUrl ?>/index.php?route=jobs/apply&maTinTuyenDung=<?= urlencode($job['MaTinTuyenDung']) ?>"
-                                class="btn btn-primary-blue btn-sm w-100 py-2">
-                                    Ứng Tuyển
-                                </a>
+								<a href="<?= $baseUrl ?>/index.php?route=jobs/apply&maTinTuyenDung=<?= urlencode($job['MaTinTuyenDung']) ?>"
+								class="btn btn-primary-blue btn-sm w-100 py-2">
+									Ứng Tuyển
+								</a>
 
-                            <?php else: ?>
+							<?php else: ?>
 
-                                <button type="button"
-                                        class="btn btn-primary-blue btn-sm w-100 py-2 btn-apply">
-                                    Ứng Tuyển
-                                </button>
+								<button type="button"
+										class="btn btn-primary-blue btn-sm w-100 py-2 btn-apply">
+									Ứng Tuyển
+								</button>
 
-                            <?php endif; ?>
+							<?php endif; ?>
 
-                        </div>
+						</div>
 
-                    </div>
+					</div>
 
-                </div>
+				</div>
 
-            </div>
+			</div>
 
-            <?php endforeach; ?>
+			<?php endforeach; ?>
 
-        </div>
+		</div>
 
-    </div>
+	</div>
 
 </section>
 
@@ -388,95 +388,95 @@ $role = $_SESSION['user_role'] ?? 0;
 
 <section class="py-5 bg-white">
 
-    <div class="container">
+	<div class="container">
 
-        <?php if (!isset($_SESSION['user_id'])): ?>
+		<?php if (!isset($_SESSION['user_id'])): ?>
 
-            <!-- Banner đăng ký nhanh -->
+			<!-- Banner đăng ký nhanh -->
 
-            <div class="p-5 rounded-4 text-white mb-5 d-flex align-items-center justify-content-between flex-wrap gap-4"
-                style="background: linear-gradient(135deg, #0b2239 0%, #1a3c5c 100%);">
+			<div class="p-5 rounded-4 text-white mb-5 d-flex align-items-center justify-content-between flex-wrap gap-4"
+				style="background: linear-gradient(135deg, #0b2239 0%, #1a3c5c 100%);">
 
-                <div>
+				<div>
 
-                    <h3 class="fw-bold mb-2">
-                        Bạn Đã Sẵn Sàng Nâng Tầm Sự Nghiệp?
-                    </h3>
+					<h3 class="fw-bold mb-2">
+						Bạn Đã Sẵn Sàng Nâng Tầm Sự Nghiệp?
+					</h3>
 
-                    <p class="mb-0 text-white-50">
-                        Tạo tài khoản ngay hôm nay để nhận thông báo từ nhà tuyển dụng tốt nhất!
-                    </p>
+					<p class="mb-0 text-white-50">
+						Tạo tài khoản ngay hôm nay để nhận thông báo từ nhà tuyển dụng tốt nhất!
+					</p>
 
-                </div>
+				</div>
 
-                <a href="<?= $baseUrl ?>/index.php?route=auth/register"
-                class="btn btn-warning fw-bold px-4 py-3 text-dark shadow">
+				<a href="<?= $baseUrl ?>/index.php?route=auth/register"
+				class="btn btn-warning fw-bold px-4 py-3 text-dark shadow">
 
-                    Đăng Ký Ngay
+					Đăng Ký Ngay
 
-                </a>
+				</a>
 
-            </div>
+			</div>
 
-        <?php endif; ?>
+		<?php endif; ?>
 
-        <div class="mb-4 text-center text-md-start">
+		<div class="mb-4 text-center text-md-start">
 
-            <h2 class="fw-bold">
-                Các Công Ty Hàng Đầu
-            </h2>
+			<h2 class="fw-bold">
+				Các Công Ty Hàng Đầu
+			</h2>
 
-            <p class="text-muted">
-                Nhà tuyển dụng uy tín hàng đầu trong và ngoài nước đang săn đón bạn.
-            </p>
+			<p class="text-muted">
+				Nhà tuyển dụng uy tín hàng đầu trong và ngoài nước đang săn đón bạn.
+			</p>
 
-        </div>
+		</div>
 
-        <!-- Danh sách công ty -->
+		<!-- Danh sách công ty -->
 
-        <div class="row g-4 justify-content-center">
+		<div class="row g-4 justify-content-center">
 
-            <?php
+			<?php
 
-            foreach ($companies as $comp):
+			foreach ($companies as $comp):
 
-            ?>
+			?>
 
-            <div class="col-12 col-sm-6 col-lg-3">
+			<div class="col-12 col-sm-6 col-lg-3">
 
-                <div class="card h-100 border-0 shadow-sm p-4 text-center card-hover">
+				<div class="card h-100 border-0 shadow-sm p-4 text-center card-hover">
 
-                    <div class="bg-light rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center"
-                         style="width: 70px; height: 70px;">
+					<div class="bg-light rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center"
+						 style="width: 70px; height: 70px;">
 
-                        <i class="fa-solid fa-building text-primary-blue fs-2"></i>
+						<i class="fa-solid fa-building text-primary-blue fs-2"></i>
 
-                    </div>
+					</div>
 
-                    <h5 class="fw-bold mb-1">
-                        <?= htmlspecialchars($comp['TenCongTy'] ?? '') ?>
-                    </h5>
+					<h5 class="fw-bold mb-1">
+						<?= htmlspecialchars($comp['TenCongTy'] ?? '') ?>
+					</h5>
 
-                    <span class="badge bg-light text-primary-blue mb-2">
-                        <?= htmlspecialchars($comp['LinhVuc'] ?? '') ?>
-                    </span>
+					<span class="badge bg-light text-primary-blue mb-2">
+						<?= htmlspecialchars($comp['LinhVuc'] ?? '') ?>
+					</span>
 
-                    <p class="small text-muted mb-0">
-                        <?= htmlspecialchars($comp['MoTa'] ?? '') ?>
-                    </p>
-                    <small class="text-muted">
-                        <?= (int)($comp['SoLuongTin'] ?? 0) ?> tin tuyển dụng
-                    </small>
+					<p class="small text-muted mb-0">
+						<?= htmlspecialchars($comp['MoTa'] ?? '') ?>
+					</p>
+					<small class="text-muted">
+						<?= (int)($comp['SoLuongTin'] ?? 0) ?> tin tuyển dụng
+					</small>
 
-                </div>
+				</div>
 
-            </div>
+			</div>
 
-            <?php endforeach; ?>
+			<?php endforeach; ?>
 
-        </div>
+		</div>
 
-    </div>
+	</div>
 
 </section>
 
@@ -485,110 +485,110 @@ $role = $_SESSION['user_role'] ?? 0;
 
 <section class="py-5 bg-light">
 
-    <div class="container">
+	<div class="container">
 
-        <div class="text-center mb-5">
+		<div class="text-center mb-5">
 
-            <h2 class="fw-bold">
-                Ngành Nghề Phổ Biến
-            </h2>
+			<h2 class="fw-bold">
+				Ngành Nghề Phổ Biến
+			</h2>
 
-            <p class="text-muted">
-                Khám phá các vị trí công việc theo từng nhóm lĩnh vực chuyên môn.
-            </p>
+			<p class="text-muted">
+				Khám phá các vị trí công việc theo từng nhóm lĩnh vực chuyên môn.
+			</p>
 
-        </div>
+		</div>
 
-        <div class="row g-3">
+		<div class="row g-3">
 
-            <?php
-            $icons = [
-                'Công nghệ thông tin' => 'fa-laptop-code',
-                'Marketing' => 'fa-bullhorn',
-                'Tài chính / Kế toán' => 'fa-coins',
-                'Kinh doanh / Bán hàng' => 'fa-handshake',
-                'Thiết kế' => 'fa-pen-nib',
-                'Nhân sự' => 'fa-users',
-                'Chăm sóc khách hàng' => 'fa-headset',
-                'Logistics / Xuất nhập khẩu' => 'fa-truck-fast',
-                'Kỹ thuật / Cơ khí' => 'fa-gears',
-                'Y tế / Dược' => 'fa-kit-medical'
-            ];
-                
-            foreach ($categories as $cat):
+			<?php
+			$icons = [
+				'Công nghệ thông tin' => 'fa-laptop-code',
+				'Marketing' => 'fa-bullhorn',
+				'Tài chính / Kế toán' => 'fa-coins',
+				'Kinh doanh / Bán hàng' => 'fa-handshake',
+				'Thiết kế' => 'fa-pen-nib',
+				'Nhân sự' => 'fa-users',
+				'Chăm sóc khách hàng' => 'fa-headset',
+				'Logistics / Xuất nhập khẩu' => 'fa-truck-fast',
+				'Kỹ thuật / Cơ khí' => 'fa-gears',
+				'Y tế / Dược' => 'fa-kit-medical'
+			];
+				
+			foreach ($categories as $cat):
 
-                            $icon = $icons[$cat['TenDanhMuc']] ?? 'fa-briefcase';
-            ?>
+							$icon = $icons[$cat['TenDanhMuc']] ?? 'fa-briefcase';
+			?>
 
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+			<div class="col-12 col-sm-6 col-md-4 col-lg-3">
 
-                <div class="card border-0 shadow-sm p-3 card-hover d-flex flex-row align-items-center">
+				<div class="card border-0 shadow-sm p-3 card-hover d-flex flex-row align-items-center">
 
-                    <div class="bg-primary-blue text-white rounded p-3 me-3">
+					<div class="bg-primary-blue text-white rounded p-3 me-3">
 
-                        <i class="fa-solid <?= $icon ?> fs-4"></i>
+						<i class="fa-solid <?= $icon ?> fs-4"></i>
 
-                    </div>
+					</div>
 
-                    <div>
+					<div>
 
-                        <h6 class="fw-bold mb-0">
-                            <?= htmlspecialchars($cat['TenDanhMuc']) ?>
-                        </h6>
+						<h6 class="fw-bold mb-0">
+							<?= htmlspecialchars($cat['TenDanhMuc']) ?>
+						</h6>
 
-                        <small class="text-muted">
-                            <?= $cat['SoLuongTin'] ?> việc làm
-                        </small>
+						<small class="text-muted">
+							<?= $cat['SoLuongTin'] ?> việc làm
+						</small>
 
-                    </div>
+					</div>
 
-                </div>
+				</div>
 
-            </div>
+			</div>
 
-            <?php endforeach; ?>
+			<?php endforeach; ?>
 
-        </div>
+		</div>
 
-        <!-- Đường kẻ phân cách mờ nhẹ căn giữa tuyệt đối -->
+		<!-- Đường kẻ phân cách mờ nhẹ căn giữa tuyệt đối -->
 
-        <div class="col-12 my-4">
+		<div class="col-12 my-4">
 
-            <hr class="border-secondary opacity-25 w-25 mx-auto">
+			<hr class="border-secondary opacity-25 w-25 mx-auto">
 
-        </div>
+		</div>
 
-        <!-- Câu trích dẫn -->
+		<!-- Câu trích dẫn -->
 
-        <div class="row mt-5 text-center g-0 justify-content-center">
+		<div class="row mt-5 text-center g-0 justify-content-center">
 
-            <div class="col-12 col-lg-8 mb-4">
+			<div class="col-12 col-lg-8 mb-4">
 
-                <blockquote class="blockquote fs-6 text-secondary fst-italic">
+				<blockquote class="blockquote fs-6 text-secondary fst-italic">
 
-                    <i class="fa-solid fa-quote-left text-primary-blue me-2"></i>
+					<i class="fa-solid fa-quote-left text-primary-blue me-2"></i>
 
-                    Hàng triệu ứng viên đã tìm thấy bến đỗ sự nghiệp mơ ước thông qua các bộ lọc việc làm thông minh của JobHub!
+					Hàng triệu ứng viên đã tìm thấy bến đỗ sự nghiệp mơ ước thông qua các bộ lọc việc làm thông minh của JobHub!
 
-                </blockquote>
+				</blockquote>
 
-            </div>
+			</div>
 
-            <div class="col-12 col-lg-8">
+			<div class="col-12 col-lg-8">
 
-                <blockquote class="blockquote fs-6 text-secondary fst-italic">
+				<blockquote class="blockquote fs-6 text-secondary fst-italic">
 
-                    <i class="fa-solid fa-quote-left text-primary-blue me-2"></i>
+					<i class="fa-solid fa-quote-left text-primary-blue me-2"></i>
 
-                    Nền tảng hỗ trợ nhà tuyển dụng tiếp cận đúng tài năng công nghệ chất lượng cao nhanh gấp 2 lần.
+					Nền tảng hỗ trợ nhà tuyển dụng tiếp cận đúng tài năng công nghệ chất lượng cao nhanh gấp 2 lần.
 
-                </blockquote>
+				</blockquote>
 
-            </div>
+			</div>
 
-        </div>
+		</div>
 
-    </div>
+	</div>
 
 </section>
 
@@ -596,78 +596,78 @@ $role = $_SESSION['user_role'] ?? 0;
 <!-- ==================== MODAL THÔNG BÁO YÊU CẦU ĐĂNG NHẬP ==================== -->
 
 <div class="modal fade"
-     id="applyNoticeModal"
-     tabindex="-1"
-     aria-hidden="true">
+	 id="applyNoticeModal"
+	 tabindex="-1"
+	 aria-hidden="true">
 
-    <div class="modal-dialog modal-dialog-centered">
+	<div class="modal-dialog modal-dialog-centered">
 
-        <div class="modal-content border-0 shadow">
+		<div class="modal-content border-0 shadow">
 
-            <div class="modal-header bg-primary-blue text-white">
+			<div class="modal-header bg-primary-blue text-white">
 
-                <h5 class="modal-title fw-bold">
+				<h5 class="modal-title fw-bold">
 
-                    <i class="fa-solid fa-circle-exclamation me-2 text-warning"></i>
+					<i class="fa-solid fa-circle-exclamation me-2 text-warning"></i>
 
-                    Yêu cầu đăng nhập
+					Yêu cầu đăng nhập
 
-                </h5>
+				</h5>
 
-                <button type="button"
-                        class="btn-close btn-close-white"
-                        data-bs-dismiss="modal"
-                        aria-label="Close">
+				<button type="button"
+						class="btn-close btn-close-white"
+						data-bs-dismiss="modal"
+						aria-label="Close">
 
-                </button>
+				</button>
 
-            </div>
+			</div>
 
-            <div class="modal-body text-center p-4">
+			<div class="modal-body text-center p-4">
 
-                <div class="text-danger fs-1 mb-3">
+				<div class="text-danger fs-1 mb-3">
 
-                    <i class="fa-solid fa-user-shield"></i>
+					<i class="fa-solid fa-user-shield"></i>
 
-                </div>
+				</div>
 
-                <h5 class="fw-bold text-dark mb-2">
+				<h5 class="fw-bold text-dark mb-2">
 
-                    Chức năng dành cho Ứng viên
+					Chức năng dành cho Ứng viên
 
-                </h5>
+				</h5>
 
-                <p class="text-secondary small">
+				<p class="text-secondary small">
 
-                    Vui lòng đăng nhập bằng tài khoản
-                    <strong>Ứng viên</strong>
-                    để có thể ứng tuyển trực tiếp vào các bài tuyển dụng này nhé!
+					Vui lòng đăng nhập bằng tài khoản
+					<strong>Ứng viên</strong>
+					để có thể ứng tuyển trực tiếp vào các bài tuyển dụng này nhé!
 
-                </p>
+				</p>
 
-            </div>
+			</div>
 
-            <div class="modal-footer justify-content-center border-0 gap-2 pb-4">
+			<div class="modal-footer justify-content-center border-0 gap-2 pb-4">
 
-                <a href="<?= $baseUrl ?>/index.php?route=auth/login"
-                   class="btn btn-primary-blue px-4 fw-semibold">
+				<a href="<?= $baseUrl ?>/index.php?route=auth/login"
+				   class="btn btn-primary-blue px-4 fw-semibold">
 
-                    Đăng Nhập
+					Đăng Nhập
 
-                </a>
+				</a>
 
-                <a href="<?= $baseUrl ?>/index.php?route=auth/register"
-                   class="btn btn-outline-secondary px-4 fw-semibold">
+				<a href="<?= $baseUrl ?>/index.php?route=auth/register"
+				   class="btn btn-outline-secondary px-4 fw-semibold">
 
-                    Đăng Ký
+					Đăng Ký
 
-                </a>
+				</a>
 
-            </div>
+			</div>
 
-        </div>
+		</div>
 
-    </div>
+	</div>
 
 </div>
 
@@ -678,27 +678,27 @@ $role = $_SESSION['user_role'] ?? 0;
 
 document.addEventListener("DOMContentLoaded", function() {
 
-    // Tìm tất cả các nút ứng tuyển trên trang
+	// Tìm tất cả các nút ứng tuyển trên trang
 
-    const applyButtons = document.querySelectorAll('.btn-apply');
+	const applyButtons = document.querySelectorAll('.btn-apply');
 
-    const applyModal = new bootstrap.Modal(
-        document.getElementById('applyNoticeModal')
-    );
+	const applyModal = new bootstrap.Modal(
+		document.getElementById('applyNoticeModal')
+	);
 
-    applyButtons.forEach(button => {
+	applyButtons.forEach(button => {
 
-        button.addEventListener('click', function(e) {
+		button.addEventListener('click', function(e) {
 
-            e.preventDefault();
+			e.preventDefault();
 
-            // Kích hoạt hiển thị Modal thông báo
+			// Kích hoạt hiển thị Modal thông báo
 
-            applyModal.show();
+			applyModal.show();
 
-        });
+		});
 
-    });
+	});
 
 });
 
@@ -707,31 +707,31 @@ document.addEventListener("DOMContentLoaded", function() {
 
 <style>
 
-    .card-hover {
+	.card-hover {
 
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
+		transition: transform 0.3s ease, box-shadow 0.3s ease;
 
-    }
+	}
 
-    .card-hover:hover {
+	.card-hover:hover {
 
-        transform: translateY(-5px);
+		transform: translateY(-5px);
 
-        box-shadow: 0 10px 20px rgba(11, 34, 57, 0.1) !important;
+		box-shadow: 0 10px 20px rgba(11, 34, 57, 0.1) !important;
 
-    }
+	}
 
-    .line-clamp-3 {
+	.line-clamp-3 {
 
-        display: -webkit-box;
+		display: -webkit-box;
 
-        -webkit-line-clamp: 3;
+		-webkit-line-clamp: 3;
 
-        -webkit-box-orient: vertical;
+		-webkit-box-orient: vertical;
 
-        overflow: hidden;
+		overflow: hidden;
 
-    }
+	}
 
 </style>
 
@@ -742,127 +742,127 @@ document.addEventListener("DOMContentLoaded", function() {
 
 <section class="employer-hero">
 
-    <div class="container">
+	<div class="container">
 
-        <div class="row align-items-center">
+		<div class="row align-items-center">
 
-            <!-- Nội dung -->
+			<!-- Nội dung -->
 
-            <div class="col-lg-7">
+			<div class="col-lg-7">
 
-                <span class="employer-badge">
-                    DÀNH CHO NHÀ TUYỂN DỤNG
-                </span>
+				<span class="employer-badge">
+					DÀNH CHO NHÀ TUYỂN DỤNG
+				</span>
 
-                <h1 class="employer-title">
-                    Tìm kiếm nhân tài
-                    <br>
-                    <span>phù hợp với doanh nghiệp</span>
-                </h1>
+				<h1 class="employer-title">
+					Tìm kiếm nhân tài
+					<br>
+					<span>phù hợp với doanh nghiệp</span>
+				</h1>
 
-                <p class="employer-description">
-                    Đăng tin tuyển dụng, tiếp cận ứng viên tiềm năng
-                    và xây dựng đội ngũ nhân sự chất lượng cho doanh nghiệp.
-                </p>
+				<p class="employer-description">
+					Đăng tin tuyển dụng, tiếp cận ứng viên tiềm năng
+					và xây dựng đội ngũ nhân sự chất lượng cho doanh nghiệp.
+				</p>
 
-                <div class="d-flex gap-3 flex-wrap">
+				<div class="d-flex gap-3 flex-wrap">
 
-                    <a href="<?= $baseUrl ?>/index.php?route=jobs/create"
-                       class="btn btn-warning btn-lg px-4 fw-bold">
+					<a href="<?= $baseUrl ?>/index.php?route=jobs/create"
+					   class="btn btn-warning btn-lg px-4 fw-bold">
 
-                        <i class="fa-solid fa-plus me-2"></i>
+						<i class="fa-solid fa-plus me-2"></i>
 
-                        Đăng tin tuyển dụng
+						Đăng tin tuyển dụng
 
-                    </a>
+					</a>
 
-                    <a href="<?= $baseUrl ?>/index.php?route=jobs/manage"
-                       class="btn btn-outline-light btn-lg px-4">
+					<a href="<?= $baseUrl ?>/index.php?route=jobs/manage"
+					   class="btn btn-outline-light btn-lg px-4">
 
-                        Quản lý tin đăng
+						Quản lý tin đăng
 
-                    </a>
+					</a>
 
-                </div>
+				</div>
 
-            </div>
-
-
-            <!-- Khối minh họa -->
-
-            <div class="col-lg-5 mt-5 mt-lg-0">
-
-                <div class="employer-dashboard-card">
-
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-
-                        <div>
-
-                            <small class="text-muted">
-                                TỔNG QUAN TUYỂN DỤNG
-                            </small>
-
-                            <h4 class="fw-bold mb-0">
-                                Hoạt động của bạn
-                            </h4>
-
-                        </div>
-
-                        <div class="dashboard-icon">
-                            <i class="fa-solid fa-chart-line"></i>
-                        </div>
-
-                    </div>
+			</div>
 
 
-                    <div class="row g-3">
+			<!-- Khối minh họa -->
 
-                        <div class="col-6">
+			<div class="col-lg-5 mt-5 mt-lg-0">
 
-                            <div class="stat-box">
+				<div class="employer-dashboard-card">
 
-                                <i class="fa-solid fa-briefcase text-primary-blue"></i>
+					<div class="d-flex justify-content-between align-items-center mb-4">
 
-                                <h3 class="fw-bold mb-0">
-                                    <?= $totalJobs ?? 0 ?>
-                                </h3>
+						<div>
 
-                                <small class="text-muted">
-                                    Tin tuyển dụng
-                                </small>
+							<small class="text-muted">
+								TỔNG QUAN TUYỂN DỤNG
+							</small>
 
-                            </div>
+							<h4 class="fw-bold mb-0">
+								Hoạt động của bạn
+							</h4>
 
-                        </div>
+						</div>
+
+						<div class="dashboard-icon">
+							<i class="fa-solid fa-chart-line"></i>
+						</div>
+
+					</div>
 
 
-                        <div class="col-6">
+					<div class="row g-3">
 
-                            <div class="stat-box">
+						<div class="col-6">
 
-                                <i class="fa-solid fa-users text-success"></i>
+							<div class="stat-box">
 
-                                <h3 class="fw-bold mb-0">
-                                    <?= $totalApplications ?? 0 ?>
-                                </h3>
+								<i class="fa-solid fa-briefcase text-primary-blue"></i>
 
-                                <small class="text-muted">
-                                    Ứng viên
-                                </small>
+								<h3 class="fw-bold mb-0">
+									<?= $totalJobs ?? 0 ?>
+								</h3>
 
-                            </div>
+								<small class="text-muted">
+									Tin tuyển dụng
+								</small>
 
-                        </div>
+							</div>
 
-                    </div>
+						</div>
 
-                </div>
 
-            </div>
+						<div class="col-6">
 
-        </div>
+							<div class="stat-box">
 
-    </div>
+								<i class="fa-solid fa-users text-success"></i>
+
+								<h3 class="fw-bold mb-0">
+									<?= $totalApplications ?? 0 ?>
+								</h3>
+
+								<small class="text-muted">
+									Ứng viên
+								</small>
+
+							</div>
+
+						</div>
+
+					</div>
+
+				</div>
+
+			</div>
+
+		</div>
+
+	</div>
 
 </section>
 
@@ -871,128 +871,128 @@ document.addEventListener("DOMContentLoaded", function() {
 
 <section class="py-5 bg-light">
 
-    <div class="container">
+	<div class="container">
 
-        <div class="section-heading mb-4">
+		<div class="section-heading mb-4">
 
-            <span>
-                QUẢN LÝ TUYỂN DỤNG
-            </span>
+			<span>
+				QUẢN LÝ TUYỂN DỤNG
+			</span>
 
-            <h2>
-                Mọi thứ bạn cần để tuyển dụng hiệu quả
-            </h2>
+			<h2>
+				Mọi thứ bạn cần để tuyển dụng hiệu quả
+			</h2>
 
-        </div>
-
-
-        <div class="row g-4">
+		</div>
 
 
-            <!-- Đăng tin -->
-
-            <div class="col-lg-4">
-
-                <a href="<?= $baseUrl ?>/index.php?route=jobs/create"
-                   class="feature-card">
-
-                    <div class="feature-number">
-                        01
-                    </div>
-
-                    <div>
-
-                        <h4>
-                            Đăng tin tuyển dụng
-                        </h4>
-
-                        <p>
-                            Tạo tin tuyển dụng và tiếp cận những ứng viên
-                            phù hợp với nhu cầu của doanh nghiệp.
-                        </p>
-
-                        <span class="feature-link">
-                            Đăng tin ngay
-                            <i class="fa-solid fa-arrow-right ms-2"></i>
-                        </span>
-
-                    </div>
-
-                </a>
-
-            </div>
+		<div class="row g-4">
 
 
-            <!-- Quản lý ứng viên -->
+			<!-- Đăng tin -->
 
-            <div class="col-lg-4">
+			<div class="col-lg-4">
 
-                <a href="<?= $baseUrl ?>/index.php?route=applications/manage"
-                   class="feature-card">
+				<a href="<?= $baseUrl ?>/index.php?route=jobs/create"
+				   class="feature-card">
 
-                    <div class="feature-number">
-                        02
-                    </div>
+					<div class="feature-number">
+						01
+					</div>
 
-                    <div>
+					<div>
 
-                        <h4>
-                            Quản lý ứng viên
-                        </h4>
+						<h4>
+							Đăng tin tuyển dụng
+						</h4>
 
-                        <p>
-                            Theo dõi hồ sơ, đánh giá ứng viên và quản lý
-                            toàn bộ quá trình tuyển dụng.
-                        </p>
+						<p>
+							Tạo tin tuyển dụng và tiếp cận những ứng viên
+							phù hợp với nhu cầu của doanh nghiệp.
+						</p>
 
-                        <span class="feature-link">
-                            Xem ứng viên
-                            <i class="fa-solid fa-arrow-right ms-2"></i>
-                        </span>
+						<span class="feature-link">
+							Đăng tin ngay
+							<i class="fa-solid fa-arrow-right ms-2"></i>
+						</span>
 
-                    </div>
+					</div>
 
-                </a>
+				</a>
 
-            </div>
+			</div>
 
 
-            <!-- Quản lý tin -->
+			<!-- Quản lý ứng viên -->
 
-            <div class="col-lg-4">
+			<div class="col-lg-4">
 
-                <a href="<?= $baseUrl ?>/index.php?route=jobs/manage"
-                   class="feature-card">
+				<a href="<?= $baseUrl ?>/index.php?route=applications/manage"
+				   class="feature-card">
 
-                    <div class="feature-number">
-                        03
-                    </div>
+					<div class="feature-number">
+						02
+					</div>
 
-                    <div>
+					<div>
 
-                        <h4>
-                            Quản lý tin đăng
-                        </h4>
+						<h4>
+							Quản lý ứng viên
+						</h4>
 
-                        <p>
-                            Chỉnh sửa, cập nhật và theo dõi hiệu quả
-                            các tin tuyển dụng của bạn.
-                        </p>
+						<p>
+							Theo dõi hồ sơ, đánh giá ứng viên và quản lý
+							toàn bộ quá trình tuyển dụng.
+						</p>
 
-                        <span class="feature-link">
-                            Quản lý tin
-                            <i class="fa-solid fa-arrow-right ms-2"></i>
-                        </span>
+						<span class="feature-link">
+							Xem ứng viên
+							<i class="fa-solid fa-arrow-right ms-2"></i>
+						</span>
 
-                    </div>
+					</div>
 
-                </a>
+				</a>
 
-            </div>
+			</div>
 
-        </div>
 
-    </div>
+			<!-- Quản lý tin -->
+
+			<div class="col-lg-4">
+
+				<a href="<?= $baseUrl ?>/index.php?route=jobs/manage"
+				   class="feature-card">
+
+					<div class="feature-number">
+						03
+					</div>
+
+					<div>
+
+						<h4>
+							Quản lý tin đăng
+						</h4>
+
+						<p>
+							Chỉnh sửa, cập nhật và theo dõi hiệu quả
+							các tin tuyển dụng của bạn.
+						</p>
+
+						<span class="feature-link">
+							Quản lý tin
+							<i class="fa-solid fa-arrow-right ms-2"></i>
+						</span>
+
+					</div>
+
+				</a>
+
+			</div>
+
+		</div>
+
+	</div>
 
 </section>
 
@@ -1001,32 +1001,32 @@ document.addEventListener("DOMContentLoaded", function() {
 
 <section class="py-5 bg-white">
 
-    <div class="container">
+	<div class="container">
 
-        <div class="employer-cta">
+		<div class="employer-cta">
 
-            <div>
+			<div>
 
-                <h3 class="fw-bold mb-2">
-                    Đang tìm kiếm nhân tài cho đội ngũ của bạn?
-                </h3>
+				<h3 class="fw-bold mb-2">
+					Đang tìm kiếm nhân tài cho đội ngũ của bạn?
+				</h3>
 
-                <p class="mb-0 text-white-50">
-                    Hãy bắt đầu bằng việc đăng tin tuyển dụng đầu tiên.
-                </p>
+				<p class="mb-0 text-white-50">
+					Hãy bắt đầu bằng việc đăng tin tuyển dụng đầu tiên.
+				</p>
 
-            </div>
+			</div>
 
-            <a href="<?= $baseUrl ?>/index.php?route=jobs/create"
-               class="btn btn-warning fw-bold px-4 py-3">
+			<a href="<?= $baseUrl ?>/index.php?route=jobs/create"
+			   class="btn btn-warning fw-bold px-4 py-3">
 
-                Đăng tin ngay
+				Đăng tin ngay
 
-            </a>
+			</a>
 
-        </div>
+		</div>
 
-    </div>
+	</div>
 
 </section>
 
@@ -1035,284 +1035,284 @@ document.addEventListener("DOMContentLoaded", function() {
 
 .employer-hero {
 
-    background:
-        linear-gradient(
-            110deg,
-            #0b2239 0%,
-            #123d63 65%,
-            #1e5ba6 100%
-        );
+	background:
+		linear-gradient(
+			110deg,
+			#0b2239 0%,
+			#123d63 65%,
+			#1e5ba6 100%
+		);
 
-    padding: 90px 0;
+	padding: 90px 0;
 
-    color: white;
+	color: white;
 
 }
 
 
 .employer-badge {
 
-    display: inline-block;
+	display: inline-block;
 
-    background: rgba(255,255,255,0.12);
+	background: rgba(255,255,255,0.12);
 
-    border: 1px solid rgba(255,255,255,0.25);
+	border: 1px solid rgba(255,255,255,0.25);
 
-    border-radius: 30px;
+	border-radius: 30px;
 
-    padding: 8px 18px;
+	padding: 8px 18px;
 
-    font-size: 13px;
+	font-size: 13px;
 
-    font-weight: 700;
+	font-weight: 700;
 
-    letter-spacing: .5px;
+	letter-spacing: .5px;
 
-    margin-bottom: 22px;
+	margin-bottom: 22px;
 
 }
 
 
 .employer-title {
 
-    font-size: 3.4rem;
+	font-size: 3.4rem;
 
-    line-height: 1.15;
+	line-height: 1.15;
 
-    font-weight: 800;
+	font-weight: 800;
 
-    margin-bottom: 25px;
+	margin-bottom: 25px;
 
 }
 
 
 .employer-title span {
 
-    color: #ffc107;
+	color: #ffc107;
 
 }
 
 
 .employer-description {
 
-    max-width: 570px;
+	max-width: 570px;
 
-    font-size: 1.1rem;
+	font-size: 1.1rem;
 
-    line-height: 1.7;
+	line-height: 1.7;
 
-    color: rgba(255,255,255,.75);
+	color: rgba(255,255,255,.75);
 
-    margin-bottom: 32px;
+	margin-bottom: 32px;
 
 }
 
 
 .employer-dashboard-card {
 
-    background: white;
+	background: white;
 
-    color: #172b4d;
+	color: #172b4d;
 
-    border-radius: 22px;
+	border-radius: 22px;
 
-    padding: 30px;
+	padding: 30px;
 
-    box-shadow: 0 25px 60px rgba(0,0,0,.25);
+	box-shadow: 0 25px 60px rgba(0,0,0,.25);
 
 }
 
 
 .dashboard-icon {
 
-    width: 48px;
+	width: 48px;
 
-    height: 48px;
+	height: 48px;
 
-    border-radius: 14px;
+	border-radius: 14px;
 
-    background: #eaf2fb;
+	background: #eaf2fb;
 
-    color: #1e5ba6;
+	color: #1e5ba6;
 
-    display: flex;
+	display: flex;
 
-    align-items: center;
+	align-items: center;
 
-    justify-content: center;
+	justify-content: center;
 
-    font-size: 20px;
+	font-size: 20px;
 
 }
 
 
 .stat-box {
 
-    background: #f5f7fa;
+	background: #f5f7fa;
 
-    border-radius: 14px;
+	border-radius: 14px;
 
-    padding: 18px;
+	padding: 18px;
 
 }
 
 
 .stat-box i {
 
-    font-size: 20px;
+	font-size: 20px;
 
-    margin-bottom: 8px;
+	margin-bottom: 8px;
 
 }
 
 
 .progress {
 
-    height: 8px;
+	height: 8px;
 
-    border-radius: 20px;
+	border-radius: 20px;
 
 }
 
 
 .section-heading span {
 
-    font-size: 13px;
+	font-size: 13px;
 
-    font-weight: 700;
+	font-weight: 700;
 
-    color: #1e5ba6;
+	color: #1e5ba6;
 
-    letter-spacing: 1px;
+	letter-spacing: 1px;
 
 }
 
 
 .section-heading h2 {
 
-    font-weight: 800;
+	font-weight: 800;
 
-    margin-top: 8px;
+	margin-top: 8px;
 
 }
 
 
 .feature-card {
 
-    display: flex;
+	display: flex;
 
-    gap: 20px;
+	gap: 20px;
 
-    height: 100%;
+	height: 100%;
 
-    padding: 30px;
+	padding: 30px;
 
-    background: white;
+	background: white;
 
-    border-radius: 18px;
+	border-radius: 18px;
 
-    text-decoration: none;
+	text-decoration: none;
 
-    color: #172b4d;
+	color: #172b4d;
 
-    border: 1px solid #e9edf2;
+	border: 1px solid #e9edf2;
 
-    transition: all .25s ease;
+	transition: all .25s ease;
 
 }
 
 
 .feature-card:hover {
 
-    transform: translateY(-5px);
+	transform: translateY(-5px);
 
-    box-shadow: 0 15px 35px rgba(11,34,57,.12);
+	box-shadow: 0 15px 35px rgba(11,34,57,.12);
 
-    color: #172b4d;
+	color: #172b4d;
 
 }
 
 
 .feature-number {
 
-    font-size: 18px;
+	font-size: 18px;
 
-    font-weight: 800;
+	font-weight: 800;
 
-    color: #1e5ba6;
+	color: #1e5ba6;
 
-    min-width: 35px;
+	min-width: 35px;
 
 }
 
 
 .feature-card h4 {
 
-    font-weight: 700;
+	font-weight: 700;
 
-    margin-bottom: 12px;
+	margin-bottom: 12px;
 
 }
 
 
 .feature-card p {
 
-    color: #6c757d;
+	color: #6c757d;
 
-    line-height: 1.6;
+	line-height: 1.6;
 
-    margin-bottom: 20px;
+	margin-bottom: 20px;
 
 }
 
 
 .feature-link {
 
-    color: #1e5ba6;
+	color: #1e5ba6;
 
-    font-weight: 700;
+	font-weight: 700;
 
-    font-size: 14px;
+	font-size: 14px;
 
 }
 
 
 .employer-cta {
 
-    background: linear-gradient(135deg, #0b2239, #1d446c);
+	background: linear-gradient(135deg, #0b2239, #1d446c);
 
-    border-radius: 20px;
+	border-radius: 20px;
 
-    padding: 38px 45px;
+	padding: 38px 45px;
 
-    color: white;
+	color: white;
 
-    display: flex;
+	display: flex;
 
-    justify-content: space-between;
+	justify-content: space-between;
 
-    align-items: center;
+	align-items: center;
 
-    gap: 25px;
+	gap: 25px;
 
 }
 
 
 @media (max-width: 768px) {
 
-    .employer-title {
+	.employer-title {
 
-        font-size: 2.4rem;
+		font-size: 2.4rem;
 
-    }
+	}
 
-    .employer-cta {
+	.employer-cta {
 
-        flex-direction: column;
+		flex-direction: column;
 
-        align-items: flex-start;
+		align-items: flex-start;
 
-    }
+	}
 
 }
 

@@ -2,198 +2,196 @@
 
 require_once __DIR__ . "/../config/db.php";
 
-class CV
-{
-    private $conn;
+class CV {
+	private $conn;
 
-    public function __construct()
-    {
-        global $conn;
-        $this->conn = $conn;
-    }
+	public function __construct() {
+		global $conn;
+		$this->conn = $conn;
+	}
 
-    /**
-     * Tạo mới một CV.
-     *
-     * Sử dụng Prepared Statement để tránh SQL Injection.
-     *
-     * @param array $cvData Thông tin CV cần thêm.
-     * @return bool True nếu thêm thành công, ngược lại False.
-     */
-    public function create(array $cvData)
-    {
-        $sql = "INSERT INTO CV (
-                    MaCV,
-                    MaUngVien,
-                    TieuDe,
-                    KyNang,
-                    SoThich,
-                    MucTieu,
-                    TrangThai,
-                    ViTriMongMuon,
-                    Email,
-                    SDT
-                )
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+	/**
+	 * Tạo mới một CV.
+	 *
+	 * Sử dụng Prepared Statement để tránh SQL Injection.
+	 *
+	 * @param array $cvData Thông tin CV cần thêm.
+	 * @return bool True nếu thêm thành công, ngược lại False.
+	 */
+	public function create(array $cvData) {
+		$sql = "INSERT INTO CV (
+					MaCV,
+					MaUngVien,
+					TieuDe,
+					KyNang,
+					SoThich,
+					MucTieu,
+					TrangThai,
+					ViTriMongMuon,
+					Email,
+					SDT
+				)
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-        $statement = $this->conn->prepare($sql);
+		$statement = $this->conn->prepare($sql);
 
-        $statement->bind_param(
-            "sssssissss",
-            $cvData["maCV"],
-            $cvData["maUngVien"],
-            $cvData["tieuDe"],
-            $cvData["kyNang"],
-            $cvData["soThich"],
-            $cvData["mucTieu"],
-            $cvData["trangThai"],
-            $cvData["viTriMongMuon"],
-            $cvData["email"],
-            $cvData["sdt"]
-        );
+		$statement->bind_param(
+			"sssssissss",
+			$cvData["maCV"],
+			$cvData["maUngVien"],
+			$cvData["tieuDe"],
+			$cvData["kyNang"],
+			$cvData["soThich"],
+			$cvData["mucTieu"],
+			$cvData["trangThai"],
+			$cvData["viTriMongMuon"],
+			$cvData["email"],
+			$cvData["sdt"]
+		);
 
-        return $statement->execute();
-    }
+		return $statement->execute();
+	}
 
-    /**
-     * Lấy danh sách tất cả CV.
-     *
-     * @return mysqli_result
-     */
-    public function getAll()
-    {
-        $sql = "SELECT * FROM CV";
+	/**
+	 * Lấy danh sách tất cả CV.
+	 *
+	 * @return mysqli_result
+	 */
+	public function getAll() {
+		$sql = "SELECT * FROM CV";
 
-        return $this->conn->query($sql);
-    }
+		return $this->conn->query($sql);
+	}
 
-    /**
-     * Lấy thông tin CV theo mã.
-     *
-     * @param string $maCV
-     * @return array|null
-     */
-    public function getById($maCV)
-    {
-        $sql = "SELECT * FROM CV WHERE MaCV = ?";
+	/**
+	 * Lấy thông tin CV theo mã.
+	 *
+	 * @param string $maCV
+	 * @return array|null
+	 */
+	public function getById($maCV) {
+		$sql = "SELECT * FROM CV WHERE MaCV = ?";
 
-        $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param("s", $maCV);
-        $stmt->execute();
+		$stmt = $this->conn->prepare($sql);
+		$stmt->bind_param("s", $maCV);
+		$stmt->execute();
 
-        $result = $stmt->get_result();
+		$result = $stmt->get_result();
 
-        return $result->fetch_assoc();
-    }
+		return $result->fetch_assoc();
+	}
 
-    /**
-     * Cập nhật thông tin CV.
-     *
-     * @param array $cvData Thông tin CV cần cập nhật.
-     * @return bool True nếu cập nhật thành công.
-     */
-    public function update(array $cvData)
-    {
-        $sql = "UPDATE CV
-                SET
-                    TieuDe = ?,
-                    KyNang = ?,
-                    SoThich = ?,
-                    MucTieu = ?,
-                    TrangThai = ?,
-                    ViTriMongMuon = ?,
-                    Email = ?,
-                    SDT = ?
-                WHERE MaCV = ?";
+	/**
+	 * Cập nhật thông tin CV.
+	 *
+	 * @param array $cvData Thông tin CV cần cập nhật.
+	 * @return bool True nếu cập nhật thành công.
+	 */
+	public function update(array $cvData) {
+		$sql = "UPDATE CV
+				SET
+					TieuDe = ?,
+					KyNang = ?,
+					SoThich = ?,
+					MucTieu = ?,
+					TrangThai = ?,
+					ViTriMongMuon = ?,
+					Email = ?,
+					SDT = ?
+				WHERE MaCV = ?";
 
-        $statement = $this->conn->prepare($sql);
+		$statement = $this->conn->prepare($sql);
 
-        $statement->bind_param(
-            "ssssissss",
-            $cvData["tieuDe"],
-            $cvData["kyNang"],
-            $cvData["soThich"],
-            $cvData["mucTieu"],
-            $cvData["trangThai"],
-            $cvData["viTriMongMuon"],
-            $cvData["email"],
-            $cvData["sdt"],
-            $cvData["maCV"]
-        );
+		$statement->bind_param(
+			"ssssissss",
+			$cvData["tieuDe"],
+			$cvData["kyNang"],
+			$cvData["soThich"],
+			$cvData["mucTieu"],
+			$cvData["trangThai"],
+			$cvData["viTriMongMuon"],
+			$cvData["email"],
+			$cvData["sdt"],
+			$cvData["maCV"]
+		);
 
-        return $statement->execute();
-    }
+		return $statement->execute();
+	}
 
-    /**
-     * Xóa một CV theo mã.
-     *
-     * Sử dụng Prepared Statement để đảm bảo an toàn khi xóa dữ liệu.
-     *
-     * @param string $maCV Mã CV cần xóa.
-     * @return bool True nếu xóa thành công, ngược lại False.
-     */
-    public function delete(string $maCV)
-    {
-        $sql = "DELETE FROM CV WHERE MaCV = ?";
+	/**
+	 * Xóa một CV theo mã.
+	 *
+	 * Sử dụng Prepared Statement để đảm bảo an toàn khi xóa dữ liệu.
+	 *
+	 * @param string $maCV Mã CV cần xóa.
+	 * @return bool True nếu xóa thành công, ngược lại False.
+	 */
+	public function delete(string $maCV) {
+		$sql = "DELETE FROM CV WHERE MaCV = ?";
 
-        $statement = $this->conn->prepare($sql);
+		$statement = $this->conn->prepare($sql);
 
-        $statement->bind_param("s", $maCV);
+		$statement->bind_param("s", $maCV);
 
-        return $statement->execute();
-    }
+		return $statement->execute();
+	}
 
-    /**
-     * Cập nhật file CV.
-     *
-     * @param array $fileData
-     * @return bool
-     */
-    public function updateFile(array $fileData)
-    {
-        $sql = "UPDATE CV
-                SET
-                    TenFileCV = ?,
-                    DuongDanFileCV = ?,
-                    LoaiFile = ?
-                WHERE MaCV = ?";
+	/**
+	 * Cập nhật file CV.
+	 *
+	 * @param array $fileData
+	 * @return bool
+	 */
+	public function updateFile(array $fileData) {
+		$sql = "UPDATE CV
+				SET
+					TenFileCV = ?,
+					DuongDanFileCV = ?,
+					LoaiFile = ?
+				WHERE MaCV = ?";
 
-        $statement = $this->conn->prepare($sql);
+		$statement = $this->conn->prepare($sql);
 
-        $statement->bind_param(
-            "ssss",
-            $fileData["tenFileCV"],
-            $fileData["duongDanFileCV"],
-            $fileData["loaiFile"],
-            $fileData["maCV"]
-        );
+		$statement->bind_param(
+			"ssss",
+			$fileData["tenFileCV"],
+			$fileData["duongDanFileCV"],
+			$fileData["loaiFile"],
+			$fileData["maCV"]
+		);
 
-        return $statement->execute();
-    }
-    public function getByUngVien($maUngVien)
-    {
-        $sql = "
-            SELECT *
-            FROM cv
-            WHERE MaUngVien = ?
-            AND TrangThai = 1
-            ORDER BY MaCV DESC
-            LIMIT 1
-        ";
+		return $statement->execute();
+	}
 
-        $stmt = $this->conn->prepare($sql);
+	/**
+	 * Lấy toàn bộ CV thuộc về một ứng viên.
+	 *
+	 * @param string $maUngVien
+	 * @return array
+	 */
+	public function getByCandidate($maUngVien) {
+		$sql = "
+			SELECT *
+			FROM cv
+			WHERE MaUngVien = ?
+			AND TrangThai = 1
+			ORDER BY MaCV DESC
+			LIMIT 1
+		";
 
-        if (!$stmt) {
-            die("Lỗi prepare: " . $this->conn->error);
-        }
+		$stmt = $this->conn->prepare($sql);
 
-        $stmt->bind_param("s", $maUngVien);
+		if (!$stmt) {
+			die("Lỗi prepare: " . $this->conn->error);
+		}
 
-        $stmt->execute();
+		$stmt->bind_param("s", $maUngVien);
 
-        $result = $stmt->get_result();
+		$stmt->execute();
 
-        return $result->fetch_assoc();
-    }
+		$result = $stmt->get_result();
+
+		return $result->fetch_assoc();
+	}
 
 }

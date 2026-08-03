@@ -1,7 +1,7 @@
 <?php
 
 if (session_status() === PHP_SESSION_NONE) {
-    session_start();
+	session_start();
 }
 
 $baseUrl = '/JobCV';
@@ -12,952 +12,1374 @@ require_once __DIR__ . '/../layouts/header.php';
 
 <section class="py-5 bg-light">
 
-    <div class="container">
+	<div class="container">
 
-            <?php if (!$cv): ?>
+			<?php if (!$cv): ?>
 
-            <!-- ================================================= -->
-            <!-- CHƯA CÓ CV -->
-            <!-- ================================================= -->
+			<!-- ================================================= -->
+			<!-- CHƯA CÓ CV -->
+			<!-- ================================================= -->
 
-            <div class="text-center mb-5">
+			<div class="text-center mb-5">
 
-                <h1 class="fw-bold text-dark">
-                    <i class="fa-solid fa-file-lines text-primary me-2"></i>
-                    Tạo CV của bạn
-                </h1>
+				<h1 class="fw-bold text-dark">
+					<i class="fa-solid fa-file-lines text-primary me-2"></i>
+					Tạo CV của bạn
+				</h1>
 
-                <p class="text-muted">
-                    Chọn phương thức bạn muốn sử dụng để tạo CV
-                </p>
+				<p class="text-muted">
+					Chọn phương thức bạn muốn sử dụng để tạo CV
+				</p>
 
-            </div>
+			</div>
 
 
-            <!-- =========================== -->
-            <!-- LỰA CHỌN PHƯƠNG THỨC -->
-            <!-- =========================== -->
+			<!-- =========================== -->
+			<!-- LỰA CHỌN PHƯƠNG THỨC -->
+			<!-- =========================== -->
 
-            <div class="row justify-content-center g-4">
+			<div class="row justify-content-center g-4">
 
-                <!-- NHẬP THỦ CÔNG -->
+				<!-- NHẬP THỦ CÔNG -->
 
-                <div class="col-md-5">
+				<div class="col-md-5">
 
-                    <div
-                        class="card border-0 shadow-sm h-100 text-center p-4 cv-option"
-                        onclick="showManualForm()"
-                        style="cursor: pointer;"
-                    >
+					<div
+						class="card border-0 shadow-sm h-100 text-center p-4 cv-option"
+						onclick="showManualForm()"
+						style="cursor: pointer;"
+					>
 
-                        <div class="mb-4">
+						<div class="mb-4">
 
-                            <i
-                                class="fa-solid fa-pen-to-square text-primary"
-                                style="font-size: 60px;"
-                            ></i>
+							<i
+								class="fa-solid fa-pen-to-square text-primary"
+								style="font-size: 60px;"
+							></i>
 
-                        </div>
+						</div>
 
-                        <h4 class="fw-bold">
-                            Nhập thông tin thủ công
-                        </h4>
+						<h4 class="fw-bold">
+							Nhập thông tin thủ công
+						</h4>
 
-                        <p class="text-muted">
+						<p class="text-muted">
 
-                            Điền trực tiếp các thông tin cá nhân,
-                            kỹ năng, mục tiêu nghề nghiệp.
+							Điền trực tiếp các thông tin cá nhân,
+							kỹ năng, mục tiêu nghề nghiệp.
 
-                        </p>
+						</p>
 
-                        <button
-                            type="button"
-                            class="btn btn-primary mt-auto"
-                        >
+						<button
+							type="button"
+							class="btn btn-primary mt-auto"
+						>
 
-                            <i class="fa-solid fa-pen me-2"></i>
+							<i class="fa-solid fa-pen me-2"></i>
 
-                            Tạo CV thủ công
+							Tạo CV thủ công
 
-                        </button>
+						</button>
 
-                    </div>
+					</div>
 
-                </div>
+				</div>
 
 
-                <!-- UPLOAD FILE -->
+				<!-- UPLOAD FILE -->
 
-                <div class="col-md-5">
+				<div class="col-md-5">
 
-                    <div
-                        class="card border-0 shadow-sm h-100 text-center p-4 cv-option"
-                        onclick="showUploadForm()"
-                        style="cursor: pointer;"
-                    >
+					<div
+						class="card border-0 shadow-sm h-100 text-center p-4 cv-option"
+						onclick="showUploadForm()"
+						style="cursor: pointer;"
+					>
 
-                        <div class="mb-4">
+						<div class="mb-4">
 
-                            <i
-                                class="fa-solid fa-file-arrow-up text-success"
-                                style="font-size: 60px;"
-                            ></i>
+							<i
+								class="fa-solid fa-file-arrow-up text-success"
+								style="font-size: 60px;"
+							></i>
 
-                        </div>
+						</div>
 
-                        <h4 class="fw-bold">
-                            Tải CV cá nhân lên
-                        </h4>
+						<h4 class="fw-bold">
+							Tải CV cá nhân lên
+						</h4>
 
-                        <p class="text-muted">
+						<p class="text-muted">
 
-                            Tải lên CV đã có sẵn của bạn.
+							Tải lên CV đã có sẵn của bạn.
 
-                            Hỗ trợ định dạng PDF, DOC và DOCX.
+							Hỗ trợ định dạng PDF, DOC và DOCX.
 
-                        </p>
+						</p>
 
-                        <button
-                            type="button"
-                            class="btn btn-success mt-auto"
-                        >
+						<button
+							type="button"
+							class="btn btn-success mt-auto"
+						>
 
-                            <i class="fa-solid fa-upload me-2"></i>
+							<i class="fa-solid fa-upload me-2"></i>
 
-                            Tải CV lên
+							Tải CV lên
 
-                        </button>
+						</button>
 
-                    </div>
+					</div>
 
-                </div>
+				</div>
 
-            </div>
+			</div>
 
 
-            <!-- =========================== -->
-            <!-- FORM NHẬP THỦ CÔNG -->
-            <!-- =========================== -->
+			<!-- =========================== -->
+			<!-- FORM NHẬP THỦ CÔNG -->
+			<!-- =========================== -->
 
-            <div
-                id="manualForm"
-                class="card border-0 shadow-sm mt-5"
-                style="display: none;"
-            >
+			<div
+				id="manualForm"
+				class="card border-0 shadow-sm mt-5"
+				style="display: none;"
+			>
 
-                <div class="card-header bg-primary text-white">
+				<div class="card-header bg-primary text-white">
 
-                    <h4 class="mb-0 fw-bold">
+					<h4 class="mb-0 fw-bold">
 
-                        <i class="fa-solid fa-pen-to-square me-2"></i>
+						<i class="fa-solid fa-pen-to-square me-2"></i>
 
-                        Nhập thông tin CV
+						Nhập thông tin CV
 
-                    </h4>
+					</h4>
 
-                </div>
+				</div>
 
 
-                <div class="card-body p-4">
+				<div class="card-body p-4">
 
-                    <form
-                        action="<?= $baseUrl ?>/index.php?route=cv/create-submit"
-                        method="POST"
-                    >
+					<form
+						action="<?= $baseUrl ?>/index.php?route=cv/create-submit"
+						method="POST"
+					>
 
-                        <div class="row g-4">
+						<div class="row g-4">
 
-                            <!-- TIÊU ĐỀ -->
+							<!-- TIÊU ĐỀ -->
 
-                            <div class="col-12">
+							<div class="col-12">
 
-                                <label class="form-label fw-bold">
+								<label class="form-label fw-bold">
 
-                                    Tiêu đề CV
-                                    <span class="text-danger">*</span>
+									Tiêu đề CV
+									<span class="text-danger">*</span>
 
-                                </label>
+								</label>
 
-                                <input
-                                    type="text"
-                                    name="tieuDe"
-                                    class="form-control"
-                                    placeholder="Ví dụ: Backend Developer - Nguyễn Văn A"
-                                    required
-                                >
+								<input
+									type="text"
+									name="tieuDe"
+									class="form-control"
+									placeholder="Ví dụ: Backend Developer - Nguyễn Văn A"
+									required
+								>
 
-                            </div>
+							</div>
 
 
-                            <!-- VỊ TRÍ -->
+							<!-- VỊ TRÍ -->
 
-                            <div class="col-md-6">
+							<div class="col-md-6">
 
-                                <label class="form-label fw-bold">
+								<label class="form-label fw-bold">
 
-                                    Vị trí mong muốn
+									Vị trí mong muốn
 
-                                </label>
+								</label>
 
-                                <input
-                                    type="text"
-                                    name="viTriMongMuon"
-                                    class="form-control"
-                                    placeholder="Backend Developer"
-                                >
+								<input
+									type="text"
+									name="viTriMongMuon"
+									class="form-control"
+									placeholder="Backend Developer"
+								>
 
-                            </div>
+							</div>
 
 
-                            <!-- EMAIL -->
+							<!-- EMAIL -->
 
-                            <div class="col-md-6">
+							<div class="col-md-6">
 
-                                <label class="form-label fw-bold">
+								<label class="form-label fw-bold">
 
-                                    Email
-                                    <span class="text-danger">*</span>
+									Email
+									<span class="text-danger">*</span>
 
-                                </label>
+								</label>
 
-                                <input
-                                    type="email"
-                                    name="email"
-                                    class="form-control"
-                                    value="<?= htmlspecialchars($_SESSION['user_email'] ?? '') ?>"
-                                    required
-                                >
+								<input
+									type="email"
+									name="email"
+									class="form-control"
+									value="<?= htmlspecialchars($_SESSION['user_email'] ?? '') ?>"
+									required
+								>
 
-                            </div>
+							</div>
 
 
-                            <!-- SĐT -->
+							<!-- SĐT -->
 
-                            <div class="col-md-6">
+							<div class="col-md-6">
 
-                                <label class="form-label fw-bold">
+								<label class="form-label fw-bold">
 
-                                    Số điện thoại
-                                    <span class="text-danger">*</span>
+									Số điện thoại
+									<span class="text-danger">*</span>
 
-                                </label>
+								</label>
 
-                                <input
-                                    type="text"
-                                    name="sdt"
-                                    class="form-control"
-                                    placeholder="0912345678"
-                                    required
-                                >
+								<input
+									type="text"
+									name="sdt"
+									class="form-control"
+									placeholder="0912345678"
+									required
+								>
 
-                            </div>
+							</div>
 
 
-                            <!-- KỸ NĂNG -->
+							<!-- KỸ NĂNG -->
 
-                            <div class="col-12">
+							<div class="col-12">
 
-                                <label class="form-label fw-bold">
+								<label class="form-label fw-bold">
 
-                                    Kỹ năng
+									Kỹ năng
 
-                                </label>
+								</label>
 
-                                <textarea
-                                    name="kyNang"
-                                    class="form-control"
-                                    rows="4"
-                                    placeholder="PHP, MySQL, Laravel, HTML, CSS..."
-                                ></textarea>
+								<textarea
+									name="kyNang"
+									class="form-control"
+									rows="4"
+									placeholder="PHP, MySQL, Laravel, HTML, CSS..."
+								></textarea>
 
-                            </div>
+							</div>
 
 
-                            <!-- SỞ THÍCH -->
+							<!-- SỞ THÍCH -->
 
-                            <div class="col-md-6">
+							<div class="col-md-6">
 
-                                <label class="form-label fw-bold">
+								<label class="form-label fw-bold">
 
-                                    Sở thích
+									Sở thích
 
-                                </label>
+								</label>
 
-                                <textarea
-                                    name="soThich"
-                                    class="form-control"
-                                    rows="4"
-                                    placeholder="Đọc sách, du lịch, thể thao..."
-                                ></textarea>
+								<textarea
+									name="soThich"
+									class="form-control"
+									rows="4"
+									placeholder="Đọc sách, du lịch, thể thao..."
+								></textarea>
 
-                            </div>
+							</div>
 
 
-                            <!-- MỤC TIÊU -->
+							<!-- MỤC TIÊU -->
 
-                            <div class="col-md-6">
+							<div class="col-md-6">
 
-                                <label class="form-label fw-bold">
+								<label class="form-label fw-bold">
 
-                                    Mục tiêu nghề nghiệp
+									Mục tiêu nghề nghiệp
 
-                                </label>
+								</label>
 
-                                <textarea
-                                    name="mucTieu"
-                                    class="form-control"
-                                    rows="4"
-                                    placeholder="Mục tiêu nghề nghiệp của bạn..."
-                                ></textarea>
+								<textarea
+									name="mucTieu"
+									class="form-control"
+									rows="4"
+									placeholder="Mục tiêu nghề nghiệp của bạn..."
+								></textarea>
 
-                            </div>
+							</div>
 
-                        </div>
+						</div>
 
 
-                        <div class="text-end mt-4">
+						<!-- HỌC VẤN -->
 
-                            <button
-                                type="submit"
-                                class="btn btn-primary px-5 fw-bold"
-                            >
+						<hr class="my-4">
 
-                                <i class="fa-solid fa-floppy-disk me-2"></i>
+						<h5 class="fw-bold text-primary mb-3">
+							<i class="fa-solid fa-graduation-cap me-2"></i>
+							Học vấn
+						</h5>
 
-                                Lưu CV
+						<div id="hocVanContainer" data-next-index="0"></div>
 
-                            </button>
+						<button
+							type="button"
+							class="btn btn-outline-primary btn-sm mb-4"
+							onclick="addHocVanRow('hocVanContainer')"
+						>
+							<i class="fa-solid fa-plus me-1"></i>
+							Thêm học vấn
+						</button>
 
-                        </div>
 
-                    </form>
+						<!-- KINH NGHIỆM -->
 
-                </div>
+						<hr class="my-4">
 
-            </div>
+						<h5 class="fw-bold text-primary mb-3">
+							<i class="fa-solid fa-briefcase me-2"></i>
+							Kinh nghiệm làm việc
+						</h5>
 
+						<div id="kinhNghiemContainer" data-next-index="0"></div>
 
-            <!-- =========================== -->
-            <!-- FORM UPLOAD -->
-            <!-- =========================== -->
+						<button
+							type="button"
+							class="btn btn-outline-primary btn-sm mb-4"
+							onclick="addKinhNghiemRow('kinhNghiemContainer')"
+						>
+							<i class="fa-solid fa-plus me-1"></i>
+							Thêm kinh nghiệm
+						</button>
 
-            <div
-                id="uploadForm"
-                class="card border-0 shadow-sm mt-5"
-                style="display: none;"
-            >
 
-                <div class="card-header bg-success text-white">
+						<!-- DỰ ÁN -->
 
-                    <h4 class="mb-0 fw-bold">
+						<hr class="my-4">
 
-                        <i class="fa-solid fa-file-arrow-up me-2"></i>
+						<h5 class="fw-bold text-primary mb-3">
+							<i class="fa-solid fa-diagram-project me-2"></i>
+							Dự án
+						</h5>
 
-                        Tải CV cá nhân lên
+						<div id="duAnContainer" data-next-index="0"></div>
 
-                    </h4>
+						<button
+							type="button"
+							class="btn btn-outline-primary btn-sm mb-4"
+							onclick="addDuAnRow('duAnContainer')"
+						>
+							<i class="fa-solid fa-plus me-1"></i>
+							Thêm dự án
+						</button>
 
-                </div>
 
+						<!-- CHỨNG CHỈ -->
 
-                <div class="card-body p-4">
+						<hr class="my-4">
 
-                    <form
-                        action="<?= $baseUrl ?>/index.php?route=cv/upload-submit"
-                        method="POST"
-                        enctype="multipart/form-data"
-                    >
+						<h5 class="fw-bold text-primary mb-3">
+							<i class="fa-solid fa-certificate me-2"></i>
+							Chứng chỉ
+						</h5>
 
-                        <div class="mb-4">
+						<div id="chungChiContainer" data-next-index="0"></div>
 
-                            <label class="form-label fw-bold">
+						<button
+							type="button"
+							class="btn btn-outline-primary btn-sm mb-4"
+							onclick="addChungChiRow('chungChiContainer')"
+						>
+							<i class="fa-solid fa-plus me-1"></i>
+							Thêm chứng chỉ
+						</button>
 
-                                Chọn file CV
 
-                                <span class="text-danger">*</span>
+						<div class="text-end mt-4">
 
-                            </label>
+							<button
+								type="submit"
+								class="btn btn-primary px-5 fw-bold"
+							>
 
-                            <input
-                                type="file"
-                                name="file"
-                                class="form-control"
-                                accept=".pdf,.doc,.docx"
-                                required
-                            >
+								<i class="fa-solid fa-floppy-disk me-2"></i>
 
-                            <small class="text-muted">
+								Lưu CV
 
-                                Chỉ hỗ trợ file PDF, DOC hoặc DOCX.
+							</button>
 
-                            </small>
+						</div>
 
-                        </div>
+					</form>
 
+				</div>
 
-                        <div class="alert alert-info">
+			</div>
 
-                            <i class="fa-solid fa-circle-info me-2"></i>
 
-                            File CV của bạn sẽ được lưu trữ trên hệ thống
-                            và có thể được sử dụng khi ứng tuyển.
+			<!-- =========================== -->
+			<!-- FORM UPLOAD -->
+			<!-- =========================== -->
 
-                        </div>
+			<div
+				id="uploadForm"
+				class="card border-0 shadow-sm mt-5"
+				style="display: none;"
+			>
 
+				<div class="card-header bg-success text-white">
 
-                        <div class="text-end">
+					<h4 class="mb-0 fw-bold">
 
-                            <button
-                                type="submit"
-                                class="btn btn-success px-5 fw-bold"
-                            >
+						<i class="fa-solid fa-file-arrow-up me-2"></i>
 
-                                <i class="fa-solid fa-upload me-2"></i>
+						Tải CV cá nhân lên
 
-                                Tải CV lên
+					</h4>
 
-                            </button>
+				</div>
 
-                        </div>
 
-                    </form>
+				<div class="card-body p-4">
 
-                </div>
+					<form
+						action="<?= $baseUrl ?>/index.php?route=cv/upload-submit"
+						method="POST"
+						enctype="multipart/form-data"
+					>
 
-            </div>
+						<div class="mb-4">
 
+							<label class="form-label fw-bold">
 
-        <?php else: ?>
+								Chọn file CV
 
-            <!-- ================================================= -->
-            <!-- ĐÃ CÓ CV -->
-            <!-- ================================================= -->
+								<span class="text-danger">*</span>
 
-            <div class="text-center mb-5">
+							</label>
 
-                <h1 class="fw-bold text-dark">
+							<input
+								type="file"
+								name="file"
+								class="form-control"
+								accept=".pdf,.doc,.docx"
+								required
+							>
 
-                    <i class="fa-solid fa-file-circle-check text-success me-2"></i>
+							<small class="text-muted">
 
-                    Hồ sơ CV của bạn
+								Chỉ hỗ trợ file PDF, DOC hoặc DOCX.
 
-                </h1>
+							</small>
 
-                <p class="text-muted">
+						</div>
 
-                    Bạn đã có một CV trên hệ thống.
 
-                </p>
+						<div class="alert alert-info">
 
-            </div>
+							<i class="fa-solid fa-circle-info me-2"></i>
 
+							File CV của bạn sẽ được lưu trữ trên hệ thống
+							và có thể được sử dụng khi ứng tuyển.
 
-            <!-- THÔNG TIN CV -->
+						</div>
 
-            <div class="card border-0 shadow-sm mx-auto" style="max-width: 900px;">
 
-                <div class="card-header bg-primary text-white">
+						<div class="text-end">
 
-                    <div class="d-flex justify-content-between align-items-center">
+							<button
+								type="submit"
+								class="btn btn-success px-5 fw-bold"
+							>
 
-                        <h4 class="mb-0 fw-bold">
+								<i class="fa-solid fa-upload me-2"></i>
 
-                            <i class="fa-solid fa-file-lines me-2"></i>
+								Tải CV lên
 
-                            <?= htmlspecialchars($cv['TieuDe']) ?>
+							</button>
 
-                        </h4>
+						</div>
 
-                        <span class="badge bg-success">
+					</form>
 
-                            CV đang hoạt động
+				</div>
 
-                        </span>
+			</div>
 
-                    </div>
 
-                </div>
+		<?php else: ?>
 
+			<!-- ================================================= -->
+			<!-- ĐÃ CÓ CV -->
+			<!-- ================================================= -->
 
-                <div class="card-body p-4">
+			<div class="text-center mb-5">
 
-                    <div class="row g-4">
+				<h1 class="fw-bold text-dark">
 
+					<i class="fa-solid fa-file-circle-check text-success me-2"></i>
 
-                        <!-- THÔNG TIN CƠ BẢN -->
+					Hồ sơ CV của bạn
 
-                        <div class="col-md-6">
+				</h1>
 
-                            <h5 class="fw-bold text-primary mb-3">
+				<p class="text-muted">
 
-                                <i class="fa-solid fa-user me-2"></i>
+					Bạn đã có một CV trên hệ thống.
 
-                                Thông tin cơ bản
+				</p>
 
-                            </h5>
+			</div>
 
-                            <p>
 
-                                <strong>Vị trí mong muốn:</strong><br>
+			<!-- THÔNG TIN CV -->
 
-                                <?= htmlspecialchars($cv['ViTriMongMuon'] ?: 'Chưa cập nhật') ?>
+			<div class="card border-0 shadow-sm mx-auto" style="max-width: 900px;">
 
-                            </p>
+				<div class="card-header bg-primary text-white">
 
-                            <p>
+					<div class="d-flex justify-content-between align-items-center">
 
-                                <strong>Email:</strong><br>
+						<h4 class="mb-0 fw-bold">
 
-                                <?= htmlspecialchars($cv['Email']) ?>
+							<i class="fa-solid fa-file-lines me-2"></i>
 
-                            </p>
+							<?= htmlspecialchars($cv['TieuDe']) ?>
 
-                            <p>
+						</h4>
 
-                                <strong>Số điện thoại:</strong><br>
+						<span class="badge bg-success">
 
-                                <?= htmlspecialchars($cv['SDT']) ?>
+							CV đang hoạt động
 
-                            </p>
+						</span>
 
-                        </div>
+					</div>
 
+				</div>
 
-                        <!-- KỸ NĂNG -->
 
-                        <div class="col-md-6">
+				<div class="card-body p-4">
 
-                            <h5 class="fw-bold text-primary mb-3">
+					<div class="row g-4">
 
-                                <i class="fa-solid fa-star me-2"></i>
 
-                                Kỹ năng
+						<!-- THÔNG TIN CƠ BẢN -->
 
-                            </h5>
+						<div class="col-md-6">
 
-                            <p>
+							<h5 class="fw-bold text-primary mb-3">
 
-                                <?= nl2br(
-                                    htmlspecialchars(
-                                        $cv['KyNang'] ?: 'Chưa cập nhật'
-                                    )
-                                ) ?>
+								<i class="fa-solid fa-user me-2"></i>
 
-                            </p>
+								Thông tin cơ bản
 
-                        </div>
+							</h5>
 
+							<p>
 
-                        <!-- MỤC TIÊU -->
+								<strong>Vị trí mong muốn:</strong><br>
 
-                        <div class="col-md-6">
+								<?= htmlspecialchars($cv['ViTriMongMuon'] ?: 'Chưa cập nhật') ?>
 
-                            <h5 class="fw-bold text-primary mb-3">
+							</p>
 
-                                <i class="fa-solid fa-bullseye me-2"></i>
+							<p>
 
-                                Mục tiêu nghề nghiệp
+								<strong>Email:</strong><br>
 
-                            </h5>
+								<?= htmlspecialchars($cv['Email']) ?>
 
-                            <p>
+							</p>
 
-                                <?= nl2br(
-                                    htmlspecialchars(
-                                        $cv['MucTieu'] ?: 'Chưa cập nhật'
-                                    )
-                                ) ?>
+							<p>
 
-                            </p>
+								<strong>Số điện thoại:</strong><br>
 
-                        </div>
+								<?= htmlspecialchars($cv['SDT']) ?>
 
+							</p>
 
-                        <!-- SỞ THÍCH -->
+						</div>
 
-                        <div class="col-md-6">
 
-                            <h5 class="fw-bold text-primary mb-3">
+						<!-- KỸ NĂNG -->
 
-                                <i class="fa-solid fa-heart me-2"></i>
+						<div class="col-md-6">
 
-                                Sở thích
+							<h5 class="fw-bold text-primary mb-3">
 
-                            </h5>
+								<i class="fa-solid fa-star me-2"></i>
 
-                            <p>
+								Kỹ năng
 
-                                <?= nl2br(
-                                    htmlspecialchars(
-                                        $cv['SoThich'] ?: 'Chưa cập nhật'
-                                    )
-                                ) ?>
+							</h5>
 
-                            </p>
+							<p>
 
-                        </div>
+								<?= nl2br(
+									htmlspecialchars(
+										$cv['KyNang'] ?: 'Chưa cập nhật'
+									)
+								) ?>
 
-                    </div>
+							</p>
 
-                    <!-- FILE CV -->
+						</div>
 
-                    <hr>
 
-                    <div class="card border-success">
+						<!-- MỤC TIÊU -->
 
-                        <div class="card-body">
+						<div class="col-md-6">
 
-                            <?php if (!empty($cv['DuongDanFileCV'])): ?>
+							<h5 class="fw-bold text-primary mb-3">
 
-                                <!-- ĐÃ CÓ FILE -->
+								<i class="fa-solid fa-bullseye me-2"></i>
 
-                                <h5 class="fw-bold text-success mb-3">
+								Mục tiêu nghề nghiệp
 
-                                    <i class="fa-solid fa-file-circle-check me-2"></i>
+							</h5>
 
-                                    File CV đã tải lên
+							<p>
 
-                                </h5>
+								<?= nl2br(
+									htmlspecialchars(
+										$cv['MucTieu'] ?: 'Chưa cập nhật'
+									)
+								) ?>
 
-                                <p class="mb-3">
+							</p>
 
-                                    <i class="fa-solid fa-file me-2"></i>
+						</div>
 
-                                    <?= htmlspecialchars($cv['TenFileCV']) ?>
 
-                                </p>
+						<!-- SỞ THÍCH -->
 
-                                <div class="d-flex gap-2 flex-wrap">
+						<div class="col-md-6">
 
-                                    <!-- TẢI FILE XUỐNG -->
+							<h5 class="fw-bold text-primary mb-3">
 
-                                    <a
-                                        href="<?= $baseUrl ?>/index.php?route=cv/download&maCV=<?= urlencode($cv['MaCV']) ?>"
-                                        class="btn btn-primary"
-                                    >
+								<i class="fa-solid fa-heart me-2"></i>
 
-                                        <i class="fa-solid fa-download me-2"></i>
+								Sở thích
 
-                                        Tải CV xuống
+							</h5>
 
-                                    </a>
+							<p>
 
+								<?= nl2br(
+									htmlspecialchars(
+										$cv['SoThich'] ?: 'Chưa cập nhật'
+									)
+								) ?>
 
-                                    <!-- THAY FILE -->
+							</p>
 
-                                    <button
-                                        type="button"
-                                        class="btn btn-warning"
-                                        onclick="document.getElementById('changeFileForm').style.display='block'"
-                                    >
+						</div>
 
-                                        <i class="fa-solid fa-rotate me-2"></i>
+					</div>
 
-                                        Thay đổi file
 
-                                    </button>
+					<!-- HỌC VẤN -->
 
-                                </div>
+					<hr>
 
+					<h5 class="fw-bold text-primary mb-3">
+						<i class="fa-solid fa-graduation-cap me-2"></i>
+						Học vấn
+					</h5>
 
-                                <!-- FORM THAY FILE -->
+					<?php if (empty($hocVanList)): ?>
 
-                                <div
-                                    id="changeFileForm"
-                                    class="mt-4"
-                                    style="display: none;"
-                                >
+						<p class="text-muted">Chưa cập nhật học vấn.</p>
 
-                                    <form
-                                        action="<?= $baseUrl ?>/index.php?route=cv/change-file"
-                                        method="POST"
-                                        enctype="multipart/form-data"
-                                    >
+					<?php else: ?>
 
-                                        <input
-                                            type="hidden"
-                                            name="maCV"
-                                            value="<?= htmlspecialchars($cv['MaCV']) ?>"
-                                        >
+						<?php foreach ($hocVanList as $hocVan): ?>
 
-                                        <label class="form-label fw-bold">
+							<div class="card border-0 shadow-sm mb-3 p-3">
+								<h6 class="fw-bold mb-1"><?= htmlspecialchars($hocVan['TenTruong']) ?></h6>
+								<p class="text-muted small mb-1">
+									<?= htmlspecialchars($hocVan['ChuyenNganh'] ?: 'Chưa cập nhật chuyên ngành') ?>
+									<?php if (!empty($hocVan['NamBatDau']) || !empty($hocVan['NamKetThuc'])): ?>
+										&middot; <?= htmlspecialchars($hocVan['NamBatDau'] ?? '?') ?> - <?= htmlspecialchars($hocVan['NamKetThuc'] ?? '?') ?>
+									<?php endif; ?>
+								</p>
+								<?php if (!empty($hocVan['HocLuc']) || !empty($hocVan['GPA'])): ?>
+									<p class="small mb-0">
+										<?= htmlspecialchars($hocVan['HocLuc'] ?? '') ?>
+										<?= !empty($hocVan['GPA']) ? ' &middot; GPA: ' . htmlspecialchars($hocVan['GPA']) : '' ?>
+									</p>
+								<?php endif; ?>
+							</div>
 
-                                            Chọn file CV mới
+						<?php endforeach; ?>
 
-                                        </label>
+					<?php endif; ?>
 
-                                        <input
-                                            type="file"
-                                            name="file"
-                                            class="form-control mb-3"
-                                            accept=".pdf,.doc,.docx"
-                                            required
-                                        >
 
-                                        <div class="d-flex gap-2">
+					<!-- KINH NGHIỆM -->
 
-                                            <button
-                                                type="submit"
-                                                class="btn btn-success"
-                                            >
+					<hr>
 
-                                                <i class="fa-solid fa-upload me-2"></i>
+					<h5 class="fw-bold text-primary mb-3">
+						<i class="fa-solid fa-briefcase me-2"></i>
+						Kinh nghiệm làm việc
+					</h5>
 
-                                                Upload file mới
+					<?php if (empty($kinhNghiemList)): ?>
 
-                                            </button>
+						<p class="text-muted">Chưa cập nhật kinh nghiệm làm việc.</p>
 
-                                            <button
-                                                type="button"
-                                                class="btn btn-secondary"
-                                                onclick="document.getElementById('changeFileForm').style.display='none'"
-                                            >
+					<?php else: ?>
 
-                                                Hủy
+						<?php foreach ($kinhNghiemList as $kinhNghiem): ?>
 
-                                            </button>
+							<div class="card border-0 shadow-sm mb-3 p-3">
+								<h6 class="fw-bold mb-1">
+									<?= htmlspecialchars($kinhNghiem['ViTri'] ?: 'Chưa cập nhật vị trí') ?>
+									&mdash; <?= htmlspecialchars($kinhNghiem['TenCongTy']) ?>
+								</h6>
+								<p class="text-muted small mb-1"><?= htmlspecialchars($kinhNghiem['ThoiGianLamViec'] ?: '') ?></p>
+								<?php if (!empty($kinhNghiem['MoTa'])): ?>
+									<p class="small mb-0"><?= nl2br(htmlspecialchars($kinhNghiem['MoTa'])) ?></p>
+								<?php endif; ?>
+							</div>
 
-                                        </div>
+						<?php endforeach; ?>
 
-                                    </form>
+					<?php endif; ?>
 
-                                </div>
 
+					<!-- DỰ ÁN -->
 
-                            <?php else: ?>
+					<hr>
 
-                                <!-- CHƯA CÓ FILE -->
+					<h5 class="fw-bold text-primary mb-3">
+						<i class="fa-solid fa-diagram-project me-2"></i>
+						Dự án
+					</h5>
 
-                                <h5 class="fw-bold text-warning mb-3">
+					<?php if (empty($duAnList)): ?>
 
-                                    <i class="fa-solid fa-file-arrow-up me-2"></i>
+						<p class="text-muted">Chưa cập nhật dự án.</p>
 
-                                    Bạn chưa tải file CV lên
+					<?php else: ?>
 
-                                </h5>
+						<?php foreach ($duAnList as $duAn): ?>
 
-                                <p class="text-muted">
+							<div class="card border-0 shadow-sm mb-3 p-3">
+								<h6 class="fw-bold mb-1"><?= htmlspecialchars($duAn['TenDuAn']) ?></h6>
+								<p class="text-muted small mb-1">
+									<?= htmlspecialchars($duAn['ViTri'] ?: 'Chưa cập nhật vị trí') ?>
+									<?php if (!empty($duAn['SoLuongThanhVien'])): ?>
+										&middot; <?= (int) $duAn['SoLuongThanhVien'] ?> thành viên
+									<?php endif; ?>
+								</p>
+								<?php if (!empty($duAn['CongNgheSuDung'])): ?>
+									<p class="small mb-1"><strong>Công nghệ:</strong> <?= htmlspecialchars($duAn['CongNgheSuDung']) ?></p>
+								<?php endif; ?>
+								<?php if (!empty($duAn['MoTa'])): ?>
+									<p class="small mb-0"><?= nl2br(htmlspecialchars($duAn['MoTa'])) ?></p>
+								<?php endif; ?>
+							</div>
 
-                                    Bạn có thể tải lên file CV cá nhân để sử dụng khi ứng tuyển.
+						<?php endforeach; ?>
 
-                                </p>
+					<?php endif; ?>
 
 
-                                <!-- FORM UPLOAD FILE -->
+					<!-- CHỨNG CHỈ -->
 
-                                <form
-                                    action="<?= $baseUrl ?>/index.php?route=cv/upload-submit"
-                                    method="POST"
-                                    enctype="multipart/form-data"
-                                >
+					<hr>
 
-                                    <input
-                                        type="hidden"
-                                        name="maCV"
-                                        value="<?= htmlspecialchars($cv['MaCV']) ?>"
-                                    >
+					<h5 class="fw-bold text-primary mb-3">
+						<i class="fa-solid fa-certificate me-2"></i>
+						Chứng chỉ
+					</h5>
 
-                                    <div class="mb-3">
+					<?php if (empty($chungChiList)): ?>
 
-                                        <label class="form-label fw-bold">
+						<p class="text-muted">Chưa cập nhật chứng chỉ.</p>
 
-                                            Chọn file CV
+					<?php else: ?>
 
-                                        </label>
+						<?php foreach ($chungChiList as $chungChi): ?>
 
-                                        <input
-                                            type="file"
-                                            name="file"
-                                            class="form-control"
-                                            accept=".pdf,.doc,.docx"
-                                            required
-                                        >
+							<div class="card border-0 shadow-sm mb-3 p-3">
+								<h6 class="fw-bold mb-1"><?= htmlspecialchars($chungChi['TenChungChi']) ?></h6>
+								<p class="text-muted small mb-1">
+									<?= htmlspecialchars($chungChi['ToChucCap'] ?: 'Chưa cập nhật nơi cấp') ?>
+									<?php if (!empty($chungChi['NgayCap'])): ?>
+										&middot; Cấp ngày <?= date('d/m/Y', strtotime($chungChi['NgayCap'])) ?>
+									<?php endif; ?>
+									<?php if (!empty($chungChi['NgayHetHan'])): ?>
+										&middot; Hết hạn <?= date('d/m/Y', strtotime($chungChi['NgayHetHan'])) ?>
+									<?php endif; ?>
+								</p>
+								<?php if (!empty($chungChi['DuongLinkChungChi'])): ?>
+									<p class="small mb-0">
+										<a href="<?= htmlspecialchars($chungChi['DuongLinkChungChi']) ?>" target="_blank" class="text-decoration-none">
+											<i class="fa-solid fa-link me-1"></i>Xem chứng chỉ
+										</a>
+									</p>
+								<?php endif; ?>
+							</div>
 
-                                    </div>
+						<?php endforeach; ?>
 
-                                    <button
-                                        type="submit"
-                                        class="btn btn-success"
-                                    >
+					<?php endif; ?>
 
-                                        <i class="fa-solid fa-upload me-2"></i>
 
-                                        Tải CV lên
+					<!-- FILE CV -->
 
-                                    </button>
+					<hr>
 
-                                </form>
+					<div class="card border-success">
 
-                            <?php endif; ?>
+						<div class="card-body">
 
-                        </div>
+							<?php if (!empty($cv['DuongDanFileCV'])): ?>
 
-                    </div>
+								<!-- ĐÃ CÓ FILE -->
 
+								<h5 class="fw-bold text-success mb-3">
 
-                    <!-- BUTTON -->
+									<i class="fa-solid fa-file-circle-check me-2"></i>
 
-                    <div class="text-end mt-4">
+									File CV đã tải lên
 
-                        <button
-                            type="button"
-                            class="btn btn-primary px-4"
-                            onclick="showEditForm()"
-                        >
-                            <i class="fa-solid fa-pen-to-square me-2"></i>
-                            Thay đổi thông tin CV
-                        </button>
+								</h5>
 
-                    </div>
+								<p class="mb-3">
 
-                </div>
+									<i class="fa-solid fa-file me-2"></i>
 
-            </div>
-            <div
-                id="editForm"
-                class="card border-0 shadow-sm mt-4"
-                style="display: none;"
-            >
-                <div class="card-header bg-warning">
-                    <h4 class="mb-0 fw-bold">
-                        <i class="fa-solid fa-pen-to-square me-2"></i>
-                        Chỉnh sửa thông tin CV
-                    </h4>
-                </div>
+									<?= htmlspecialchars($cv['TenFileCV']) ?>
 
-                <div class="card-body p-4">
-                    <form
-                        action="<?= $baseUrl ?>/index.php?route=cv/update-submit"
-                        method="POST"
-                    >
-                        <input
-                            type="hidden"
-                            name="maCV"
-                            value="<?= htmlspecialchars($cv['MaCV'] ?? '') ?>"
-                        >
+								</p>
 
-                        <div class="row g-4">
+								<div class="d-flex gap-2 flex-wrap">
 
-                            <!-- TIÊU ĐỀ (BẮT BUỘC) -->
-                            <div class="col-12">
-                                <label class="form-label fw-bold">
-                                    Tiêu đề CV
-                                    <span class="text-danger">*</span>
-                                </label>
-                                <input
-                                    type="text"
-                                    name="tieuDe"
-                                    class="form-control"
-                                    value="<?= htmlspecialchars($cv['TieuDe'] ?? '') ?>"
-                                    required
-                                >
-                            </div>
+									<!-- TẢI FILE XUỐNG -->
 
-                            <!-- VỊ TRÍ MONG MUỐN -->
-                            <div class="col-md-6">
-                                <label class="form-label fw-bold">
-                                    Vị trí mong muốn
-                                </label>
-                                <input
-                                    type="text"
-                                    name="viTriMongMuon"
-                                    class="form-control"
-                                    value="<?= htmlspecialchars($cv['ViTriMongMuon'] ?? '') ?>"
-                                >
-                            </div>
+									<a
+										href="<?= $baseUrl ?>/index.php?route=cv/download&maCV=<?= urlencode($cv['MaCV']) ?>"
+										class="btn btn-primary"
+									>
 
-                            <!-- EMAIL (BẮT BUỘC) -->
-                            <div class="col-md-6">
-                                <label class="form-label fw-bold">
-                                    Email
-                                    <span class="text-danger">*</span>
-                                </label>
-                                <input
-                                    type="email"
-                                    name="email"
-                                    class="form-control"
-                                    value="<?= htmlspecialchars($cv['Email'] ?? '') ?>"
-                                    required
-                                >
-                            </div>
+										<i class="fa-solid fa-download me-2"></i>
 
-                            <!-- SỐ ĐIỆN THOẠI (BẮT BUỘC) -->
-                            <div class="col-md-6">
-                                <label class="form-label fw-bold">
-                                    Số điện thoại
-                                    <span class="text-danger">*</span>
-                                </label>
-                                <input
-                                    type="text"
-                                    name="sdt"
-                                    class="form-control"
-                                    value="<?= htmlspecialchars($cv['SDT'] ?? '') ?>"
-                                    required
-                                >
-                            </div>
+										Tải CV xuống
 
-                            <!-- KỸ NĂNG -->
-                            <div class="col-12">
-                                <label class="form-label fw-bold">
-                                    Kỹ năng
-                                </label>
-                                <textarea
-                                    name="kyNang"
-                                    class="form-control"
-                                    rows="4"
-                                ><?= htmlspecialchars($cv['KyNang'] ?? '') ?></textarea>
-                            </div>
+									</a>
 
-                            <!-- SỞ THÍCH -->
-                            <div class="col-md-6">
-                                <label class="form-label fw-bold">
-                                    Sở thích
-                                </label>
-                                <textarea
-                                    name="soThich"
-                                    class="form-control"
-                                    rows="4"
-                                ><?= htmlspecialchars($cv['SoThich'] ?? '') ?></textarea>
-                            </div>
 
-                            <!-- MỤC TIÊU NGHỀ NGHIỆP -->
-                            <div class="col-md-6">
-                                <label class="form-label fw-bold">
-                                    Mục tiêu nghề nghiệp
-                                </label>
-                                <textarea
-                                    name="mucTieu"
-                                    class="form-control"
-                                    rows="4"
-                                ><?= htmlspecialchars($cv['MucTieu'] ?? '') ?></textarea>
-                            </div>
+									<!-- THAY FILE -->
 
-                        </div>
+									<button
+										type="button"
+										class="btn btn-warning"
+										onclick="document.getElementById('changeFileForm').style.display='block'"
+									>
 
-                        <div class="text-end mt-4">
-                            <button
-                                type="button"
-                                class="btn btn-secondary me-2"
-                                onclick="hideEditForm()"
-                            >
-                                Hủy
-                            </button>
+										<i class="fa-solid fa-rotate me-2"></i>
 
-                            <button
-                                type="submit"
-                                class="btn btn-success px-4"
-                            >
-                                <i class="fa-solid fa-save me-2"></i>
-                                Lưu thay đổi
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
+										Thay đổi file
 
-        <?php endif; ?>
+									</button>
 
-    </div>
+								</div>
+
+
+								<!-- FORM THAY FILE -->
+
+								<div
+									id="changeFileForm"
+									class="mt-4"
+									style="display: none;"
+								>
+
+									<form
+										action="<?= $baseUrl ?>/index.php?route=cv/change-file"
+										method="POST"
+										enctype="multipart/form-data"
+									>
+
+										<input
+											type="hidden"
+											name="maCV"
+											value="<?= htmlspecialchars($cv['MaCV']) ?>"
+										>
+
+										<label class="form-label fw-bold">
+
+											Chọn file CV mới
+
+										</label>
+
+										<input
+											type="file"
+											name="file"
+											class="form-control mb-3"
+											accept=".pdf,.doc,.docx"
+											required
+										>
+
+										<div class="d-flex gap-2">
+
+											<button
+												type="submit"
+												class="btn btn-success"
+											>
+
+												<i class="fa-solid fa-upload me-2"></i>
+
+												Upload file mới
+
+											</button>
+
+											<button
+												type="button"
+												class="btn btn-secondary"
+												onclick="document.getElementById('changeFileForm').style.display='none'"
+											>
+
+												Hủy
+
+											</button>
+
+										</div>
+
+									</form>
+
+								</div>
+
+
+							<?php else: ?>
+
+								<!-- CHƯA CÓ FILE -->
+
+								<h5 class="fw-bold text-warning mb-3">
+
+									<i class="fa-solid fa-file-arrow-up me-2"></i>
+
+									Bạn chưa tải file CV lên
+
+								</h5>
+
+								<p class="text-muted">
+
+									Bạn có thể tải lên file CV cá nhân để sử dụng khi ứng tuyển.
+
+								</p>
+
+
+								<!-- FORM UPLOAD FILE -->
+
+								<form
+									action="<?= $baseUrl ?>/index.php?route=cv/upload-submit"
+									method="POST"
+									enctype="multipart/form-data"
+								>
+
+									<input
+										type="hidden"
+										name="maCV"
+										value="<?= htmlspecialchars($cv['MaCV']) ?>"
+									>
+
+									<div class="mb-3">
+
+										<label class="form-label fw-bold">
+
+											Chọn file CV
+
+										</label>
+
+										<input
+											type="file"
+											name="file"
+											class="form-control"
+											accept=".pdf,.doc,.docx"
+											required
+										>
+
+									</div>
+
+									<button
+										type="submit"
+										class="btn btn-success"
+									>
+
+										<i class="fa-solid fa-upload me-2"></i>
+
+										Tải CV lên
+
+									</button>
+
+								</form>
+
+							<?php endif; ?>
+
+						</div>
+
+					</div>
+
+
+					<!-- BUTTON -->
+
+					<div class="text-end mt-4">
+
+						<button
+							type="button"
+							class="btn btn-primary px-4"
+							onclick="showEditForm()"
+						>
+							<i class="fa-solid fa-pen-to-square me-2"></i>
+							Thay đổi thông tin CV
+						</button>
+
+					</div>
+
+				</div>
+
+			</div>
+			<div
+				id="editForm"
+				class="card border-0 shadow-sm mt-4"
+				style="display: none;"
+			>
+				<div class="card-header bg-warning">
+					<h4 class="mb-0 fw-bold">
+						<i class="fa-solid fa-pen-to-square me-2"></i>
+						Chỉnh sửa thông tin CV
+					</h4>
+				</div>
+
+				<div class="card-body p-4">
+					<form
+						action="<?= $baseUrl ?>/index.php?route=cv/update-submit"
+						method="POST"
+					>
+						<input
+							type="hidden"
+							name="maCV"
+							value="<?= htmlspecialchars($cv['MaCV'] ?? '') ?>"
+						>
+
+						<div class="row g-4">
+
+							<!-- TIÊU ĐỀ (BẮT BUỘC) -->
+							<div class="col-12">
+								<label class="form-label fw-bold">
+									Tiêu đề CV
+									<span class="text-danger">*</span>
+								</label>
+								<input
+									type="text"
+									name="tieuDe"
+									class="form-control"
+									value="<?= htmlspecialchars($cv['TieuDe'] ?? '') ?>"
+									required
+								>
+							</div>
+
+							<!-- VỊ TRÍ MONG MUỐN -->
+							<div class="col-md-6">
+								<label class="form-label fw-bold">
+									Vị trí mong muốn
+								</label>
+								<input
+									type="text"
+									name="viTriMongMuon"
+									class="form-control"
+									value="<?= htmlspecialchars($cv['ViTriMongMuon'] ?? '') ?>"
+								>
+							</div>
+
+							<!-- EMAIL (BẮT BUỘC) -->
+							<div class="col-md-6">
+								<label class="form-label fw-bold">
+									Email
+									<span class="text-danger">*</span>
+								</label>
+								<input
+									type="email"
+									name="email"
+									class="form-control"
+									value="<?= htmlspecialchars($cv['Email'] ?? '') ?>"
+									required
+								>
+							</div>
+
+							<!-- SỐ ĐIỆN THOẠI (BẮT BUỘC) -->
+							<div class="col-md-6">
+								<label class="form-label fw-bold">
+									Số điện thoại
+									<span class="text-danger">*</span>
+								</label>
+								<input
+									type="text"
+									name="sdt"
+									class="form-control"
+									value="<?= htmlspecialchars($cv['SDT'] ?? '') ?>"
+									required
+								>
+							</div>
+
+							<!-- KỸ NĂNG -->
+							<div class="col-12">
+								<label class="form-label fw-bold">
+									Kỹ năng
+								</label>
+								<textarea
+									name="kyNang"
+									class="form-control"
+									rows="4"
+								><?= htmlspecialchars($cv['KyNang'] ?? '') ?></textarea>
+							</div>
+
+							<!-- SỞ THÍCH -->
+							<div class="col-md-6">
+								<label class="form-label fw-bold">
+									Sở thích
+								</label>
+								<textarea
+									name="soThich"
+									class="form-control"
+									rows="4"
+								><?= htmlspecialchars($cv['SoThich'] ?? '') ?></textarea>
+							</div>
+
+							<!-- MỤC TIÊU NGHỀ NGHIỆP -->
+							<div class="col-md-6">
+								<label class="form-label fw-bold">
+									Mục tiêu nghề nghiệp
+								</label>
+								<textarea
+									name="mucTieu"
+									class="form-control"
+									rows="4"
+								><?= htmlspecialchars($cv['MucTieu'] ?? '') ?></textarea>
+							</div>
+
+						</div>
+
+
+						<!-- HỌC VẤN -->
+
+						<hr class="my-4">
+
+						<h5 class="fw-bold text-primary mb-3">
+							<i class="fa-solid fa-graduation-cap me-2"></i>
+							Học vấn
+						</h5>
+
+						<div id="hocVanContainerEdit" data-next-index="<?= count($hocVanList) ?>">
+							<?php foreach ($hocVanList as $i => $hocVan): ?>
+								<div class="card border-0 shadow-sm mb-3 p-3 repeat-block position-relative">
+									<button type="button" class="btn-close position-absolute top-0 end-0 m-3" aria-label="Xóa" onclick="this.closest('.repeat-block').remove()"></button>
+									<input type="hidden" name="hocVan[<?= $i ?>][maHocVan]" value="<?= htmlspecialchars($hocVan['MaHocVan']) ?>">
+									<div class="row g-3">
+										<div class="col-md-6">
+											<label class="form-label fw-bold">Tên trường <span class="text-danger">*</span></label>
+											<input type="text" name="hocVan[<?= $i ?>][tenTruong]" class="form-control" value="<?= htmlspecialchars($hocVan['TenTruong']) ?>" required>
+										</div>
+										<div class="col-md-6">
+											<label class="form-label fw-bold">Chuyên ngành</label>
+											<input type="text" name="hocVan[<?= $i ?>][chuyenNganh]" class="form-control" value="<?= htmlspecialchars($hocVan['ChuyenNganh'] ?? '') ?>">
+										</div>
+										<div class="col-md-4">
+											<label class="form-label fw-bold">Học lực</label>
+											<input type="text" name="hocVan[<?= $i ?>][hocLuc]" class="form-control" value="<?= htmlspecialchars($hocVan['HocLuc'] ?? '') ?>" placeholder="Giỏi/Khá/Trung bình...">
+										</div>
+										<div class="col-md-2">
+											<label class="form-label fw-bold">GPA</label>
+											<input type="text" name="hocVan[<?= $i ?>][gpa]" class="form-control" value="<?= htmlspecialchars($hocVan['GPA'] ?? '') ?>">
+										</div>
+										<div class="col-md-3">
+											<label class="form-label fw-bold">Năm bắt đầu</label>
+											<input type="number" name="hocVan[<?= $i ?>][namBatDau]" class="form-control" value="<?= htmlspecialchars($hocVan['NamBatDau'] ?? '') ?>" placeholder="2020">
+										</div>
+										<div class="col-md-3">
+											<label class="form-label fw-bold">Năm kết thúc</label>
+											<input type="number" name="hocVan[<?= $i ?>][namKetThuc]" class="form-control" value="<?= htmlspecialchars($hocVan['NamKetThuc'] ?? '') ?>" placeholder="2024">
+										</div>
+									</div>
+								</div>
+							<?php endforeach; ?>
+						</div>
+
+						<button type="button" class="btn btn-outline-primary btn-sm mb-4" onclick="addHocVanRow('hocVanContainerEdit')">
+							<i class="fa-solid fa-plus me-1"></i> Thêm học vấn
+						</button>
+
+
+						<!-- KINH NGHIỆM -->
+
+						<hr class="my-4">
+
+						<h5 class="fw-bold text-primary mb-3">
+							<i class="fa-solid fa-briefcase me-2"></i>
+							Kinh nghiệm làm việc
+						</h5>
+
+						<div id="kinhNghiemContainerEdit" data-next-index="<?= count($kinhNghiemList) ?>">
+							<?php foreach ($kinhNghiemList as $i => $kinhNghiem): ?>
+								<div class="card border-0 shadow-sm mb-3 p-3 repeat-block position-relative">
+									<button type="button" class="btn-close position-absolute top-0 end-0 m-3" aria-label="Xóa" onclick="this.closest('.repeat-block').remove()"></button>
+									<input type="hidden" name="kinhNghiem[<?= $i ?>][maCongViec]" value="<?= htmlspecialchars($kinhNghiem['MaCongViec']) ?>">
+									<div class="row g-3">
+										<div class="col-md-6">
+											<label class="form-label fw-bold">Tên công ty <span class="text-danger">*</span></label>
+											<input type="text" name="kinhNghiem[<?= $i ?>][tenCongTy]" class="form-control" value="<?= htmlspecialchars($kinhNghiem['TenCongTy']) ?>" required>
+										</div>
+										<div class="col-md-6">
+											<label class="form-label fw-bold">Vị trí</label>
+											<input type="text" name="kinhNghiem[<?= $i ?>][viTri]" class="form-control" value="<?= htmlspecialchars($kinhNghiem['ViTri'] ?? '') ?>">
+										</div>
+										<div class="col-md-6">
+											<label class="form-label fw-bold">Thời gian làm việc</label>
+											<input type="text" name="kinhNghiem[<?= $i ?>][thoiGianLamViec]" class="form-control" value="<?= htmlspecialchars($kinhNghiem['ThoiGianLamViec'] ?? '') ?>" placeholder="01/2022 - 03/2023">
+										</div>
+										<div class="col-12">
+											<label class="form-label fw-bold">Mô tả công việc</label>
+											<textarea name="kinhNghiem[<?= $i ?>][moTa]" class="form-control" rows="3"><?= htmlspecialchars($kinhNghiem['MoTa'] ?? '') ?></textarea>
+										</div>
+									</div>
+								</div>
+							<?php endforeach; ?>
+						</div>
+
+						<button type="button" class="btn btn-outline-primary btn-sm mb-4" onclick="addKinhNghiemRow('kinhNghiemContainerEdit')">
+							<i class="fa-solid fa-plus me-1"></i> Thêm kinh nghiệm
+						</button>
+
+
+						<!-- DỰ ÁN -->
+
+						<hr class="my-4">
+
+						<h5 class="fw-bold text-primary mb-3">
+							<i class="fa-solid fa-diagram-project me-2"></i>
+							Dự án
+						</h5>
+
+						<div id="duAnContainerEdit" data-next-index="<?= count($duAnList) ?>">
+							<?php foreach ($duAnList as $i => $duAn): ?>
+								<div class="card border-0 shadow-sm mb-3 p-3 repeat-block position-relative">
+									<button type="button" class="btn-close position-absolute top-0 end-0 m-3" aria-label="Xóa" onclick="this.closest('.repeat-block').remove()"></button>
+									<input type="hidden" name="duAn[<?= $i ?>][maDuAn]" value="<?= htmlspecialchars($duAn['MaDuAn']) ?>">
+									<div class="row g-3">
+										<div class="col-md-6">
+											<label class="form-label fw-bold">Tên dự án <span class="text-danger">*</span></label>
+											<input type="text" name="duAn[<?= $i ?>][tenDuAn]" class="form-control" value="<?= htmlspecialchars($duAn['TenDuAn']) ?>" required>
+										</div>
+										<div class="col-md-4">
+											<label class="form-label fw-bold">Vị trí / Vai trò</label>
+											<input type="text" name="duAn[<?= $i ?>][viTri]" class="form-control" value="<?= htmlspecialchars($duAn['ViTri'] ?? '') ?>">
+										</div>
+										<div class="col-md-2">
+											<label class="form-label fw-bold">Số thành viên</label>
+											<input type="number" name="duAn[<?= $i ?>][soLuongThanhVien]" class="form-control" value="<?= htmlspecialchars($duAn['SoLuongThanhVien'] ?? '') ?>" min="1">
+										</div>
+										<div class="col-12">
+											<label class="form-label fw-bold">Công nghệ sử dụng</label>
+											<input type="text" name="duAn[<?= $i ?>][congNgheSuDung]" class="form-control" value="<?= htmlspecialchars($duAn['CongNgheSuDung'] ?? '') ?>" placeholder="React, Node.js, MongoDB...">
+										</div>
+										<div class="col-12">
+											<label class="form-label fw-bold">Mô tả dự án</label>
+											<textarea name="duAn[<?= $i ?>][moTa]" class="form-control" rows="3"><?= htmlspecialchars($duAn['MoTa'] ?? '') ?></textarea>
+										</div>
+									</div>
+								</div>
+							<?php endforeach; ?>
+						</div>
+
+						<button type="button" class="btn btn-outline-primary btn-sm mb-4" onclick="addDuAnRow('duAnContainerEdit')">
+							<i class="fa-solid fa-plus me-1"></i> Thêm dự án
+						</button>
+
+
+						<!-- CHỨNG CHỈ -->
+
+						<hr class="my-4">
+
+						<h5 class="fw-bold text-primary mb-3">
+							<i class="fa-solid fa-certificate me-2"></i>
+							Chứng chỉ
+						</h5>
+
+						<div id="chungChiContainerEdit" data-next-index="<?= count($chungChiList) ?>">
+							<?php foreach ($chungChiList as $i => $chungChi): ?>
+								<div class="card border-0 shadow-sm mb-3 p-3 repeat-block position-relative">
+									<button type="button" class="btn-close position-absolute top-0 end-0 m-3" aria-label="Xóa" onclick="this.closest('.repeat-block').remove()"></button>
+									<input type="hidden" name="chungChi[<?= $i ?>][maChungChi]" value="<?= htmlspecialchars($chungChi['MaChungChi']) ?>">
+									<div class="row g-3">
+										<div class="col-md-6">
+											<label class="form-label fw-bold">Tên chứng chỉ <span class="text-danger">*</span></label>
+											<input type="text" name="chungChi[<?= $i ?>][tenChungChi]" class="form-control" value="<?= htmlspecialchars($chungChi['TenChungChi']) ?>" required>
+										</div>
+										<div class="col-md-6">
+											<label class="form-label fw-bold">Tổ chức cấp</label>
+											<input type="text" name="chungChi[<?= $i ?>][toChucCap]" class="form-control" value="<?= htmlspecialchars($chungChi['ToChucCap'] ?? '') ?>">
+										</div>
+										<div class="col-md-3">
+											<label class="form-label fw-bold">Ngày cấp</label>
+											<input type="date" name="chungChi[<?= $i ?>][ngayCap]" class="form-control" value="<?= htmlspecialchars($chungChi['NgayCap'] ?? '') ?>">
+										</div>
+										<div class="col-md-3">
+											<label class="form-label fw-bold">Ngày hết hạn</label>
+											<input type="date" name="chungChi[<?= $i ?>][ngayHetHan]" class="form-control" value="<?= htmlspecialchars($chungChi['NgayHetHan'] ?? '') ?>">
+										</div>
+										<div class="col-md-6">
+											<label class="form-label fw-bold">Mã số chứng chỉ</label>
+											<input type="text" name="chungChi[<?= $i ?>][maSoChungChi]" class="form-control" value="<?= htmlspecialchars($chungChi['MaSoChungChi'] ?? '') ?>">
+										</div>
+										<div class="col-12">
+											<label class="form-label fw-bold">Link chứng chỉ</label>
+											<input type="url" name="chungChi[<?= $i ?>][duongLinkChungChi]" class="form-control" value="<?= htmlspecialchars($chungChi['DuongLinkChungChi'] ?? '') ?>" placeholder="https://...">
+										</div>
+									</div>
+								</div>
+							<?php endforeach; ?>
+						</div>
+
+						<button type="button" class="btn btn-outline-primary btn-sm mb-4" onclick="addChungChiRow('chungChiContainerEdit')">
+							<i class="fa-solid fa-plus me-1"></i> Thêm chứng chỉ
+						</button>
+
+
+						<div class="text-end mt-4">
+							<button
+								type="button"
+								class="btn btn-secondary me-2"
+								onclick="hideEditForm()"
+							>
+								Hủy
+							</button>
+
+							<button
+								type="submit"
+								class="btn btn-success px-4"
+							>
+								<i class="fa-solid fa-save me-2"></i>
+								Lưu thay đổi
+							</button>
+						</div>
+					</form>
+				</div>
+			</div>
+
+		<?php endif; ?>
+
+
+	</div>
 
 </section>
 
@@ -966,48 +1388,210 @@ require_once __DIR__ . '/../layouts/header.php';
 
 function showManualForm() {
 
-    document.getElementById('manualForm').style.display = 'block';
+	document.getElementById('manualForm').style.display = 'block';
 
-    document.getElementById('uploadForm').style.display = 'none';
+	document.getElementById('uploadForm').style.display = 'none';
 
-    document
-        .getElementById('manualForm')
-        .scrollIntoView({
-            behavior: 'smooth'
-        });
+	document
+		.getElementById('manualForm')
+		.scrollIntoView({
+			behavior: 'smooth'
+		});
 
 }
 
 
 function showUploadForm() {
 
-    document.getElementById('uploadForm').style.display = 'block';
+	document.getElementById('uploadForm').style.display = 'block';
 
-    document.getElementById('manualForm').style.display = 'none';
+	document.getElementById('manualForm').style.display = 'none';
 
-    document
-        .getElementById('uploadForm')
-        .scrollIntoView({
-            behavior: 'smooth'
-        });
+	document
+		.getElementById('uploadForm')
+		.scrollIntoView({
+			behavior: 'smooth'
+		});
 
 }
 function showEditForm() {
 
-    const form = document.getElementById('editForm');
+	const form = document.getElementById('editForm');
 
-    form.style.display = 'block';
+	form.style.display = 'block';
 
-    form.scrollIntoView({
-        behavior: 'smooth'
-    });
+	form.scrollIntoView({
+		behavior: 'smooth'
+	});
 
 }
 
 function hideEditForm() {
 
-    document.getElementById('editForm').style.display = 'none';
+	document.getElementById('editForm').style.display = 'none';
 
+}
+
+/**
+ * Tạo và thêm 1 khối "học vấn" trống vào container chỉ định.
+ * Dùng data-next-index trên container để đảm bảo mỗi khối thêm mới có
+ * chỉ số riêng, không trùng với các khối đã render sẵn từ server (edit form).
+ */
+function addHocVanRow(containerId) {
+	const container = document.getElementById(containerId);
+	const idx = parseInt(container.dataset.nextIndex, 10);
+	container.dataset.nextIndex = idx + 1;
+
+	const div = document.createElement('div');
+	div.className = 'card border-0 shadow-sm mb-3 p-3 repeat-block position-relative';
+	div.innerHTML = `
+		<button type="button" class="btn-close position-absolute top-0 end-0 m-3" aria-label="Xóa" onclick="this.closest('.repeat-block').remove()"></button>
+		<input type="hidden" name="hocVan[${idx}][maHocVan]" value="">
+		<div class="row g-3">
+			<div class="col-md-6">
+				<label class="form-label fw-bold">Tên trường <span class="text-danger">*</span></label>
+				<input type="text" name="hocVan[${idx}][tenTruong]" class="form-control" required>
+			</div>
+			<div class="col-md-6">
+				<label class="form-label fw-bold">Chuyên ngành</label>
+				<input type="text" name="hocVan[${idx}][chuyenNganh]" class="form-control">
+			</div>
+			<div class="col-md-4">
+				<label class="form-label fw-bold">Học lực</label>
+				<input type="text" name="hocVan[${idx}][hocLuc]" class="form-control" placeholder="Giỏi/Khá/Trung bình...">
+			</div>
+			<div class="col-md-2">
+				<label class="form-label fw-bold">GPA</label>
+				<input type="text" name="hocVan[${idx}][gpa]" class="form-control">
+			</div>
+			<div class="col-md-3">
+				<label class="form-label fw-bold">Năm bắt đầu</label>
+				<input type="number" name="hocVan[${idx}][namBatDau]" class="form-control" placeholder="2020">
+			</div>
+			<div class="col-md-3">
+				<label class="form-label fw-bold">Năm kết thúc</label>
+				<input type="number" name="hocVan[${idx}][namKetThuc]" class="form-control" placeholder="2024">
+			</div>
+		</div>
+	`;
+	container.appendChild(div);
+}
+
+/**
+ * Tạo và thêm 1 khối "kinh nghiệm làm việc" trống (cùng cơ chế addHocVanRow).
+ */
+function addKinhNghiemRow(containerId) {
+	const container = document.getElementById(containerId);
+	const idx = parseInt(container.dataset.nextIndex, 10);
+	container.dataset.nextIndex = idx + 1;
+
+	const div = document.createElement('div');
+	div.className = 'card border-0 shadow-sm mb-3 p-3 repeat-block position-relative';
+	div.innerHTML = `
+		<button type="button" class="btn-close position-absolute top-0 end-0 m-3" aria-label="Xóa" onclick="this.closest('.repeat-block').remove()"></button>
+		<input type="hidden" name="kinhNghiem[${idx}][maCongViec]" value="">
+		<div class="row g-3">
+			<div class="col-md-6">
+				<label class="form-label fw-bold">Tên công ty <span class="text-danger">*</span></label>
+				<input type="text" name="kinhNghiem[${idx}][tenCongTy]" class="form-control" required>
+			</div>
+			<div class="col-md-6">
+				<label class="form-label fw-bold">Vị trí</label>
+				<input type="text" name="kinhNghiem[${idx}][viTri]" class="form-control">
+			</div>
+			<div class="col-md-6">
+				<label class="form-label fw-bold">Thời gian làm việc</label>
+				<input type="text" name="kinhNghiem[${idx}][thoiGianLamViec]" class="form-control" placeholder="01/2022 - 03/2023">
+			</div>
+			<div class="col-12">
+				<label class="form-label fw-bold">Mô tả công việc</label>
+				<textarea name="kinhNghiem[${idx}][moTa]" class="form-control" rows="3"></textarea>
+			</div>
+		</div>
+	`;
+	container.appendChild(div);
+}
+
+/**
+ * Tạo và thêm 1 khối "dự án" trống (cùng cơ chế addHocVanRow).
+ */
+function addDuAnRow(containerId) {
+	const container = document.getElementById(containerId);
+	const idx = parseInt(container.dataset.nextIndex, 10);
+	container.dataset.nextIndex = idx + 1;
+
+	const div = document.createElement('div');
+	div.className = 'card border-0 shadow-sm mb-3 p-3 repeat-block position-relative';
+	div.innerHTML = `
+		<button type="button" class="btn-close position-absolute top-0 end-0 m-3" aria-label="Xóa" onclick="this.closest('.repeat-block').remove()"></button>
+		<input type="hidden" name="duAn[${idx}][maDuAn]" value="">
+		<div class="row g-3">
+			<div class="col-md-6">
+				<label class="form-label fw-bold">Tên dự án <span class="text-danger">*</span></label>
+				<input type="text" name="duAn[${idx}][tenDuAn]" class="form-control" required>
+			</div>
+			<div class="col-md-4">
+				<label class="form-label fw-bold">Vị trí / Vai trò</label>
+				<input type="text" name="duAn[${idx}][viTri]" class="form-control">
+			</div>
+			<div class="col-md-2">
+				<label class="form-label fw-bold">Số thành viên</label>
+				<input type="number" name="duAn[${idx}][soLuongThanhVien]" class="form-control" min="1">
+			</div>
+			<div class="col-12">
+				<label class="form-label fw-bold">Công nghệ sử dụng</label>
+				<input type="text" name="duAn[${idx}][congNgheSuDung]" class="form-control" placeholder="React, Node.js, MongoDB...">
+			</div>
+			<div class="col-12">
+				<label class="form-label fw-bold">Mô tả dự án</label>
+				<textarea name="duAn[${idx}][moTa]" class="form-control" rows="3"></textarea>
+			</div>
+		</div>
+	`;
+	container.appendChild(div);
+}
+
+/**
+ * Tạo và thêm 1 khối "chứng chỉ" trống (cùng cơ chế addHocVanRow).
+ */
+function addChungChiRow(containerId) {
+	const container = document.getElementById(containerId);
+	const idx = parseInt(container.dataset.nextIndex, 10);
+	container.dataset.nextIndex = idx + 1;
+
+	const div = document.createElement('div');
+	div.className = 'card border-0 shadow-sm mb-3 p-3 repeat-block position-relative';
+	div.innerHTML = `
+		<button type="button" class="btn-close position-absolute top-0 end-0 m-3" aria-label="Xóa" onclick="this.closest('.repeat-block').remove()"></button>
+		<input type="hidden" name="chungChi[${idx}][maChungChi]" value="">
+		<div class="row g-3">
+			<div class="col-md-6">
+				<label class="form-label fw-bold">Tên chứng chỉ <span class="text-danger">*</span></label>
+				<input type="text" name="chungChi[${idx}][tenChungChi]" class="form-control" required>
+			</div>
+			<div class="col-md-6">
+				<label class="form-label fw-bold">Tổ chức cấp</label>
+				<input type="text" name="chungChi[${idx}][toChucCap]" class="form-control">
+			</div>
+			<div class="col-md-3">
+				<label class="form-label fw-bold">Ngày cấp</label>
+				<input type="date" name="chungChi[${idx}][ngayCap]" class="form-control">
+			</div>
+			<div class="col-md-3">
+				<label class="form-label fw-bold">Ngày hết hạn</label>
+				<input type="date" name="chungChi[${idx}][ngayHetHan]" class="form-control">
+			</div>
+			<div class="col-md-6">
+				<label class="form-label fw-bold">Mã số chứng chỉ</label>
+				<input type="text" name="chungChi[${idx}][maSoChungChi]" class="form-control">
+			</div>
+			<div class="col-12">
+				<label class="form-label fw-bold">Link chứng chỉ</label>
+				<input type="url" name="chungChi[${idx}][duongLinkChungChi]" class="form-control" placeholder="https://...">
+			</div>
+		</div>
+	`;
+	container.appendChild(div);
 }
 </script>
 

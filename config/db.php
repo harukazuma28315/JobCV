@@ -12,8 +12,7 @@ $dbname = "cvdb";
 $username = "root";
 $password = "";
 
-class Database
-{
+class Database {
 	/**
 	 * @var mysqli|null Instance kết nối duy nhất
 	 */
@@ -22,8 +21,7 @@ class Database
 	/**
 	 * Không cho phép khởi tạo trực tiếp (Singleton Pattern).
 	 */
-	private function __construct()
-	{
+	private function __construct() {
 	}
 
 	/**
@@ -32,8 +30,7 @@ class Database
 	 *
 	 * @return mysqli
 	 */
-	public static function getConnection()
-	{
+	public static function getConnection() {
 		if (self::$instance === null) {
 			$link = mysqli_connect(DB_HOST, DB_USER, DB_PASS, DB_NAME);
 

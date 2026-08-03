@@ -4,7 +4,7 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 class LogoutController {
-    private $conn;
+	private $conn;
 
 	public function __construct($conn) {
 		$this->conn = $conn;
@@ -16,7 +16,8 @@ class LogoutController {
 	 * @return void Điều hướng client trực tiếp về trang đăng nhập.
 	 */
 	public function handleLogout() {
-		$shouldLogout = (isset($_GET['action']) && $_GET['action'] === 'logout') || (isset($_GET['route']) && $_GET['route'] === 'auth/logout');
+		$shouldLogout = (isset($_GET['action']) && $_GET['action'] === 'logout')
+			|| (isset($_GET['route']) && $_GET['route'] === 'auth/logout');
 
 		if ($shouldLogout) {
 			$_SESSION = array();

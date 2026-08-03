@@ -12,9 +12,9 @@ require_once ROOT_PATH . '/models/JobModel.php';
 require_once ROOT_PATH . '/helpers/AuthHelper.php';
 require_once ROOT_PATH . '/helpers/ResponseHelper.php';
 require_once ROOT_PATH . '/services/EmailService.php';
+require_once ROOT_PATH . '/services/CvService.php';
 
-class RecruiterController
-{
+class RecruiterController {
 	/**
 	 * @var ApplicationModel
 	 */
@@ -31,6 +31,11 @@ class RecruiterController
 	private $emailService;
 
 	/**
+	 * @var CvService
+	 */
+	private $cvService;
+
+	/**
 	 * Danh sách trạng thái hợp lệ, dùng để validate input trước khi update.
 	 *
 	 * @var array
@@ -43,11 +48,11 @@ class RecruiterController
 		STATUS_TU_CHOI,
 	);
 
-	public function __construct()
-	{
+	public function __construct() {
 		$this->hoSoUngTuyenModel = new ApplicationModel();
 		$this->tinTuyenDungModel = new JobModel();
 		$this->emailService = new EmailService();
+		$this->cvService = new CvService();
 	}
 
 	/**
@@ -56,8 +61,7 @@ class RecruiterController
 	 *
 	 * @return void
 	 */
-	public function showList()
-	{
+	public function showList() {
 		AuthHelper::requireRole(ROLE_NHATUYENDUNG);
 
 		$maNhaTuyenDung = AuthHelper::getCurrentUserId();
@@ -78,12 +82,12 @@ class RecruiterController
 
 		} else {
 
-			require_once ROOT_PATH . '/models/TinTuyenDung.php';
+			require_once ROOT_PATH . '/models/JobPosting.php';
 
-			$tinModel = new TinTuyenDung();
+			$tinModel = new JobPosting();
 
 			$resultTin =
-				$tinModel->getByNhaTuyenDung($maNhaTuyenDung);
+				$tinModel->getByEmployer($maNhaTuyenDung);
 
 			$danhSachTinTuyenDung = [];
 
@@ -99,14 +103,21 @@ class RecruiterController
 		// 2. XÁC ĐỊNH TIN ĐANG ĐƯỢC CHỌN
 		// ==================================================
 
-		if (isset($_GET['maTin']) && $_GET['maTin'] !== '') {
+		if (isset($_GET['maTin'])) {
 
-			// Người dùng đã chọn tin cụ thể
+			// Form filter đã được submit (kể cả khi người dùng chọn
+			// "Tất cả tin tuyển dụng" -> giá trị rỗng). Không được coi
+			// rỗng như "chưa chọn" nữa, nếu không sẽ luôn bị ép về tin
+			// mới nhất mỗi khi bấm Áp dụng với lựa chọn Tất cả.
 			$maTinLoc = trim($_GET['maTin']);
+
+			if ($maTinLoc === '') {
+				$maTinLoc = null; // Tất cả tin tuyển dụng
+			}
 
 		} else {
 
-			// Mặc định lấy tin mới nhất
+			// Truy cập lần đầu, chưa từng submit filter -> mặc định lấy tin mới nhất
 			$maTinLoc = !empty($danhSachTinTuyenDung)
 				? $danhSachTinTuyenDung[0]['MaTinTuyenDung']
 				: null;
@@ -155,8 +166,7 @@ class RecruiterController
 	 *
 	 * @return void
 	 */
-	public function showDetail()
-	{
+	public function showDetail() {
 		AuthHelper::requireRole(ROLE_NHATUYENDUNG);
 
 		$maHoSo = isset($_GET['maHS']) ? trim($_GET['maHS']) : '';
@@ -169,6 +179,19 @@ class RecruiterController
 			AuthHelper::redirect(BASE_URL . '/index.php?route=recruiter/list');
 		}
 
+		// Lấy toàn bộ dữ liệu con của CV (học vấn, kinh nghiệm, dự án, chứng
+		// chỉ) để hiển thị trang xem CV chi tiết (chỉ xem, không cho sửa).
+		// Luôn dùng $hoSoUngTuyen['MaCV'] lấy được từ getDetailForRecruiter ở
+		// trên (đã xác thực hồ sơ thuộc công ty này) — không đọc maCV trực
+		// tiếp từ query string để tránh IDOR (xem được CV của công ty khác).
+		$fullDetail = $this->cvService->getFullDetail($hoSoUngTuyen['MaCV']);
+
+		$cv = $fullDetail['cv'];
+		$hocVanList = $fullDetail['hocVan'] ? $fullDetail['hocVan']->fetch_all(MYSQLI_ASSOC) : [];
+		$kinhNghiemList = $fullDetail['kinhNghiem'] ? $fullDetail['kinhNghiem']->fetch_all(MYSQLI_ASSOC) : [];
+		$duAnList = $fullDetail['duAn'] ? $fullDetail['duAn']->fetch_all(MYSQLI_ASSOC) : [];
+		$chungChiList = $fullDetail['chungChi'] ? $fullDetail['chungChi']->fetch_all(MYSQLI_ASSOC) : [];
+
 		$thongBao = ResponseHelper::getFlash();
 
 		require ROOT_PATH . '/views/page/employer/candidate-detail.php';
@@ -180,8 +203,7 @@ class RecruiterController
 	 *
 	 * @return void
 	 */
-	public function updateStatus()
-	{
+	public function updateStatus() {
 		if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 			AuthHelper::redirect(BASE_URL . '/index.php?route=recruiter/list');
 		}
@@ -202,6 +224,8 @@ class RecruiterController
 				throw new Exception('Trạng thái không hợp lệ.');
 			}
 
+			// Truyền kèm $maNhaTuyenDung để chặn IDOR: chỉ lấy được hồ sơ ứng tuyển
+			// thuộc về tin tuyển dụng của chính công ty đang đăng nhập.
 			$hoSoUngTuyen = $this->hoSoUngTuyenModel->getDetailForRecruiter($maHoSo, $maNhaTuyenDung);
 
 			if (!$hoSoUngTuyen) {
@@ -214,12 +238,20 @@ class RecruiterController
 				throw new Exception('Cập nhật thất bại.');
 			}
 
-			$guiMailThanhCong = $this->guiEmailTheoTrangThai($trangThaiMoi, $hoSoUngTuyen);
+			// Gửi email chỉ là thông báo phụ: nếu gửi thất bại vẫn giữ nguyên
+			// kết quả cập nhật trạng thái đã lưu thành công trong DB, chỉ đổi nội dung thông báo.
+			$guiMailThanhCong = $this->sendEmailByStatus($trangThaiMoi, $hoSoUngTuyen);
 
 			if ($guiMailThanhCong) {
-				ResponseHelper::setFlash('success', 'Cập nhật trạng thái thành công và đã gửi email thông báo cho ứng viên.');
+				ResponseHelper::setFlash(
+					'success',
+					'Cập nhật trạng thái thành công và đã gửi email thông báo cho ứng viên.'
+				);
 			} else {
-				ResponseHelper::setFlash('success', 'Cập nhật trạng thái thành công, nhưng gửi email thông báo thất bại.');
+				ResponseHelper::setFlash(
+					'success',
+					'Cập nhật trạng thái thành công, nhưng gửi email thông báo thất bại.'
+				);
 			}
 
 		} catch (Exception $e) {
@@ -231,8 +263,7 @@ class RecruiterController
 	/**
 	 * Chọn hàm gửi mail phù hợp theo trạng thái mới của hồ sơ.
 	 */
-	private function guiEmailTheoTrangThai($trangThaiMoi, $hoSoUngTuyen)
-	{
+	private function sendEmailByStatus($trangThaiMoi, $hoSoUngTuyen) {
 		$emailNguoiNhan = $hoSoUngTuyen['EmailUngVien'];
 		$tenNguoiNhan = $hoSoUngTuyen['TenUngVien'];
 		$tieuDeTin = $hoSoUngTuyen['TenTin'];

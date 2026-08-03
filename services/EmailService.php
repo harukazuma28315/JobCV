@@ -16,8 +16,7 @@ require_once ROOT_PATH . '/lib/PHPMailer/src/SMTP.php';
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-class EmailService
-{
+class EmailService {
 	/**
 	 * Gửi email khi Nhà tuyển dụng đánh dấu "Đã xem" hồ sơ.
 	 *
@@ -26,16 +25,15 @@ class EmailService
 	 * @param string $tieuDeTin
 	 * @return bool
 	 */
-	public function sendViewedMail($emailNguoiNhan, $tenNguoiNhan, $tieuDeTin)
-	{
+	public function sendViewedMail($emailNguoiNhan, $tenNguoiNhan, $tieuDeTin) {
 		$tieuDeEmail = 'Ho so ung tuyen cua ban da duoc xem';
-		$noiDungEmail = $this->taoNoiDungEmail(
+		$noiDungEmail = $this->createEmailContent(
 			$tenNguoiNhan,
 			'Nha tuyen dung da xem ho so ung tuyen cua ban cho vi tri "' . htmlspecialchars($tieuDeTin) . '". '
 			. 'Vui long theo doi email de cap nhat cac buoc tiep theo.'
 		);
 
-		return $this->guiEmailSMTP($emailNguoiNhan, $tenNguoiNhan, $tieuDeEmail, $noiDungEmail);
+		return $this->sendEmailSMTP($emailNguoiNhan, $tenNguoiNhan, $tieuDeEmail, $noiDungEmail);
 	}
 
 	/**
@@ -46,16 +44,15 @@ class EmailService
 	 * @param string $tieuDeTin
 	 * @return bool
 	 */
-	public function sendInterviewMail($emailNguoiNhan, $tenNguoiNhan, $tieuDeTin)
-	{
+	public function sendInterviewMail($emailNguoiNhan, $tenNguoiNhan, $tieuDeTin) {
 		$tieuDeEmail = 'Thu moi phong van';
-		$noiDungEmail = $this->taoNoiDungEmail(
+		$noiDungEmail = $this->createEmailContent(
 			$tenNguoiNhan,
 			'Chuc mung! Ban da duoc moi phong van cho vi tri "' . htmlspecialchars($tieuDeTin) . '". '
 			. 'Nha tuyen dung se lien he voi ban de sap xep thoi gian cu the.'
 		);
 
-		return $this->guiEmailSMTP($emailNguoiNhan, $tenNguoiNhan, $tieuDeEmail, $noiDungEmail);
+		return $this->sendEmailSMTP($emailNguoiNhan, $tenNguoiNhan, $tieuDeEmail, $noiDungEmail);
 	}
 
 	/**
@@ -66,16 +63,15 @@ class EmailService
 	 * @param string $tieuDeTin
 	 * @return bool
 	 */
-	public function sendAcceptMail($emailNguoiNhan, $tenNguoiNhan, $tieuDeTin)
-	{
+	public function sendAcceptMail($emailNguoiNhan, $tenNguoiNhan, $tieuDeTin) {
 		$tieuDeEmail = 'Chuc mung ban da trung tuyen';
-		$noiDungEmail = $this->taoNoiDungEmail(
+		$noiDungEmail = $this->createEmailContent(
 			$tenNguoiNhan,
 			'Chuc mung ban da duoc nhan vao vi tri "' . htmlspecialchars($tieuDeTin) . '". '
 			. 'Nha tuyen dung se som lien he de huong dan cac buoc tiep theo.'
 		);
 
-		return $this->guiEmailSMTP($emailNguoiNhan, $tenNguoiNhan, $tieuDeEmail, $noiDungEmail);
+		return $this->sendEmailSMTP($emailNguoiNhan, $tenNguoiNhan, $tieuDeEmail, $noiDungEmail);
 	}
 
 	/**
@@ -86,16 +82,15 @@ class EmailService
 	 * @param string $tieuDeTin
 	 * @return bool
 	 */
-	public function sendRejectMail($emailNguoiNhan, $tenNguoiNhan, $tieuDeTin)
-	{
+	public function sendRejectMail($emailNguoiNhan, $tenNguoiNhan, $tieuDeTin) {
 		$tieuDeEmail = 'Ket qua ung tuyen';
-		$noiDungEmail = $this->taoNoiDungEmail(
+		$noiDungEmail = $this->createEmailContent(
 			$tenNguoiNhan,
 			'Cam on ban da quan tam ung tuyen vi tri "' . htmlspecialchars($tieuDeTin) . '". '
 			. 'Rat tiec hien tai ho so cua ban chua phu hop. Chuc ban som tim duoc cong viec ung y.'
 		);
 
-		return $this->guiEmailSMTP($emailNguoiNhan, $tenNguoiNhan, $tieuDeEmail, $noiDungEmail);
+		return $this->sendEmailSMTP($emailNguoiNhan, $tenNguoiNhan, $tieuDeEmail, $noiDungEmail);
 	}
 
 	/**
@@ -105,8 +100,7 @@ class EmailService
 	 * @param string $noiDungChinh
 	 * @return string
 	 */
-	private function taoNoiDungEmail($tenNguoiNhan, $noiDungChinh)
-	{
+	private function createEmailContent($tenNguoiNhan, $noiDungChinh) {
 		$tenAnToan = htmlspecialchars($tenNguoiNhan);
 
 		return '<p>Xin chao ' . $tenAnToan . ',</p>'
@@ -122,21 +116,20 @@ class EmailService
 	 * @param string|int $otpCode Mã số OTP ngẫu nhiên
 	 * @return bool
 	 */
-	public function sendOTPEmail($userEmail, $otpCode)
-	{
+	public function sendOTPEmail($userEmail, $otpCode) {
 		$tieuDeEmail = 'Mã xác thực';
 		
-		// Xây dựng template HTML rõ ràng, sử dụng hàm taoNoiDungEmail để đồng bộ chữ ký hệ thống[cite: 10]
+		// Xây dựng template HTML rõ ràng, sử dụng hàm createEmailContent để đồng bộ chữ ký hệ thống[cite: 10]
 		$noiDungChinh = "
 			<h3>Mã xác thực (OTP) của bạn là:</h3>
 			<h1 style='color: #0d6efd; letter-spacing: 5px; margin: 15px 0;'>$otpCode</h1>
 			<p>Vui lòng không chia sẻ mã này với bất kỳ ai. Mã có hiệu lực trong vòng 15 phút.</p>
 		";
 
-		$noiDungEmail = $this->taoNoiDungEmail('Bạn', $noiDungChinh);
+		$noiDungEmail = $this->createEmailContent('Bạn', $noiDungChinh);
 
 		// Thực hiện gửi thông qua cấu hình SMTP tập trung của hệ thống
-		return $this->guiEmailSMTP($userEmail, 'Người dùng mới', $tieuDeEmail, $noiDungEmail);
+		return $this->sendEmailSMTP($userEmail, 'Người dùng mới', $tieuDeEmail, $noiDungEmail);
 	}
 
 	/**
@@ -149,8 +142,7 @@ class EmailService
 	 * @param string $noiDungEmail
 	 * @return bool
 	 */
-	private function guiEmailSMTP($emailNguoiNhan, $tenNguoiNhan, $tieuDeEmail, $noiDungEmail)
-	{
+	private function sendEmailSMTP($emailNguoiNhan, $tenNguoiNhan, $tieuDeEmail, $noiDungEmail) {
 		$mail = new PHPMailer(true);
 
 		try {

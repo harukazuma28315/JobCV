@@ -53,11 +53,11 @@ define('MAIL_FROM_NAME', 'Hệ Thống Tuyển Dụng');
 
 // Tùy chọn bổ sung (giúp debug và tránh lỗi TLS)
 define('MAIL_SMTP_OPTIONS', [
-    'ssl' => [
-        'verify_peer' => false,
-        'verify_peer_name' => false,
-        'allow_self_signed' => true
-    ]
+	'ssl' => [
+		'verify_peer' => false,
+		'verify_peer_name' => false,
+		'allow_self_signed' => true
+	]
 ]);
 
 // ---------- Vai trò người dùng (Role) ----------

@@ -2,22 +2,25 @@
 
 require_once __DIR__ . "/../config/db.php";
 
-class TinTuyenDung
-{
-    private $conn;
+class JobPosting {
+	private $conn;
 
-    public function __construct()
-    {
-        global $conn;
-        $this->conn = $conn;
-    }
+	public function __construct() {
+		global $conn;
+		$this->conn = $conn;
+	}
 
-    //==================================================
-    // TẠO TIN TUYỂN DỤNG
-    //==================================================
+	//==================================================
+	// TẠO TIN TUYỂN DỤNG
+	//==================================================
 
-    public function create(array $data)
-	{
+	/**
+	 * Tạo mới một tin tuyển dụng.
+	 *
+	 * @param array $data Dữ liệu tin tuyển dụng từ form đăng tin
+	 * @return bool True nếu tạo thành công (dừng chương trình bằng die() nếu lỗi SQL)
+	 */
+	public function create(array $data) {
 		$maTinTuyenDung = uniqid("TD");
 
 		$sql = "
@@ -85,23 +88,23 @@ class TinTuyenDung
 
 		// Lưu ngành nghề vào bảng chitietdanhmuc (nếu có)
 		if (!empty($data['category'])) {
-			$this->syncJobDanhMuc($maTinTuyenDung, $data['category'], 'NganhNghe');
+			$this->syncJobCategory($maTinTuyenDung, $data['category'], 'NganhNghe');
 		}
 
 		// Lưu địa điểm (thành phố) vào bảng chitietdanhmuc (nếu có)
 		if (!empty($data['location'])) {
-			$this->syncJobDanhMuc($maTinTuyenDung, $data['location'], 'diadiem');
+			$this->syncJobCategory($maTinTuyenDung, $data['location'], 'diadiem');
 		}
 
 		return true;
 	}
+
 	/**
 	 * Lấy tất cả tin tuyển dụng.
 	 *
 	 * @return mysqli_result
 	 */
-	public function getAll($sort = 'newest')
-	{
+	public function getAll($sort = 'newest') {
 		$orderBy = "t.NgayDang DESC";
 
 		switch ($sort) {
@@ -138,8 +141,7 @@ class TinTuyenDung
 	 * @param string $maTinTuyenDung
 	 * @return array|null
 	 */
-	public function getById($maTinTuyenDung)
-	{
+	public function getById($maTinTuyenDung) {
 		$sql = "SELECT 
 					t.*,
 					n.TenCongTy,
@@ -169,8 +171,7 @@ class TinTuyenDung
 	 * @param array $tinTuyenDungData
 	 * @return bool
 	 */
-	public function update(array $tinTuyenDungData)
-	{
+	public function update(array $tinTuyenDungData) {
 		$sql = "UPDATE TinTuyenDung
 				SET
 					TieuDe = ?,
@@ -191,22 +192,22 @@ class TinTuyenDung
 		$statement = $this->conn->prepare($sql);
 
 		$statement->bind_param(
-            "ssssssidsssiis",
-            $tinTuyenDungData["tieuDe"],
-            $tinTuyenDungData["moTaCongViec"],
-            $tinTuyenDungData["ngayHetHan"],
-            $tinTuyenDungData["yeuCauCongViec"],
-            $tinTuyenDungData["viTriTuyenDung"],
+			"ssssssidsssiis",
+			$tinTuyenDungData["tieuDe"],
+			$tinTuyenDungData["moTaCongViec"],
+			$tinTuyenDungData["ngayHetHan"],
+			$tinTuyenDungData["yeuCauCongViec"],
+			$tinTuyenDungData["viTriTuyenDung"],
 			$tinTuyenDungData["capBac"],
 			$tinTuyenDungData["soNamKinhNghiem"],
-            $tinTuyenDungData["mucLuong"],
-            $tinTuyenDungData["diaChiLamViec"],
-            $tinTuyenDungData["hinhThucLamViec"],
-            $tinTuyenDungData["doTuoiYeuCau"],
-            $tinTuyenDungData["soLuongTuyen"],
-            $tinTuyenDungData["thoiGianThuViec"],
-            $tinTuyenDungData["maTinTuyenDung"]
-        );
+			$tinTuyenDungData["mucLuong"],
+			$tinTuyenDungData["diaChiLamViec"],
+			$tinTuyenDungData["hinhThucLamViec"],
+			$tinTuyenDungData["doTuoiYeuCau"],
+			$tinTuyenDungData["soLuongTuyen"],
+			$tinTuyenDungData["thoiGianThuViec"],
+			$tinTuyenDungData["maTinTuyenDung"]
+		);
 
 		$statement->execute();
 
@@ -219,8 +220,7 @@ class TinTuyenDung
 	 * @param string $maTinTuyenDung
 	 * @return bool
 	 */
-	public function delete($maTinTuyenDung)
-	{
+	public function delete($maTinTuyenDung) {
 		$sql = "DELETE
 				FROM TinTuyenDung
 				WHERE MaTinTuyenDung = ?";
@@ -244,8 +244,7 @@ class TinTuyenDung
 	 * @param string $ngayHetHan
 	 * @return bool
 	 */
-	public function extendDeadline($maTinTuyenDung, $ngayHetHan)
-	{
+	public function extendDeadline($maTinTuyenDung, $ngayHetHan) {
 		$sql = "UPDATE TinTuyenDung
 				SET
 					NgayHetHan = ?
@@ -270,8 +269,7 @@ class TinTuyenDung
 	 * @param string $maTinTuyenDung
 	 * @return bool
 	 */
-	public function closeJob($maTinTuyenDung)
-	{
+	public function closeJob($maTinTuyenDung) {
 		$sql = "UPDATE TinTuyenDung
 				SET
 					TrangThai = 'DaDong'
@@ -297,8 +295,7 @@ class TinTuyenDung
 	 * @param string $keyword
 	 * @return mysqli_result
 	 */
-	public function search($keyword)
-	{
+	public function search($keyword) {
 		$sql = "SELECT *
 				FROM TinTuyenDung
 				WHERE
@@ -329,6 +326,7 @@ class TinTuyenDung
 
 		return $statement->get_result();
 	}
+
 	/**
 	 * Lọc theo mức lương.
 	 *
@@ -336,8 +334,7 @@ class TinTuyenDung
 	 * @param float $max
 	 * @return mysqli_result
 	 */
-	public function filterSalary($min, $max)
-	{
+	public function filterSalary($min, $max) {
 		$sql = "SELECT *
 				FROM TinTuyenDung
 				WHERE MucLuong BETWEEN ? AND ?";
@@ -360,8 +357,7 @@ class TinTuyenDung
 	 *
 	 * @return array
 	 */
-	public function getLocations()
-	{
+	public function getLocations() {
 		$sql = "SELECT MaDanhMuc, TenDanhMuc
 				FROM danhmuc
 				WHERE LoaiDanhMuc = 'diadiem'
@@ -384,8 +380,7 @@ class TinTuyenDung
 	 * @param string $maDanhMuc Mã địa điểm trong bảng danhmuc
 	 * @return mysqli_result
 	 */
-	public function filterLocation($maDanhMuc)
-	{
+	public function filterLocation($maDanhMuc) {
 		$sql = "SELECT t.*
 				FROM tintuyendung t
 				WHERE EXISTS (
@@ -412,8 +407,7 @@ class TinTuyenDung
 	 * @param string $hinhThuc
 	 * @return mysqli_result
 	 */
-	public function filterWorkType($hinhThuc)
-	{
+	public function filterWorkType($hinhThuc) {
 		$sql = "SELECT *
 				FROM TinTuyenDung
 				WHERE HinhThucLamViec = ?";
@@ -435,8 +429,7 @@ class TinTuyenDung
 	 * @param string $capBac
 	 * @return mysqli_result
 	 */
-	public function filterLevel($capBac)
-	{
+	public function filterLevel($capBac) {
 		$sql = "SELECT *
 				FROM TinTuyenDung
 				WHERE CapBac = ?";
@@ -458,8 +451,7 @@ class TinTuyenDung
 	 * @param int $soNam
 	 * @return mysqli_result
 	 */
-	public function filterExperience($soNam)
-	{
+	public function filterExperience($soNam) {
 		$sql = "SELECT *
 				FROM TinTuyenDung
 				WHERE SoNamKinhNghiem <= ?";
@@ -482,8 +474,7 @@ class TinTuyenDung
 	 * @param string $toDate
 	 * @return mysqli_result
 	 */
-	public function filterByPostedDate($fromDate, $toDate)
-	{
+	public function filterByPostedDate($fromDate, $toDate) {
 		$sql = "SELECT *
 				FROM TinTuyenDung
 				WHERE DATE(NgayDang) BETWEEN ? AND ?";
@@ -506,8 +497,7 @@ class TinTuyenDung
 	 * @param array $filters
 	 * @return mysqli_result
 	 */
-	public function filter($filters, $sort = 'newest')
-	{
+	public function filter($filters, $sort = 'newest') {
 		$orderBy = "t.NgayDang DESC";
 
 		switch ($sort) {
@@ -660,26 +650,23 @@ class TinTuyenDung
 	 * Lấy mã ngành nghề hiện tại đang gắn với 1 tin tuyển dụng.
 	 * Trả về null nếu chưa có.
 	 */
-	public function getCategoryIdByJob($maTinTuyenDung)
-	{
-		return $this->getDanhMucIdByJob($maTinTuyenDung, 'NganhNghe');
+	public function getCategoryIdByJob($maTinTuyenDung) {
+		return $this->getCategoryIdByJobType($maTinTuyenDung, 'NganhNghe');
 	}
 
 	/**
 	 * Lấy mã địa điểm (thành phố) hiện tại đang gắn với 1 tin tuyển dụng.
 	 * Trả về null nếu chưa có.
 	 */
-	public function getLocationIdByJob($maTinTuyenDung)
-	{
-		return $this->getDanhMucIdByJob($maTinTuyenDung, 'diadiem');
+	public function getLocationIdByJob($maTinTuyenDung) {
+		return $this->getCategoryIdByJobType($maTinTuyenDung, 'diadiem');
 	}
 
 	/**
 	 * Lấy mã danh mục (theo loại) đang gắn với 1 tin tuyển dụng
 	 * thông qua bảng trung gian chitietdanhmuc.
 	 */
-	private function getDanhMucIdByJob($maTinTuyenDung, $loaiDanhMuc)
-	{
+	private function getCategoryIdByJobType($maTinTuyenDung, $loaiDanhMuc) {
 		$sql = "SELECT ctdm.MaDanhMuc
 				FROM chitietdanhmuc ctdm
 				INNER JOIN danhmuc dm ON ctdm.MaDanhMuc = dm.MaDanhMuc
@@ -704,8 +691,9 @@ class TinTuyenDung
 	 * @param string $loaiDanhMuc   'NganhNghe' hoặc 'diadiem'
 	 * @return bool
 	 */
-	public function syncJobDanhMuc($maTinTuyenDung, $maDanhMuc, $loaiDanhMuc)
-	{
+	public function syncJobCategory($maTinTuyenDung, $maDanhMuc, $loaiDanhMuc) {
+		// Xoá trước rồi chèn lại (thay vì UPDATE) vì 1 tin có thể chưa từng có
+		// liên kết loại danh mục này, và mỗi tin chỉ được gắn tối đa 1 danh mục/loại.
 		$del = $this->conn->prepare(
 			"DELETE ctdm FROM chitietdanhmuc ctdm
 			 INNER JOIN danhmuc dm ON ctdm.MaDanhMuc = dm.MaDanhMuc
@@ -728,30 +716,34 @@ class TinTuyenDung
 		return $ins->execute();
 	}
 
-	public function getCategories()
-		{
-			$sql = "SELECT MaDanhMuc, TenDanhMuc
-					FROM danhmuc
-					WHERE LoaiDanhMuc = 'NganhNghe'
-					ORDER BY TenDanhMuc ASC";
+	/**
+	 * Lấy danh sách ngành nghề (dùng cho dropdown lọc/tạo tin tuyển dụng).
+	 *
+	 * @return array
+	 */
+	public function getCategories() {
+		$sql = "SELECT MaDanhMuc, TenDanhMuc
+				FROM danhmuc
+				WHERE LoaiDanhMuc = 'NganhNghe'
+				ORDER BY TenDanhMuc ASC";
 
-			$result = $this->conn->query($sql);
+		$result = $this->conn->query($sql);
 
-			$categories = [];
+		$categories = [];
 
-			while ($row = $result->fetch_assoc()) {
-				$categories[] = $row;
-			}
-
-			return $categories;
+		while ($row = $result->fetch_assoc()) {
+			$categories[] = $row;
 		}
+
+		return $categories;
+	}
+
 	/**
 	 * Lấy danh sách vị trí tuyển dụng duy nhất.
 	 *
 	 * @return array
 	 */
-	public function getPositions()
-	{
+	public function getPositions() {
 		$sql = "SELECT DISTINCT ViTriTuyenDung
 				FROM TinTuyenDung
 				WHERE ViTriTuyenDung IS NOT NULL
@@ -768,8 +760,14 @@ class TinTuyenDung
 
 		return $positions;
 	}
-	public function getFeaturedJobs($limit = 8)
-	{
+
+	/**
+	 * Lấy danh sách tin tuyển dụng nổi bật (mới nhất, đang mở) cho trang chủ.
+	 *
+	 * @param int $limit Số lượng tin tối đa cần lấy
+	 * @return mysqli_result
+	 */
+	public function getFeaturedJobs($limit = 8) {
 		$limit = (int) $limit;
 
 		$sql = "
@@ -795,8 +793,14 @@ class TinTuyenDung
 
 		return $this->conn->query($sql);
 	}
-	public function getTopCompanies($limit = 4)
-	{
+
+	/**
+	 * Lấy danh sách công ty có nhiều tin tuyển dụng đang mở nhất, cho trang chủ.
+	 *
+	 * @param int $limit Số lượng công ty tối đa cần lấy
+	 * @return mysqli_result
+	 */
+	public function getTopCompanies($limit = 4) {
 		$limit = (int) $limit;
 
 		$sql = "
@@ -823,8 +827,14 @@ class TinTuyenDung
 
 		return $this->conn->query($sql);
 	}
-	public function getPopularCategories($limit = 8)
-	{
+
+	/**
+	 * Lấy danh sách ngành nghề có nhiều tin tuyển dụng đang mở nhất, cho trang chủ.
+	 *
+	 * @param int $limit Số lượng ngành nghề tối đa cần lấy
+	 * @return mysqli_result
+	 */
+	public function getPopularCategories($limit = 8) {
 		$limit = (int) $limit;
 
 		$sql = "
@@ -848,8 +858,15 @@ class TinTuyenDung
 
 		return $this->conn->query($sql);
 	}
-	public function getByNhaTuyenDung($maNhaTuyenDung)
-	{
+
+	/**
+	 * Lấy toàn bộ tin tuyển dụng của một nhà tuyển dụng, kèm số lượng
+	 * ứng viên đã ứng tuyển vào mỗi tin.
+	 *
+	 * @param string $maNhaTuyenDung
+	 * @return mysqli_result
+	 */
+	public function getByEmployer($maNhaTuyenDung) {
 		$sql = "
 			SELECT 
 				t.*,

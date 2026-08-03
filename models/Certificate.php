@@ -5,12 +5,10 @@ require_once __DIR__ . "/../config/db.php";
 /**
  * Model quản lý thông tin chứng chỉ.
  */
-class ChungChi
-{
+class Certificate {
 	private $conn;
 
-	public function __construct()
-	{
+	public function __construct() {
 		global $conn;
 		$this->conn = $conn;
 	}
@@ -21,8 +19,7 @@ class ChungChi
 	 * @param array $chungChiData Thông tin chứng chỉ.
 	 * @return bool True nếu thêm thành công.
 	 */
-	public function create(array $chungChiData)
-	{
+	public function create(array $chungChiData) {
 		$sql = "INSERT INTO ChungChi
 				(
 					MaChungChi,
@@ -62,8 +59,7 @@ class ChungChi
 	 * @param string $maCV
 	 * @return mysqli_result
 	 */
-	public function getByCV($maCV)
-	{
+	public function getByCV($maCV) {
 		$sql = "SELECT *
 				FROM ChungChi
 				WHERE MaCV = ?";
@@ -86,8 +82,7 @@ class ChungChi
 	 * @param array $chungChiData Thông tin chứng chỉ.
 	 * @return bool True nếu cập nhật thành công.
 	 */
-	public function update(array $chungChiData)
-	{
+	public function update(array $chungChiData) {
 		$sql = "UPDATE ChungChi
 				SET
 					TenChungChi = ?,
@@ -122,8 +117,7 @@ class ChungChi
 	 * @param string $maChungChi
 	 * @return bool True nếu xóa thành công.
 	 */
-	public function delete($maChungChi)
-	{
+	public function delete($maChungChi) {
 		$sql = "DELETE
 				FROM ChungChi
 				WHERE MaChungChi = ?";
