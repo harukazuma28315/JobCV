@@ -241,6 +241,33 @@ $routes = [
 		]
 	],
 
+	'jobs/extend' => [
+		'controller' => 'JobPostingController',
+		'method' => 'extendDeadline',
+		'constructor' => 'default',
+		'parameters' => [
+			'post'
+		]
+	],
+
+	'jobs/toggle' => [
+		'controller' => 'JobPostingController',
+		'method' => 'toggleStatus',
+		'constructor' => 'default',
+		'parameters' => [
+			'post'
+		]
+	],
+
+	'jobs/delete' => [
+		'controller' => 'JobPostingController',
+		'method' => 'delete',
+		'constructor' => 'default',
+		'parameters' => [
+			'post'
+		]
+	],
+
 	// =========================
 	// ỨNG TUYỂN
 	// =========================

@@ -129,6 +129,8 @@ class JobPosting {
 			FROM tintuyendung t
 			INNER JOIN nhatuyendung n
 				ON t.MaNhaTuyenDung = n.MaNhaTuyenDung
+			WHERE t.TrangThai = 'DangMo'
+				AND t.TrangThaiDuyet = 'DaDuyet'
 			ORDER BY $orderBy
 		";
 
@@ -273,6 +275,30 @@ class JobPosting {
 		$sql = "UPDATE TinTuyenDung
 				SET
 					TrangThai = 'DaDong'
+				WHERE MaTinTuyenDung = ?";
+
+		$statement = $this->conn->prepare($sql);
+
+		$statement->bind_param(
+			"s",
+			$maTinTuyenDung
+		);
+
+		$statement->execute();
+
+		return $statement->affected_rows > 0;
+	}
+
+	/**
+	 * Mở lại tin tuyển dụng đã đóng.
+	 *
+	 * @param string $maTinTuyenDung
+	 * @return bool
+	 */
+	public function openJob($maTinTuyenDung) {
+		$sql = "UPDATE TinTuyenDung
+				SET
+					TrangThai = 'DangMo'
 				WHERE MaTinTuyenDung = ?";
 
 		$statement = $this->conn->prepare($sql);
@@ -522,7 +548,8 @@ class JobPosting {
 			FROM tintuyendung t
 			INNER JOIN nhatuyendung n
 				ON t.MaNhaTuyenDung = n.MaNhaTuyenDung
-			WHERE 1 = 1
+			WHERE t.TrangThai = 'DangMo'
+				AND t.TrangThaiDuyet = 'DaDuyet'
 		";
 
 		$params = [];
@@ -787,6 +814,7 @@ class JobPosting {
 			INNER JOIN nhatuyendung n
 				ON t.MaNhaTuyenDung = n.MaNhaTuyenDung
 			WHERE t.TrangThai = 'DangMo'
+				AND t.TrangThaiDuyet = 'DaDuyet'
 			ORDER BY t.NgayDang DESC
 			LIMIT $limit
 		";
@@ -815,6 +843,7 @@ class JobPosting {
 			LEFT JOIN tintuyendung t
 				ON n.MaNhaTuyenDung = t.MaNhaTuyenDung
 				AND t.TrangThai = 'DangMo'
+				AND t.TrangThaiDuyet = 'DaDuyet'
 			GROUP BY 
 				n.MaNhaTuyenDung,
 				n.TenCongTy,
@@ -848,6 +877,7 @@ class JobPosting {
 			LEFT JOIN tintuyendung t
 				ON ctdm.MaTinTuyenDung = t.MaTinTuyenDung
 				AND t.TrangThai = 'DangMo'
+				AND t.TrangThaiDuyet = 'DaDuyet'
 			WHERE dm.LoaiDanhMuc = 'NganhNghe'
 			GROUP BY 
 				dm.MaDanhMuc,

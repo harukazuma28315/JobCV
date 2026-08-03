@@ -283,10 +283,29 @@ class JobPostingController {
 	 * @param string $maTinTuyenDung
 	 * @return bool
 	 */
-	public function delete($maTinTuyenDung) {
+	public function delete(array $data = []) {
+		$maTinTuyenDung = $data['maTinTuyenDung'] ?? '';
+
 		$this->authorizeJobOwner($maTinTuyenDung);
 
-		return $this->tinTuyenDungModel->delete($maTinTuyenDung);
+		$result = $this->tinTuyenDungModel->delete($maTinTuyenDung);
+
+		if ($result) {
+			echo "
+				<script>
+					alert('Đã xóa tin tuyển dụng.');
+					window.location.href = '/JobCV/index.php?route=jobs/manage';
+				</script>
+			";
+		} else {
+			echo "
+				<script>
+					alert('Xóa tin tuyển dụng thất bại.');
+					window.history.back();
+				</script>
+			";
+		}
+		exit;
 	}
 
 	/**
@@ -296,17 +315,38 @@ class JobPostingController {
 	 * @param string $ngayHetHan
 	 * @return bool
 	 */
-	public function extendDeadline($maTinTuyenDung, $ngayHetHan) {
+	public function extendDeadline(array $data = []) {
+		$maTinTuyenDung = $data['maTinTuyenDung'] ?? '';
+		$ngayHetHan = $data['ngayHetHan'] ?? '';
+
 		if (empty($ngayHetHan)) {
-			return false;
+			echo "<script>alert('Vui lòng chọn hạn nộp mới.'); window.history.back();</script>";
+			exit;
 		}
 
 		$this->authorizeJobOwner($maTinTuyenDung);
 
-		return $this->tinTuyenDungModel->extendDeadline(
+		$result = $this->tinTuyenDungModel->extendDeadline(
 			$maTinTuyenDung,
 			$ngayHetHan
 		);
+
+		if ($result) {
+			echo "
+				<script>
+					alert('Gia hạn tin tuyển dụng thành công!');
+					window.location.href = '/JobCV/index.php?route=jobs/manage';
+				</script>
+			";
+		} else {
+			echo "
+				<script>
+					alert('Gia hạn tin tuyển dụng thất bại.');
+					window.history.back();
+				</script>
+			";
+		}
+		exit;
 	}
 
 	/**
@@ -315,10 +355,43 @@ class JobPostingController {
 	 * @param string $maTinTuyenDung
 	 * @return bool
 	 */
-	public function closeJob($maTinTuyenDung) {
-		$this->authorizeJobOwner($maTinTuyenDung);
+	/**
+	 * Đóng tin đang mở, hoặc mở lại tin đã đóng (dùng chung 1 nút trên giao diện).
+	 *
+	 * @param string $maTinTuyenDung
+	 * @return void
+	 */
+	public function toggleStatus(array $data = []) {
+		$maTinTuyenDung = $data['maTinTuyenDung'] ?? '';
 
-		return $this->tinTuyenDungModel->closeJob($maTinTuyenDung);
+		$job = $this->authorizeJobOwner($maTinTuyenDung);
+
+		if (($job['TrangThai'] ?? '') === 'DangMo') {
+			$result = $this->tinTuyenDungModel->closeJob($maTinTuyenDung);
+			$successMsg = 'Đã tạm dừng/đóng tin tuyển dụng.';
+			$failMsg = 'Đóng tin tuyển dụng thất bại.';
+		} else {
+			$result = $this->tinTuyenDungModel->openJob($maTinTuyenDung);
+			$successMsg = 'Đã mở lại tin tuyển dụng.';
+			$failMsg = 'Mở lại tin tuyển dụng thất bại.';
+		}
+
+		if ($result) {
+			echo "
+				<script>
+					alert('" . $successMsg . "');
+					window.location.href = '/JobCV/index.php?route=jobs/manage';
+				</script>
+			";
+		} else {
+			echo "
+				<script>
+					alert('" . $failMsg . "');
+					window.history.back();
+				</script>
+			";
+		}
+		exit;
 	}
 
 	/**

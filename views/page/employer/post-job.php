@@ -1,5 +1,9 @@
 <?php 
-$total = $jobs->num_rows;
+$jobsList = [];
+while ($row = $jobs->fetch_assoc()) {
+	$jobsList[] = $row;
+}
+$total = count($jobsList);
 $activeTab = $activeTab ?? 'manage';
 
 
@@ -31,70 +35,156 @@ include_once __DIR__ . '/../layouts/header.php';
 					<div class="card border-0 shadow-sm p-4 bg-white rounded-3">
 						<div class="d-flex justify-content-between align-items-center mb-4">
 							<h5 class="fw-bold text-dark mb-0"><i class="fa-solid fa-layer-group me-2 text-primary-blue"></i>Danh sách tin tuyển dụng</h5>
-							<span class="badge bg-light text-dark">
-
-							Tổng số tin:
-
-							<?= $total ?>
-
-							</span>
+							<span class="badge bg-light text-dark border">Tổng số tin: <?= $total ?></span>
 						</div>
 
 						<div class="table-responsive">
 							<table class="table align-middle table-hover">
-								<thead>
+								<thead class="table-light text-secondary">
 									<tr>
-										<th>Tiêu đề</th>
-										<th>Ngày đăng</th>
-										<th>Hạn nộp</th>
-										<th>Ứng viên</th>
-										<th>Trạng thái duyệt</th>
-										<th>Trạng thái Mở-Đóng</th>
-										<th>Thao tác</th>
+										<th scope="col" style="min-width: 250px;">Tin tuyển dụng</th>
+										<th scope="col">Ngày đăng</th>
+										<th scope="col">Hạn nộp</th>
+										<th scope="col">Lượt ứng tuyển</th>
+										<th scope="col">Trạng thái</th>
+										<th scope="col" class="text-center">Thao tác</th>
 									</tr>
-									</thead>
-									<tbody>
-										<?php while ($job = $jobs->fetch_assoc()): ?>
+								</thead>
+								<tbody>
+									<?php if ($total === 0): ?>
+										<tr>
+											<td colspan="6" class="text-center py-5 text-muted">
+												Bạn chưa đăng tin tuyển dụng nào.
+											</td>
+										</tr>
+									<?php else: ?>
+										<?php foreach ($jobsList as $job): ?>
+											<?php
+												// ==================================================
+												// Gộp trạng thái duyệt + trạng thái mở/đóng + hết hạn
+												// thành 1 badge duy nhất, ưu tiên hiển thị lý do
+												// quan trọng nhất (giống layout post-job1, nhưng
+												// vẫn giữ đủ thông tin nghiệp vụ thật).
+												// ==================================================
+												$duyet = $job['TrangThaiDuyet'] ?? '';
+												$moDong = $job['TrangThai'] ?? '';
+												$daHetHan = !empty($job['NgayHetHan'])
+													&& strtotime($job['NgayHetHan']) < strtotime('today');
+
+												if ($duyet === 'ChoDuyet') {
+													$statusBadge = ['bg-warning text-dark', 'fa-solid fa-hourglass-half', 'Chờ duyệt'];
+												} elseif ($duyet === 'TuChoi') {
+													$statusBadge = ['bg-danger', 'fa-solid fa-circle-xmark', 'Bị từ chối'];
+												} elseif ($duyet === 'dago') {
+													$statusBadge = ['bg-dark', 'fa-solid fa-eye-slash', 'Đã gỡ'];
+												} elseif ($daHetHan) {
+													$statusBadge = ['bg-danger', 'fa-solid fa-clock-rotate-left', 'Đã hết hạn'];
+												} elseif ($moDong !== 'DangMo') {
+													$statusBadge = ['bg-secondary', 'fa-solid fa-ban', 'Đã đóng'];
+												} else {
+													$statusBadge = ['bg-success', 'fa-solid fa-circle-check', 'Đang hoạt động'];
+												}
+
+												$soUngVien = (int) ($job['SoUngVien'] ?? 0);
+											?>
 											<tr>
-												<td class="fw-semibold"><?= htmlspecialchars($job['TieuDe']) ?></td>
-												<td><?= date('d/m/Y', strtotime($job['NgayDang'])) ?></td>
-												<td><?= date('d/m/Y', strtotime($job['NgayHetHan'])) ?></td>
 												<td>
-													<span class="badge bg-primary">
-														<?= (int)$job['SoUngVien'] ?>
+													<h6 class="fw-bold text-dark mb-1"><?= htmlspecialchars($job['TieuDe']) ?></h6>
+													<span class="text-muted small">
+														<?php if (!empty($job['MucLuong'])): ?>
+															<i class="fa-solid fa-money-bill-wave me-1 text-success"></i><?= htmlspecialchars($job['MucLuong']) ?>
+														<?php endif; ?>
+														<?php if (!empty($job['DiaChiLamViec'])): ?>
+															<?= !empty($job['MucLuong']) ? ' | ' : '' ?><i class="fa-solid fa-location-dot me-1"></i><?= htmlspecialchars($job['DiaChiLamViec']) ?>
+														<?php endif; ?>
 													</span>
 												</td>
-												<?php
-													$duyet = $job['TrangThaiDuyet'] ?? '';
-													$moDong = $job['TrangThai'] ?? '';
-
-													$duyetBadge = match ($duyet) {
-														'ChoDuyet' => ['bg-warning text-dark', 'Chờ duyệt'],
-														'TuChoi'   => ['bg-danger', 'Bị từ chối'],
-														'dago'     => ['bg-dark', 'Đã gỡ'],
-														'DaDuyet'  => ['bg-success', 'Đã duyệt'],
-														default    => ['bg-secondary', $duyet ?: 'Không rõ'],
-													};
-
-													$moDongBadge = $moDong === 'DangMo'
-														? ['bg-success', 'Đang mở']
-														: ['bg-secondary', 'Đã đóng'];
-												?>
-												<td>
-													<span class="badge <?= $duyetBadge[0] ?>"><?= $duyetBadge[1] ?></span>
+												<td class="small"><?= date('d/m/Y', strtotime($job['NgayDang'])) ?></td>
+												<td class="small <?= $daHetHan ? 'text-danger fw-semibold' : 'text-muted' ?>">
+													<?= date('d/m/Y', strtotime($job['NgayHetHan'])) ?>
 												</td>
 												<td>
-													<span class="badge <?= $moDongBadge[0] ?>"><?= $moDongBadge[1] ?></span>
+													<a href="/JobCV/index.php?route=recruiter/list&maTin=<?= urlencode($job['MaTinTuyenDung']) ?>"
+														class="badge <?= $soUngVien > 0 ? 'bg-primary' : 'bg-secondary' ?> text-white text-decoration-none px-2 py-1"
+														title="Xem danh sách ứng viên">
+														<i class="fa-solid fa-users me-1"></i> <?= $soUngVien ?> Ứng tuyển
+													</a>
 												</td>
 												<td>
-													<a href="/JobCV/index.php?route=jobs/edit&maTinTuyenDung=<?= urlencode($job['MaTinTuyenDung']) ?>" class="btn btn-sm btn-outline-primary">Sửa</a>
-													<!-- Thêm nút đóng/xóa sau -->
+													<span class="badge <?= $statusBadge[0] ?>">
+														<i class="<?= $statusBadge[1] ?> me-1"></i><?= $statusBadge[2] ?>
+													</span>
+												</td>
+												<td>
+													<div class="d-flex gap-1 justify-content-center">
+														<a href="/JobCV/index.php?route=jobs/edit&maTinTuyenDung=<?= urlencode($job['MaTinTuyenDung']) ?>"
+															class="btn btn-light btn-sm text-primary" title="Chỉnh sửa nội dung">
+															<i class="fa-solid fa-pen-to-square"></i>
+														</a>
+
+														<!-- Gia hạn: mở modal chọn hạn nộp mới, submit qua route=jobs/extend -->
+														<button type="button"
+																class="btn btn-light btn-sm text-warning"
+																title="Gia hạn tin"
+																data-bs-toggle="modal"
+																data-bs-target="#extendModal-<?= htmlspecialchars($job['MaTinTuyenDung']) ?>">
+															<i class="fa-regular fa-clock"></i>
+														</button>
+
+														<!-- Đóng / Mở lại tin: submit qua route=jobs/toggle -->
+														<form action="/JobCV/index.php?route=jobs/toggle" method="POST" class="d-inline"
+																onsubmit="return confirm('<?= $moDong === 'DangMo' ? 'Xác nhận tạm dừng/đóng tin tuyển dụng này?' : 'Xác nhận mở lại tin tuyển dụng này?' ?>');">
+															<input type="hidden" name="maTinTuyenDung" value="<?= htmlspecialchars($job['MaTinTuyenDung']) ?>">
+															<button type="submit"
+																	class="btn btn-light btn-sm <?= $moDong === 'DangMo' ? 'text-danger' : 'text-success' ?>"
+																	title="<?= $moDong === 'DangMo' ? 'Tạm dừng/Đóng tuyển dụng' : 'Mở lại tin tuyển dụng' ?>">
+																<i class="fa-solid <?= $moDong === 'DangMo' ? 'fa-ban' : 'fa-rotate-left' ?>"></i>
+															</button>
+														</form>
+
+														<!-- Xóa tin -->
+														<form action="/JobCV/index.php?route=jobs/delete" method="POST" class="d-inline"
+																onsubmit="return confirm('Xác nhận xóa vĩnh viễn tin tuyển dụng này? Hành động này không thể hoàn tác.');">
+															<input type="hidden" name="maTinTuyenDung" value="<?= htmlspecialchars($job['MaTinTuyenDung']) ?>">
+															<button type="submit" class="btn btn-light btn-sm text-secondary" title="Xóa tin">
+																<i class="fa-solid fa-trash"></i>
+															</button>
+														</form>
+													</div>
 												</td>
 											</tr>
-										<?php endwhile; ?>
-									</tbody>
+										<?php endforeach; ?>
+									<?php endif; ?>
+								</tbody>
 							</table>
 						</div>
+
+						<!-- Modal Gia hạn tin: đặt ngoài <table> vì <div> không được phép
+							 là con trực tiếp của <tbody> (browser sẽ tự đẩy ra ngoài,
+							 gây vỡ layout như hình chụp lỗi trước đó) -->
+						<?php foreach ($jobsList as $job): ?>
+							<div class="modal fade" id="extendModal-<?= htmlspecialchars($job['MaTinTuyenDung']) ?>" tabindex="-1" aria-hidden="true">
+								<div class="modal-dialog modal-dialog-centered">
+									<form action="/JobCV/index.php?route=jobs/extend" method="POST" class="modal-content">
+										<div class="modal-header">
+											<h6 class="modal-title fw-bold">Gia hạn tin tuyển dụng</h6>
+											<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+										</div>
+										<div class="modal-body">
+											<p class="text-muted small mb-2"><?= htmlspecialchars($job['TieuDe']) ?></p>
+											<label class="form-label fw-semibold">Hạn nộp mới <span class="text-danger">*</span></label>
+											<input type="hidden" name="maTinTuyenDung" value="<?= htmlspecialchars($job['MaTinTuyenDung']) ?>">
+											<input type="date" name="ngayHetHan" class="form-control"
+													min="<?= date('Y-m-d') ?>" required>
+										</div>
+										<div class="modal-footer">
+											<button type="button" class="btn btn-light" data-bs-dismiss="modal">Hủy</button>
+											<button type="submit" class="btn btn-primary-blue">Xác nhận gia hạn</button>
+										</div>
+									</form>
+								</div>
+							</div>
+						<?php endforeach; ?>
 					</div>
 				</div>
 
