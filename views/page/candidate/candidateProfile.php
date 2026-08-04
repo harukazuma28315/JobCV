@@ -94,8 +94,8 @@ $resetEmail = $_SESSION['user_email'] ?? $profileData['email'] ?? '';
 								<div class="col-12 col-md-6">
 									<label class="form-label fw-semibold text-dark">Giới tính</label>
 									<select name="gioiTinh" class="form-select py-2">
-										<option value="1" <?php echo (isset($profileData['gender']) && (int)$profileData['gender'] === 1) ? 'selected' : ''; ?>>Nam</option>
-										<option value="0" <?php echo (isset($profileData['gender']) && (int)$profileData['gender'] === 0) ? 'selected' : ''; ?>>Nữ</option>
+										<option value="1" <?php echo (isset($profileData['gender']) && (int)$profileData['gender'] === 0) ? 'selected' : ''; ?>>Nam</option>
+										<option value="0" <?php echo (isset($profileData['gender']) && (int)$profileData['gender'] === 1) ? 'selected' : ''; ?>>Nữ</option>
 									</select>
 								</div>
 

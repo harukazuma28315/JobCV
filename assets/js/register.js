@@ -6,7 +6,7 @@
 /**
  * Gửi yêu cầu khởi tạo mã OTP xác thực email đến máy chủ qua AJAX.
  * Áp dụng đếm ngược thời gian (cooldown) ở giao diện để hạn chế người dùng bấm gửi liên tục gây quá tải server.
- * 
+ *
  * @param {string} type - Loại tài khoản đăng ký ('candidate' hoặc 'employer').
  */
 window.requestOtp = function (type) {
@@ -83,7 +83,7 @@ window.requestOtp = function (type) {
 /**
  * Chuyển đổi trạng thái hiển thị của form đăng ký giữa hai vai trò Ứng viên và Nhà tuyển dụng.
  * Tự động bật/tắt các ràng buộc dữ liệu bắt buộc (như Mã số thuế) tương ứng với từng đối tượng.
- * 
+ *
  * @param {number} roleVal - Mã vai trò người dùng (1: Nhà tuyển dụng, 0/khác: Ứng viên).
  */
 window.switchRole = function (roleVal) {
@@ -102,32 +102,44 @@ window.switchRole = function (roleVal) {
 
   const isEmployer = roleVal === 1;
 
-  if (personalFields) personalFields.style.display = isEmployer ? "none" : "flex";
-  if (employerFields) employerFields.style.display = isEmployer ? "block" : "none";
+  if (personalFields)
+    personalFields.style.display = isEmployer ? "none" : "flex";
+  if (employerFields)
+    employerFields.style.display = isEmployer ? "block" : "none";
 
   if (labelHoTen) {
-    labelHoTen.innerHTML = isEmployer 
+    labelHoTen.innerHTML = isEmployer
       ? 'Tên công ty / Doanh nghiệp <span class="text-danger">*</span>'
       : 'Họ và Tên <span class="text-danger">*</span>';
   }
   if (inputHoTen) {
-    inputHoTen.placeholder = isEmployer ? "Nhập tên công ty chính thức" : "Nhập họ và tên đầy đủ";
+    inputHoTen.placeholder = isEmployer
+      ? "Nhập tên công ty chính thức"
+      : "Nhập họ và tên đầy đủ";
   }
   if (labelEmail) {
-    labelEmail.innerHTML = isEmployer 
-      ? 'Email công ty <span class="text-danger">*</span>' 
+    labelEmail.innerHTML = isEmployer
+      ? 'Email công ty <span class="text-danger">*</span>'
       : 'Email <span class="text-danger">*</span>';
   }
-  if (labelSDT) labelSDT.innerText = isEmployer ? "Số điện thoại công ty" : "Số điện thoại";
-  if (labelDiaChi) labelDiaChi.innerText = isEmployer ? "Địa chỉ trụ sở chính" : "Địa chỉ";
+  if (labelSDT)
+    labelSDT.innerText = isEmployer ? "Số điện thoại công ty" : "Số điện thoại";
+  if (labelDiaChi)
+    labelDiaChi.innerText = isEmployer ? "Địa chỉ trụ sở chính" : "Địa chỉ";
 
   if (btnSubmit) {
-    btnSubmit.innerText = isEmployer ? "Đăng Ký Nhà Tuyển Dụng" : "Đăng Ký Ứng Viên";
-    btnSubmit.className = isEmployer ? "btn btn-success btn-lg" : "btn btn-primary-blue btn-lg";
+    btnSubmit.innerText = isEmployer
+      ? "Đăng Ký Nhà Tuyển Dụng"
+      : "Đăng Ký Ứng Viên";
+    btnSubmit.className = isEmployer
+      ? "btn btn-success btn-lg"
+      : "btn btn-primary-blue btn-lg";
   }
 
   if (maSoThue) {
-    isEmployer ? maSoThue.setAttribute("required", "required") : maSoThue.removeAttribute("required");
+    isEmployer
+      ? maSoThue.setAttribute("required", "required")
+      : maSoThue.removeAttribute("required");
   }
 };
 
@@ -138,7 +150,7 @@ window.switchRole = function (roleVal) {
 document.addEventListener("DOMContentLoaded", () => {
   "use strict";
 
-  // Chuẩn hóa họ tên: Tự động xóa các khoảng trắng thừa ở đầu/cuối khi người dùng rê chuột ra ngoài
+  // Chuẩn hóa: Tự động xóa các khoảng trắng thừa ở đầu/cuối khi người dùng rê chuột ra ngoài
   const nameInputs = document.querySelectorAll("#HoTen, #HoTenEmployer");
   nameInputs.forEach((input) => {
     input.addEventListener("blur", function () {
@@ -152,8 +164,12 @@ document.addEventListener("DOMContentLoaded", () => {
     form.addEventListener(
       "submit",
       function (event) {
-        const passwordInput = form.querySelector('input[type="password"][name="MatKhau"]');
-        const confirmInput = form.querySelector('input[type="password"][name="MatKhauConfirm"]');
+        const passwordInput = form.querySelector(
+          'input[type="password"][name="MatKhau"]',
+        );
+        const confirmInput = form.querySelector(
+          'input[type="password"][name="MatKhauConfirm"]',
+        );
 
         if (passwordInput && confirmInput) {
           const password = passwordInput.value;
@@ -172,7 +188,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         form.classList.add("was-validated");
       },
-      false
+      false,
     );
   });
 });

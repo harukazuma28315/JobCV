@@ -63,7 +63,6 @@
 											<label for="HoTen" class="form-label small fw-semibold" id="labelHoTen">Họ và Tên <span class="text-danger">*</span></label>
 											<input type="text" class="form-control py-2" id="HoTen" name="HoTen" required placeholder="Nhập họ và tên đầy đủ" maxlength="100"
 												   pattern="^[a-zA-ZàáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđĐ\s\.]+$"
-												   oninput="this.value = this.value.replace(/[^a-zA-ZàáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđĐ\s\.]/g, '').replace(/\s+/g, ' ');"
 												   title="Họ và tên chỉ bao gồm chữ cái và khoảng trắng, không chứa ký tự đặc biệt">
 										</div>
 
@@ -95,24 +94,7 @@
 										<!-- Địa chỉ (Ứng viên) -->
 										<div class="mb-3">
 											<label for="DiaChi" class="form-label small fw-semibold" id="labelDiaChi">Địa chỉ</label>
-											<input type="text" class="form-control py-2" id="DiaChi" name="DiaChi" placeholder="Số nhà, tên đường, tỉnh/thành phố" maxlength="255" pattern="^[a-zA-Z0-9àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđĐ\s,\/]+$" oninput="this.value = this.value.replace(/[^a-zA-Z0-9àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđĐ\s,\/]/g, '')" title="Địa chỉ chỉ được chứa chữ cái, số, khoảng trắng, dấu phẩy (,) và dấu xuyệt (/). Không chứa các ký tự đặc biệt khác">
-										</div>
-
-										<!-- Đơn vị tuyển dụng -->
-										<div id="employerFields" style="display: none;" class="border p-3 rounded bg-light mb-3">
-											<h6 class="text-secondary mb-3 border-bottom pb-2">Thông tin doanh nghiệp bổ sung</h6>
-											<div class="mb-3">
-												<label for="MaSoThue" class="form-label small fw-semibold">Mã số thuế <span class="text-danger">*</span></label>
-												<input type="text" class="form-control py-2" id="MaSoThue" name="MaSoThue" placeholder="Nhập mã số thuế công ty (10-13 số)" inputmode="numeric" maxlength="13" pattern="[0-9]{10,13}" oninput="this.value = this.value.replace(/\D/g, '')" title="Mã số thuế bao gồm từ 10 đến 13 chữ số">
-											</div>
-											<div class="mb-3">
-												<label for="Website" class="form-label small fw-semibold">Website công ty</label>
-												<input type="url" class="form-control py-2" id="Website" name="Website" placeholder="https://example.com" maxlength="255" pattern="^(https?:\/\/)?([\w\d-]+\.)+[\w\d-]+(\/.*)?$" oninput="this.value = this.value.replace(/\s/g, '').replace(/[^a-zA-Z0-9\.\:\/\_\-\?\=\&\#]/g, '')" title="Nhập định dạng website hợp lệ (ví dụ: https://example.com hoặc example.com)">
-											</div>
-											<div class="mb-3">
-												<label for="LinhVuc" class="form-label small fw-semibold">Lĩnh vực hoạt động</label>
-												<input type="text" class="form-control py-2" id="LinhVuc" name="LinhVuc" placeholder="Ví dụ: Công nghệ thông tin, Logistics..." maxlength="150">
-											</div>
+											<input type="text" class="form-control py-2" id="DiaChi" name="DiaChi" placeholder="Số nhà, tên đường, tỉnh/thành phố" maxlength="255" pattern="^[a-zA-Z0-9àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđĐ\s,\/]+$" title="Địa chỉ chỉ được chứa chữ cái, số, khoảng trắng, dấu phẩy (,) và dấu xuyệt (/). Không chứa các ký tự đặc biệt khác">
 										</div>
 
 										<div class="d-grid gap-2 mt-4">
@@ -159,7 +141,6 @@
 											<label for="HoTenEmployer" class="form-label small fw-semibold">Tên công ty / Doanh nghiệp <span class="text-danger">*</span></label>
 											<input type="text" class="form-control py-2" id="HoTenEmployer" name="HoTen" required placeholder="Nhập tên công ty chính thức" maxlength="150"
 												   pattern="^[a-zA-Z0-9àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđĐ\s\.\,\-\&]+$"
-												   oninput="this.value = this.value.replace(/[^a-zA-Z0-9àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđĐ\s\.\,\-\&]/g, '').replace(/\s+/g, ' ');"
 												   title="Tên công ty chỉ chứa chữ cái, số, khoảng trắng và các dấu (.,-&)">
 										</div>
 
@@ -172,7 +153,7 @@
 										<!-- Địa chỉ trụ sở (Doanh nghiệp) -->
 										<div class="mb-3">
 											<label for="DiaChiEmployer" class="form-label small fw-semibold">Địa chỉ trụ sở chính</label>
-											<input type="text" class="form-control py-2" id="DiaChiEmployer" name="DiaChi" placeholder="Số nhà, tên đường, tỉnh/thành phố" maxlength="255" pattern="^[a-zA-Z0-9àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđĐ\s,\/]+$" oninput="this.value = this.value.replace(/[^a-zA-Z0-9àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđĐ\s,\/]/g, '')" title="Địa chỉ chỉ được chứa chữ cái, số, khoảng trắng, dấu phẩy (,) và dấu xuyệt (/). Không chứa các ký tự đặc biệt khác">
+											<input type="text" class="form-control py-2" id="DiaChiEmployer" name="DiaChi" placeholder="Số nhà, tên đường, tỉnh/thành phố" maxlength="255" pattern="^[a-zA-Z0-9àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđĐ\s,\/]+$" title="Địa chỉ chỉ được chứa chữ cái, số, khoảng trắng, dấu phẩy (,) và dấu xuyệt (/). Không chứa các ký tự đặc biệt khác">
 										</div>
 
 										<!-- Chi tiết Doanh Nghiệp -->
@@ -183,7 +164,7 @@
 											</div>
 											<div class="mb-3">
 												<label for="WebsiteEmployer" class="form-label small fw-semibold">Website công ty</label>
-												<input type="url" class="form-control py-2" id="WebsiteEmployer" name="Website" placeholder="https://example.com" maxlength="255" pattern="^(https?:\/\/)?([\w\d-]+\.)+[\w\d-]+(\/.*)?$" oninput="this.value = this.value.replace(/\s/g, '').replace(/[^a-zA-Z0-9\.\:\/\_\-\?\=\&\#]/g, '')" title="Nhập định dạng website hợp lệ (ví dụ: https://example.com hoặc example.com)">
+												<input type="url" class="form-control py-2" id="WebsiteEmployer" name="Website" placeholder="https://example.com" maxlength="255" pattern="^(https?:\/\/)?([\w\d-]+\.)+[\w\d-]+(\/.*)?$" title="Nhập định dạng website hợp lệ (ví dụ: https://example.com hoặc example.com)">
 											</div>
 											<div class="mb-3">
 												<label for="LinhVucEmployer" class="form-label small fw-semibold">Lĩnh vực hoạt động</label>
