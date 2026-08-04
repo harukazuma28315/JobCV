@@ -255,11 +255,12 @@ include_once __DIR__ . '/../layouts/header.php';
 											required>
 								</div>
 								<div class="col-12 col-md-6">
-									<label class="form-label fw-semibold text-dark">Độ tuổi yêu cầu</label>
+									<label class="form-label fw-semibold text-dark">Độ tuổi yêu cầu <span class="text-danger">*</span></label>
 									<input type="text"
 											name="doTuoiYeuCau"
 											class="form-control py-2"
-											placeholder="Ví dụ: 22-30">
+											placeholder="Ví dụ: 22-30"
+											required>
 								</div>
 								<div class="col-12 col-md-6">
 									<label class="form-label fw-semibold text-dark">Số lượng tuyển <span class="text-danger">*</span></label>
@@ -272,16 +273,17 @@ include_once __DIR__ . '/../layouts/header.php';
 											required>
 								</div>
 								<div class="col-12 col-md-6">
-									<label class="form-label fw-semibold text-dark">Thời gian thử việc (tháng)</label>
+									<label class="form-label fw-semibold text-dark">Thời gian thử việc (tháng) <span class="text-danger">*</span></label>
 									<input type="number"
 											name="thoiGianThuViec"
 											class="form-control py-2"
 											placeholder="Ví dụ: 2"
 											min="0"
-											value="0">
+											value="0"
+											required>
 								</div>
 								<div class="col-12 col-md-6">
-									<label class="form-label fw-semibold text-dark">Mức lương mong muốn <span class="text-danger">*</span></label>
+									<label class="form-label fw-semibold text-dark">Mức lương <span class="text-danger">*</span></label>
 									<input type="number"
 											name="mucLuong"
 											class="form-control py-2"
