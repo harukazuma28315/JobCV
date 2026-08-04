@@ -30,20 +30,17 @@ $statusLabel = match ($trangThai) {
 
 <section class="py-5 bg-light">
 	<div class="container">
-
 		<!-- Quay lại danh sách -->
 		<div class="mb-4">
 			<a href="<?= $baseUrl ?>/index.php?route=applications/manage" class="btn btn-outline-secondary btn-sm">
 				<i class="fa-solid fa-arrow-left me-2"></i>Quay lại danh sách ứng viên
 			</a>
 		</div>
-
 		<?php if (!empty($thongBao)): ?>
 			<div class="alert alert-<?= $thongBao['type'] === 'error' ? 'danger' : 'success' ?>">
 				<?= htmlspecialchars($thongBao['message']) ?>
 			</div>
 		<?php endif; ?>
-
 		<!-- HEADER: Ứng viên + Tin ứng tuyển + Trạng thái -->
 		<div class="card border-0 shadow-sm mx-auto mb-4" style="max-width: 900px;">
 			<div class="card-body p-4">
@@ -66,14 +63,11 @@ $statusLabel = match ($trangThai) {
 					</div>
 					<span class="badge <?= $statusClass ?> px-3 py-2"><?= htmlspecialchars($statusLabel) ?></span>
 				</div>
-
 				<hr>
-
 				<p class="mb-1"><strong>Ứng tuyển vào tin:</strong> <?= htmlspecialchars($hoSoUngTuyen['TenTin'] ?? '') ?></p>
 				<?php if (!empty($hoSoUngTuyen['NgayNop'])): ?>
 					<p class="mb-0 text-muted small">Ngày nộp: <?= date('d/m/Y H:i', strtotime($hoSoUngTuyen['NgayNop'])) ?></p>
 				<?php endif; ?>
-
 				<?php if (!empty($hoSoUngTuyen['CoverLetter'])): ?>
 					<hr>
 					<h6 class="fw-bold">Thư giới thiệu</h6>
@@ -81,18 +75,13 @@ $statusLabel = match ($trangThai) {
 				<?php endif; ?>
 			</div>
 		</div>
-
 		<?php if (!$cv): ?>
-
 			<div class="card border-0 shadow-sm mx-auto p-4 text-center" style="max-width: 900px;">
 				<p class="text-muted mb-0">Ứng viên chưa có CV trên hệ thống.</p>
 			</div>
-
 		<?php else: ?>
-
 			<!-- CHI TIẾT CV (CHỈ XEM) -->
 			<div class="card border-0 shadow-sm mx-auto" style="max-width: 900px;">
-
 				<div class="card-header bg-primary text-white">
 					<div class="d-flex justify-content-between align-items-center">
 						<h4 class="mb-0 fw-bold">
@@ -101,10 +90,8 @@ $statusLabel = match ($trangThai) {
 						</h4>
 					</div>
 				</div>
-
 				<div class="card-body p-4">
 					<div class="row g-4">
-
 						<!-- THÔNG TIN CƠ BẢN -->
 						<div class="col-md-6">
 							<h5 class="fw-bold text-primary mb-3">
@@ -123,7 +110,6 @@ $statusLabel = match ($trangThai) {
 								<?= htmlspecialchars($cv['SDT']) ?>
 							</p>
 						</div>
-
 						<!-- KỸ NĂNG -->
 						<div class="col-md-6">
 							<h5 class="fw-bold text-primary mb-3">
@@ -131,7 +117,6 @@ $statusLabel = match ($trangThai) {
 							</h5>
 							<p class="mb-0"><?= nl2br(htmlspecialchars($cv['KyNang'] ?: 'Chưa cập nhật')) ?></p>
 						</div>
-
 						<!-- MỤC TIÊU -->
 						<div class="col-md-6">
 							<h5 class="fw-bold text-primary mb-3">
@@ -139,7 +124,6 @@ $statusLabel = match ($trangThai) {
 							</h5>
 							<p class="mb-0"><?= nl2br(htmlspecialchars($cv['MucTieu'] ?: 'Chưa cập nhật')) ?></p>
 						</div>
-
 						<!-- SỞ THÍCH -->
 						<div class="col-md-6">
 							<h5 class="fw-bold text-primary mb-3">
@@ -147,15 +131,12 @@ $statusLabel = match ($trangThai) {
 							</h5>
 							<p class="mb-0"><?= nl2br(htmlspecialchars($cv['SoThich'] ?: 'Chưa cập nhật')) ?></p>
 						</div>
-
 					</div>
-
 					<!-- HỌC VẤN -->
 					<hr>
 					<h5 class="fw-bold text-primary mb-3">
 						<i class="fa-solid fa-graduation-cap me-2"></i>Học vấn
 					</h5>
-
 					<?php if (empty($hocVanList)): ?>
 						<p class="text-muted">Chưa cập nhật học vấn.</p>
 					<?php else: ?>
@@ -177,13 +158,11 @@ $statusLabel = match ($trangThai) {
 							</div>
 						<?php endforeach; ?>
 					<?php endif; ?>
-
 					<!-- KINH NGHIỆM -->
 					<hr>
 					<h5 class="fw-bold text-primary mb-3">
 						<i class="fa-solid fa-briefcase me-2"></i>Kinh nghiệm làm việc
 					</h5>
-
 					<?php if (empty($kinhNghiemList)): ?>
 						<p class="text-muted">Chưa cập nhật kinh nghiệm làm việc.</p>
 					<?php else: ?>
@@ -200,13 +179,11 @@ $statusLabel = match ($trangThai) {
 							</div>
 						<?php endforeach; ?>
 					<?php endif; ?>
-
 					<!-- DỰ ÁN -->
 					<hr>
 					<h5 class="fw-bold text-primary mb-3">
 						<i class="fa-solid fa-diagram-project me-2"></i>Dự án
 					</h5>
-
 					<?php if (empty($duAnList)): ?>
 						<p class="text-muted">Chưa cập nhật dự án.</p>
 					<?php else: ?>
@@ -228,13 +205,11 @@ $statusLabel = match ($trangThai) {
 							</div>
 						<?php endforeach; ?>
 					<?php endif; ?>
-
 					<!-- CHỨNG CHỈ -->
 					<hr>
 					<h5 class="fw-bold text-primary mb-3">
 						<i class="fa-solid fa-certificate me-2"></i>Chứng chỉ
 					</h5>
-
 					<?php if (empty($chungChiList)): ?>
 						<p class="text-muted">Chưa cập nhật chứng chỉ.</p>
 					<?php else: ?>
@@ -260,7 +235,6 @@ $statusLabel = match ($trangThai) {
 							</div>
 						<?php endforeach; ?>
 					<?php endif; ?>
-
 					<!-- FILE CV ĐÍNH KÈM (nếu ứng viên upload sẵn file, chỉ được tải, không sửa) -->
 					<?php if (!empty($cv['DuongDanFileCV'])): ?>
 						<hr>
@@ -282,10 +256,8 @@ $statusLabel = match ($trangThai) {
 							</div>
 						</div>
 					<?php endif; ?>
-
 				</div>
 			</div>
-
 			<!-- HÀNH ĐỘNG CẬP NHẬT TRẠNG THÁI -->
 			<div class="card border-0 shadow-sm mx-auto mt-4 p-3" style="max-width: 900px;">
 				<div class="d-flex flex-wrap gap-2 justify-content-center">
@@ -299,7 +271,6 @@ $statusLabel = match ($trangThai) {
 							</button>
 						</form>
 					<?php endif; ?>
-
 					<?php if ($trangThai === STATUS_MOI_NOP || $trangThai === STATUS_DA_XEM): ?>
 						<form method="POST" action="<?= BASE_URL ?>/index.php?route=recruiter/update-status" class="d-inline">
 							<input type="hidden" name="maHS" value="<?= htmlspecialchars($hoSoUngTuyen['MaHS']) ?>">
@@ -309,7 +280,6 @@ $statusLabel = match ($trangThai) {
 							</button>
 						</form>
 					<?php endif; ?>
-
 					<?php if ($trangThai === STATUS_HEN_PHONG_VAN): ?>
 						<form method="POST" action="<?= BASE_URL ?>/index.php?route=recruiter/update-status" class="d-inline">
 							<input type="hidden" name="maHS" value="<?= htmlspecialchars($hoSoUngTuyen['MaHS']) ?>">
@@ -319,7 +289,6 @@ $statusLabel = match ($trangThai) {
 							</button>
 						</form>
 					<?php endif; ?>
-
 					<?php if ($trangThai !== STATUS_NHAN_VIEC && $trangThai !== STATUS_TU_CHOI): ?>
 						<form method="POST" action="<?= BASE_URL ?>/index.php?route=recruiter/update-status" class="d-inline">
 							<input type="hidden" name="maHS" value="<?= htmlspecialchars($hoSoUngTuyen['MaHS']) ?>">
@@ -329,12 +298,9 @@ $statusLabel = match ($trangThai) {
 							</button>
 						</form>
 					<?php endif; ?>
-
 				</div>
 			</div>
-
 		<?php endif; ?>
-
 	</div>
 </section>
 

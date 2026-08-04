@@ -3,7 +3,6 @@
 <div class="container py-5">
 	<div class="row">
 		<div class="col-12">
-
 			<div class="card border-0 shadow-sm p-4 bg-white rounded-3">
 				<div class="border-bottom pb-3 mb-4 d-flex justify-content-between align-items-center">
 					<div>
@@ -14,10 +13,8 @@
 						<i class="fa-solid fa-arrow-left me-2"></i>Quay lại
 					</a>
 				</div>
-
 				<form action="/JobCV/index.php?route=jobs/update" method="POST">
 					<input type="hidden" name="maTinTuyenDung" value="<?= htmlspecialchars($job['MaTinTuyenDung']) ?>">
-
 					<?php
 						$selectedCategoryId = $selectedCategoryId ?? null;
 						$selectedLocationId = $selectedLocationId ?? null;
@@ -148,7 +145,6 @@
 									required>
 						</div>
 					</div>
-
 					<h6 class="fw-bold text-primary-blue mb-3 text-uppercase border-top pt-4">Nội dung chi tiết & Tiêu chí lọc hồ sơ</h6>
 					<div class="row g-3">
 						<div class="col-12">
@@ -166,14 +162,12 @@
 									required><?= htmlspecialchars($job['YeuCauCongViec'] ?? '') ?></textarea>
 						</div>
 					</div>
-
 					<div class="text-end pt-4 border-top mt-4">
 						<a href="/JobCV/index.php?route=jobs/manage" class="btn btn-light px-4 py-2 me-2">Hủy</a>
 						<button type="submit" class="btn btn-primary-blue fw-bold px-4 py-2">Lưu thay đổi</button>
 					</div>
 				</form>
 			</div>
-
 		</div>
 	</div>
 </div>

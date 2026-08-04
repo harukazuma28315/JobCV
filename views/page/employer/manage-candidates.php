@@ -18,12 +18,10 @@ $currentTrangThai = $currentFilters['trangThai'] ?? ($_GET['trangThai'] ?? '');
 			<p class="text-muted small mb-0">Theo dõi, sơ loại và tương tác tự động với ứng viên nhanh chóng.</p>
 		</div>
 	</div>
-
 	<!-- Bộ lọc -->
 	<div class="card border-0 shadow-sm p-3 mb-4 bg-white rounded-3">
 		<form class="row g-3 align-items-end" method="GET" action="">
 			<input type="hidden" name="route" value="recruiter/list">
-
 			<div class="col-12 col-md-5">
 				<label class="form-label small fw-semibold text-muted mb-1">Lọc theo tin tuyển dụng</label>
 				<select name="maTin" class="form-select form-select-sm">
@@ -38,7 +36,6 @@ $currentTrangThai = $currentFilters['trangThai'] ?? ($_GET['trangThai'] ?? '');
 					<?php endif; ?>
 				</select>
 			</div>
-
 			<div class="col-12 col-md-4">
 				<label class="form-label small fw-semibold text-muted mb-1">Bộ lọc nhanh trạng thái</label>
 				<select name="trangThai" class="form-select form-select-sm">
@@ -50,7 +47,6 @@ $currentTrangThai = $currentFilters['trangThai'] ?? ($_GET['trangThai'] ?? '');
 					<option value="<?= STATUS_TU_CHOI ?>" <?= ($currentTrangThai == STATUS_TU_CHOI) ? 'selected' : '' ?>>Từ chối</option>
 				</select>
 			</div>
-
 			<div class="col-12 col-md-3">
 				<button type="submit" class="btn btn-primary-blue btn-sm w-100 fw-bold py-2">
 					<i class="fa-solid fa-filter me-1"></i> Áp dụng
@@ -58,7 +54,6 @@ $currentTrangThai = $currentFilters['trangThai'] ?? ($_GET['trangThai'] ?? '');
 			</div>
 		</form>
 	</div>
-
 	<!-- Danh sách Hồ sơ -->
 	<div class="card border-0 shadow-sm p-4 bg-white rounded-3">
 		<div class="table-responsive">
@@ -123,10 +118,8 @@ $currentTrangThai = $currentFilters['trangThai'] ?? ($_GET['trangThai'] ?? '');
 								<?php
 									$trangThai = $hs['TrangThai'] ?? '';
 									?>
-
 									<!-- MỚI NỘP -->
 									<?php if ($trangThai === STATUS_MOI_NOP): ?>
-
 										<!-- ĐÃ XEM -->
 										<form
 											method="POST"
@@ -135,33 +128,25 @@ $currentTrangThai = $currentFilters['trangThai'] ?? ($_GET['trangThai'] ?? '');
 										>
 										<input type="hidden" name="maTin" value="<?= htmlspecialchars($currentMaTin) ?>">
 										<input type="hidden" name="trangThaiLoc" value="<?= htmlspecialchars($currentTrangThai) ?>">
-
 											<input
 												type="hidden"
 												name="maHS"
 												value="<?= htmlspecialchars($hs['MaHS']) ?>"
 											>
-
 											<input
 												type="hidden"
 												name="trangThai"
 												value="DaXem"
 											>
-
 											<button
 												type="submit"
 												class="btn btn-outline-info btn-sm mb-1"
 												onclick="return confirm('Xác nhận đã xem hồ sơ?')"
 											>
-
 												<i class="fa-solid fa-eye"></i>
 												Đã xem
-
 											</button>
-
 										</form>
-
-
 										<!-- HẸN PHỎNG VẤN -->
 										<form
 											method="POST"
@@ -170,38 +155,28 @@ $currentTrangThai = $currentFilters['trangThai'] ?? ($_GET['trangThai'] ?? '');
 										>
 										<input type="hidden" name="maTin" value="<?= htmlspecialchars($currentMaTin) ?>">
 										<input type="hidden" name="trangThaiLoc" value="<?= htmlspecialchars($currentTrangThai) ?>">
-
 											<input
 												type="hidden"
 												name="maHS"
 												value="<?= htmlspecialchars($hs['MaHS']) ?>"
 											>
-
 											<input
 												type="hidden"
 												name="trangThai"
 												value="HenPhongVan"
 											>
-
 											<button
 												type="submit"
 												class="btn btn-outline-success btn-sm mb-1"
 												onclick="return confirm('Xác nhận hẹn phỏng vấn?')"
 											>
-
 												<i class="fa-solid fa-calendar-check"></i>
 												Hẹn PV
-
 											</button>
-
 										</form>
-
 									<?php endif; ?>
-
-
 									<!-- ĐÃ XEM -->
 									<?php if ($trangThai === STATUS_DA_XEM): ?>
-
 										<form
 											method="POST"
 											action="<?= BASE_URL ?>/index.php?route=recruiter/update-status"
@@ -209,38 +184,28 @@ $currentTrangThai = $currentFilters['trangThai'] ?? ($_GET['trangThai'] ?? '');
 										>
 										<input type="hidden" name="maTin" value="<?= htmlspecialchars($currentMaTin) ?>">
 										<input type="hidden" name="trangThaiLoc" value="<?= htmlspecialchars($currentTrangThai) ?>">
-
 											<input
 												type="hidden"
 												name="maHS"
 												value="<?= htmlspecialchars($hs['MaHS']) ?>"
 											>
-
 											<input
 												type="hidden"
 												name="trangThai"
 												value="HenPhongVan"
 											>
-
 											<button
 												type="submit"
 												class="btn btn-outline-success btn-sm mb-1"
 												onclick="return confirm('Xác nhận hẹn phỏng vấn?')"
 											>
-
 												<i class="fa-solid fa-calendar-check"></i>
 												Hẹn PV
-
 											</button>
-
 										</form>
-
 									<?php endif; ?>
-
-
 									<!-- HẸN PHỎNG VẤN -->
 									<?php if ($trangThai === STATUS_HEN_PHONG_VAN): ?>
-
 										<form
 											method="POST"
 											action="<?= BASE_URL ?>/index.php?route=recruiter/update-status"
@@ -248,41 +213,31 @@ $currentTrangThai = $currentFilters['trangThai'] ?? ($_GET['trangThai'] ?? '');
 										>
 										<input type="hidden" name="maTin" value="<?= htmlspecialchars($currentMaTin) ?>">
 										<input type="hidden" name="trangThaiLoc" value="<?= htmlspecialchars($currentTrangThai) ?>">
-
 											<input
 												type="hidden"
 												name="maHS"
 												value="<?= htmlspecialchars($hs['MaHS']) ?>"
 											>
-
 											<input
 												type="hidden"
 												name="trangThai"
 												value="NhanViec"
 											>
-
 											<button
 												type="submit"
 												class="btn btn-outline-success btn-sm mb-1"
 												onclick="return confirm('Xác nhận nhận việc?')"
 											>
-
 												<i class="fa-solid fa-circle-check"></i>
 												Nhận việc
-
 											</button>
-
 										</form>
-
 									<?php endif; ?>
-
-
 									<!-- TỪ CHỐI -->
 									<?php if (
 										$trangThai !== STATUS_NHAN_VIEC &&
 										$trangThai !== STATUS_TU_CHOI
 									): ?>
-
 										<form
 											method="POST"
 											action="<?= BASE_URL ?>/index.php?route=recruiter/update-status"
@@ -290,32 +245,25 @@ $currentTrangThai = $currentFilters['trangThai'] ?? ($_GET['trangThai'] ?? '');
 										>
 										<input type="hidden" name="maTin" value="<?= htmlspecialchars($currentMaTin) ?>">
 										<input type="hidden" name="trangThaiLoc" value="<?= htmlspecialchars($currentTrangThai) ?>">
-
 											<input
 												type="hidden"
 												name="maHS"
 												value="<?= htmlspecialchars($hs['MaHS']) ?>"
 											>
-
 											<input
 												type="hidden"
 												name="trangThai"
 												value="TuChoi"
 											>
-
 											<button
 												type="submit"
 												class="btn btn-outline-danger btn-sm mb-1"
 												onclick="return confirm('Xác nhận từ chối?')"
 											>
-
 												<i class="fa-solid fa-user-xmark"></i>
 												Từ chối
-
 											</button>
-
 										</form>
-
 									<?php endif; ?>
 							</td>
 						</tr>

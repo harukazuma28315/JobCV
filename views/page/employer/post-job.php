@@ -13,7 +13,6 @@ include_once __DIR__ . '/../layouts/header.php';
 <div class="container py-5">
 	<div class="row">
 		<div class="col-12">
-			
 			<!-- Điều hướng Tab giữa Quản lý và Đăng tin -->
 			<ul class="nav nav-pills mb-4 gap-2 bg-white p-2 rounded-3 shadow-sm border" id="pills-tab" role="tablist">
 				<li class="nav-item" role="presentation">
@@ -27,9 +26,7 @@ include_once __DIR__ . '/../layouts/header.php';
 					</button>
 				</li>
 			</ul>
-
 			<div class="tab-content" id="pills-tabContent">
-				
 				<!-- TAB 1: DANH SÁCH QUẢN LÝ TIN ĐÃ ĐĂNG -->
 				<div class="tab-pane fade <?= $activeTab === 'manage' ? 'show active' : '' ?>" id="pills-manage" role="tabpanel">
 					<div class="card border-0 shadow-sm p-4 bg-white rounded-3">
@@ -37,7 +34,6 @@ include_once __DIR__ . '/../layouts/header.php';
 							<h5 class="fw-bold text-dark mb-0"><i class="fa-solid fa-layer-group me-2 text-primary-blue"></i>Danh sách tin tuyển dụng</h5>
 							<span class="badge bg-light text-dark border">Tổng số tin: <?= $total ?></span>
 						</div>
-
 						<div class="table-responsive">
 							<table class="table align-middle table-hover">
 								<thead class="table-light text-secondary">
@@ -70,7 +66,6 @@ include_once __DIR__ . '/../layouts/header.php';
 												$moDong = $job['TrangThai'] ?? '';
 												$daHetHan = !empty($job['NgayHetHan'])
 													&& strtotime($job['NgayHetHan']) < strtotime('today');
-
 												if ($duyet === 'ChoDuyet') {
 													$statusBadge = ['bg-warning text-dark', 'fa-solid fa-hourglass-half', 'Chờ duyệt'];
 												} elseif ($duyet === 'TuChoi') {
@@ -84,7 +79,6 @@ include_once __DIR__ . '/../layouts/header.php';
 												} else {
 													$statusBadge = ['bg-success', 'fa-solid fa-circle-check', 'Đang hoạt động'];
 												}
-
 												$soUngVien = (int) ($job['SoUngVien'] ?? 0);
 											?>
 											<tr>
@@ -121,7 +115,6 @@ include_once __DIR__ . '/../layouts/header.php';
 															class="btn btn-light btn-sm text-primary" title="Chỉnh sửa nội dung">
 															<i class="fa-solid fa-pen-to-square"></i>
 														</a>
-
 														<!-- Gia hạn: mở modal chọn hạn nộp mới, submit qua route=jobs/extend -->
 														<button type="button"
 																class="btn btn-light btn-sm text-warning"
@@ -130,7 +123,6 @@ include_once __DIR__ . '/../layouts/header.php';
 																data-bs-target="#extendModal-<?= htmlspecialchars($job['MaTinTuyenDung']) ?>">
 															<i class="fa-regular fa-clock"></i>
 														</button>
-
 														<!-- Đóng / Mở lại tin: submit qua route=jobs/toggle -->
 														<form action="/JobCV/index.php?route=jobs/toggle" method="POST" class="d-inline"
 																onsubmit="return confirm('<?= $moDong === 'DangMo' ? 'Xác nhận tạm dừng/đóng tin tuyển dụng này?' : 'Xác nhận mở lại tin tuyển dụng này?' ?>');">
@@ -141,7 +133,6 @@ include_once __DIR__ . '/../layouts/header.php';
 																<i class="fa-solid <?= $moDong === 'DangMo' ? 'fa-ban' : 'fa-rotate-left' ?>"></i>
 															</button>
 														</form>
-
 														<!-- Xóa tin -->
 														<form action="/JobCV/index.php?route=jobs/delete" method="POST" class="d-inline"
 																onsubmit="return confirm('Xác nhận xóa vĩnh viễn tin tuyển dụng này? Hành động này không thể hoàn tác.');">
@@ -158,7 +149,6 @@ include_once __DIR__ . '/../layouts/header.php';
 								</tbody>
 							</table>
 						</div>
-
 						<!-- Modal Gia hạn tin: đặt ngoài <table> vì <div> không được phép
 							 là con trực tiếp của <tbody> (browser sẽ tự đẩy ra ngoài,
 							 gây vỡ layout như hình chụp lỗi trước đó) -->
@@ -187,7 +177,6 @@ include_once __DIR__ . '/../layouts/header.php';
 						<?php endforeach; ?>
 					</div>
 				</div>
-
 				<!-- TAB 2: FORM ĐĂNG TIN TUYỂN DỤNG MỚI -->
 				<div class="tab-pane fade <?= $activeTab === 'post' ? 'show active' : '' ?>" id="pills-post" role="tabpanel">
 					<div class="card border-0 shadow-sm p-4 bg-white rounded-3">
@@ -195,7 +184,6 @@ include_once __DIR__ . '/../layouts/header.php';
 							<h5 class="fw-bold text-dark mb-1"><i class="fa-solid fa-file-pen text-primary-blue me-2"></i>Đăng tin tuyển dụng mới</h5>
 							<p class="text-muted small mb-0">Vui lòng điền đầy đủ các tiêu chí lọc hồ sơ để hệ thống phân loại ứng viên tốt nhất.</p>
 						</div>
-
 						<form action="/JobCV/index.php?route=jobs/create" method="POST">
 							<div class="row g-3 mb-4">
 								<div class="col-12">
@@ -320,7 +308,6 @@ include_once __DIR__ . '/../layouts/header.php';
 											required>
 								</div>
 							</div>
-
 							<h6 class="fw-bold text-primary-blue mb-3 text-uppercase border-top pt-4">Nội dung chi tiết & Tiêu chí lọc hồ sơ</h6>
 							<div class="row g-3">
 								<div class="col-12">
@@ -338,7 +325,6 @@ include_once __DIR__ . '/../layouts/header.php';
 											required></textarea>
 								</div>
 							</div>
-
 							<div class="text-end pt-4 border-top mt-4">
 								<button type="reset" class="btn btn-light px-4 py-2 me-2">Nhập lại</button>
 								<button type="submit" class="btn btn-primary-blue fw-bold px-4 py-2">Đăng tuyển dụng ngay</button>
@@ -346,7 +332,6 @@ include_once __DIR__ . '/../layouts/header.php';
 						</form>
 					</div>
 				</div>
-
 			</div>
 		</div>
 	</div>
