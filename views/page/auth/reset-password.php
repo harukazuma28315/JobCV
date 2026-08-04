@@ -57,8 +57,8 @@ include_once __DIR__ . '/../layouts/header.php';
 				<div id="resetMessage" class="small"></div>
 
 				<div class="text-start mt-3">
-					<a href="<?= $baseUrl ?>/index.php?route=auth/login" class="text-decoration-none text-dark fw-medium">
-						<i class="bi bi-arrow-left me-1"></i>Quay lại Đăng Nhập
+					<a href="<?= $baseUrl ?>/index.php?route=auth/forgot-password" class="text-decoration-none text-dark fw-medium">
+						<i class="bi bi-arrow-left me-1"></i>Quay lại
 					</a>
 				</div>
 			</form>

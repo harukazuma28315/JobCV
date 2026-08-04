@@ -1,5 +1,20 @@
 <?php
 $baseUrl = '/JobCV';
+
+if (session_status() === PHP_SESSION_NONE) {
+	session_start();
+}
+
+// Chưa đăng nhập -> quay lại nên về login.
+// Đã đăng nhập (đi từ trang hồ sơ, bấm "Đổi Mật Khẩu") -> quay lại nên về lại hồ sơ,
+// không bắt họ quay về login vì họ đã đăng nhập rồi.
+// LƯU Ý: đoán key session 'user_id' theo UserManagementController.php, đổi lại nếu LoginController dùng key khác.
+if (isset($_SESSION['user_id'])) {
+	$backUrl = $baseUrl . '/index.php?route=profile';
+} else {
+	$backUrl = $baseUrl . '/index.php?route=auth/login';
+}
+
 include_once __DIR__ . '/../layouts/header.php';
 ?>
 <div class="container-fluid min-vh-100 d-flex align-items-center justify-content-center position-relative py-5"
@@ -42,8 +57,8 @@ include_once __DIR__ . '/../layouts/header.php';
 				<div id="formMessage" class="small"></div>
 
 				<div class="text-start mt-3">
-					<a href="<?= $baseUrl ?>/index.php?route=auth/login" class="text-decoration-none text-dark fw-medium">
-						<i class="bi bi-arrow-left me-1"></i>Quay lại Đăng Nhập
+					<a href="<?= htmlspecialchars($backUrl) ?>" class="text-decoration-none text-dark fw-medium">
+						<i class="bi bi-arrow-left me-1"></i>Quay lại
 					</a>
 				</div>
 			</form>

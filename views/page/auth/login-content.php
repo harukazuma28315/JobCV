@@ -1,3 +1,18 @@
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+	session_start();
+}
+
+// Nếu đã đăng nhập (session có user_id) thì tự động chuyển về trang chủ,
+// không cho vào lại trang login nữa.
+// LƯU Ý: mình giả định key session là 'user_id' theo UserManagementController.php
+// bạn từng gửi (VD: $_SESSION['user_id'] = 'U005';). Nếu LoginController của bạn
+// dùng key khác (VD: 'MaUser', 'userId'...) thì đổi lại điều kiện dưới đây cho khớp.
+if (isset($_SESSION['user_id'])) {
+	header('Location: ' . $baseUrl . '/index.php?route=home');
+	exit;
+}
+?>
 <section class="min-vh-100 d-flex align-items-center py-5"
 	style="background: url('<?= $baseUrl ?>/assets/images/city-bg.png') no-repeat bottom center; background-size: cover;">
 
