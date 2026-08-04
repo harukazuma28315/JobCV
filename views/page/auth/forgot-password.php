@@ -7,7 +7,7 @@ include_once __DIR__ . '/../layouts/header.php';
 
 	<div class="card p-4 p-md-5 shadow-sm border-0" style="max-width: 760px; width: 100%; border-radius: 12px;">
 		<div class="card-body p-0">
-			<h2 class="card-title fw-bold mb-3" style="color: #2b5a8f;">Xác minh danh tính</h2>
+			<h2 class="card-title fw-bold mb-3" style="color: #2b5a8f;">Xác thực danh tính</h2>
 			<p class="text-secondary mb-4">Nhập email đã đăng ký để nhận mã xác thực. Mỗi lần lấy mã lại sẽ cần chờ 60 giây.</p>
 
 			<form id="forgotForm" class="needs-validation" novalidate autocomplete="on">
