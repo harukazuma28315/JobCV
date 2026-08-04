@@ -10,74 +10,74 @@
  * @param {string} type - Loại tài khoản đăng ký ('candidate' hoặc 'employer').
  */
 window.requestOtp = function (type) {
-  const baseUrl = window.appConfig?.baseUrl || "/JobCV";
+    const baseUrl = window.appConfig?.baseUrl || "/JobCV";
 
-  const emailId = type === "employer" ? "EmailEmployer" : "Email";
-  const btnId = type === "employer" ? "btnGetOtpEmployer" : "btnGetOtp";
+    const emailId = type === "employer" ? "EmailEmployer" : "Email";
+    const btnId = type === "employer" ? "btnGetOtpEmployer" : "btnGetOtp";
 
-  const emailInput = document.getElementById(emailId);
-  const btnGetOtp = document.getElementById(btnId);
+    const emailInput = document.getElementById(emailId);
+    const btnGetOtp = document.getElementById(btnId);
 
-  if (!emailInput || !emailInput.value.trim()) {
-    alert("Vui lòng nhập địa chỉ Email trước khi yêu cầu mã xác thực!");
-    return;
-  }
+    if (!emailInput || !emailInput.value.trim()) {
+        alert("Vui lòng nhập địa chỉ Email trước khi yêu cầu mã xác thực!");
+        return;
+    }
 
-  const emailValue = emailInput.value.trim();
+    const emailValue = emailInput.value.trim();
 
-  if (btnGetOtp) {
-    btnGetOtp.disabled = true;
-    btnGetOtp.innerText = "Đang gửi...";
-  }
+    if (btnGetOtp) {
+        btnGetOtp.disabled = true;
+        btnGetOtp.innerText = "Đang gửi...";
+    }
 
-  const formData = new FormData();
-  formData.append("action", "send_otp");
-  formData.append("email", emailValue);
+    const formData = new FormData();
+    formData.append("action", "send_otp");
+    formData.append("email", emailValue);
 
-  fetch(`${baseUrl}/index.php?route=auth/send-otp`, {
-    method: "POST",
-    body: formData,
-  })
-    .then(async (response) => {
-      const text = await response.text();
-      try {
-        return JSON.parse(text);
-      } catch (error) {
-        throw new Error(`Invalid JSON response from server:\n${text}`);
-      }
+    fetch(`${baseUrl}/index.php?route=auth/send-otp`, {
+        method: "POST",
+        body: formData,
     })
-    .then((data) => {
-      alert(data.message);
-      if (data.status === "success" || data.status === "cooldown") {
-        let countdown = data.remaining || 60;
-        const timer = setInterval(() => {
-          countdown--;
-          if (btnGetOtp) {
-            btnGetOtp.innerText = `Gửi lại sau (${countdown}s)`;
-          }
-          if (countdown <= 0) {
-            clearInterval(timer);
-            if (btnGetOtp) {
-              btnGetOtp.disabled = false;
-              btnGetOtp.innerText = "Lấy mã xác thực";
+        .then(async (response) => {
+            const text = await response.text();
+            try {
+                return JSON.parse(text);
+            } catch (error) {
+                throw new Error(`Invalid JSON response from server:\n${text}`);
             }
-          }
-        }, 1000);
-      } else {
-        if (btnGetOtp) {
-          btnGetOtp.disabled = false;
-          btnGetOtp.innerText = "Lấy mã xác thực";
-        }
-      }
-    })
-    .catch((error) => {
-      console.error("Error:", error);
-      alert("Đã có lỗi kết nối xảy ra!");
-      if (btnGetOtp) {
-        btnGetOtp.disabled = false;
-        btnGetOtp.innerText = "Lấy mã xác thực";
-      }
-    });
+        })
+        .then((data) => {
+            alert(data.message);
+            if (data.status === "success" || data.status === "cooldown") {
+                let countdown = data.remaining || 60;
+                const timer = setInterval(() => {
+                    countdown--;
+                    if (btnGetOtp) {
+                        btnGetOtp.innerText = `Gửi lại sau (${countdown}s)`;
+                    }
+                    if (countdown <= 0) {
+                        clearInterval(timer);
+                        if (btnGetOtp) {
+                            btnGetOtp.disabled = false;
+                            btnGetOtp.innerText = "Lấy mã xác thực";
+                        }
+                    }
+                }, 1000);
+            } else {
+                if (btnGetOtp) {
+                    btnGetOtp.disabled = false;
+                    btnGetOtp.innerText = "Lấy mã xác thực";
+                }
+            }
+        })
+        .catch((error) => {
+            console.error("Error:", error);
+            alert("Đã có lỗi kết nối xảy ra!");
+            if (btnGetOtp) {
+                btnGetOtp.disabled = false;
+                btnGetOtp.innerText = "Lấy mã xác thực";
+            }
+        });
 };
 
 /**
@@ -87,60 +87,60 @@ window.requestOtp = function (type) {
  * @param {number} roleVal - Mã vai trò người dùng (1: Nhà tuyển dụng, 0/khác: Ứng viên).
  */
 window.switchRole = function (roleVal) {
-  document.getElementById("Role").value = roleVal;
-  document.getElementById("RoleEmployer").value = roleVal;
+    document.getElementById("Role").value = roleVal;
+    document.getElementById("RoleEmployer").value = roleVal;
 
-  const personalFields = document.getElementById("personalFields");
-  const employerFields = document.getElementById("employerFields");
-  const btnSubmit = document.getElementById("btnSubmit");
-  const labelHoTen = document.getElementById("labelHoTen");
-  const inputHoTen = document.getElementById("HoTen");
-  const labelEmail = document.getElementById("labelEmail");
-  const labelSDT = document.getElementById("labelSDT");
-  const labelDiaChi = document.getElementById("labelDiaChi");
-  const maSoThue = document.getElementById("MaSoThue");
+    const personalFields = document.getElementById("personalFields");
+    const employerFields = document.getElementById("employerFields");
+    const btnSubmit = document.getElementById("btnSubmit");
+    const labelHoTen = document.getElementById("labelHoTen");
+    const inputHoTen = document.getElementById("HoTen");
+    const labelEmail = document.getElementById("labelEmail");
+    const labelSDT = document.getElementById("labelSDT");
+    const labelDiaChi = document.getElementById("labelDiaChi");
+    const maSoThue = document.getElementById("MaSoThue");
 
-  const isEmployer = roleVal === 1;
+    const isEmployer = roleVal === 1;
 
-  if (personalFields)
-    personalFields.style.display = isEmployer ? "none" : "flex";
-  if (employerFields)
-    employerFields.style.display = isEmployer ? "block" : "none";
+    if (personalFields)
+        personalFields.style.display = isEmployer ? "none" : "flex";
+    if (employerFields)
+        employerFields.style.display = isEmployer ? "block" : "none";
 
-  if (labelHoTen) {
-    labelHoTen.innerHTML = isEmployer
-      ? 'Tên công ty / Doanh nghiệp <span class="text-danger">*</span>'
-      : 'Họ và Tên <span class="text-danger">*</span>';
-  }
-  if (inputHoTen) {
-    inputHoTen.placeholder = isEmployer
-      ? "Nhập tên công ty chính thức"
-      : "Nhập họ và tên đầy đủ";
-  }
-  if (labelEmail) {
-    labelEmail.innerHTML = isEmployer
-      ? 'Email công ty <span class="text-danger">*</span>'
-      : 'Email <span class="text-danger">*</span>';
-  }
-  if (labelSDT)
-    labelSDT.innerText = isEmployer ? "Số điện thoại công ty" : "Số điện thoại";
-  if (labelDiaChi)
-    labelDiaChi.innerText = isEmployer ? "Địa chỉ trụ sở chính" : "Địa chỉ";
+    if (labelHoTen) {
+        labelHoTen.innerHTML = isEmployer
+            ? 'Tên công ty / Doanh nghiệp <span class="text-danger">*</span>'
+            : 'Họ và Tên <span class="text-danger">*</span>';
+    }
+    if (inputHoTen) {
+        inputHoTen.placeholder = isEmployer
+            ? "Nhập tên công ty chính thức"
+            : "Nhập họ và tên đầy đủ";
+    }
+    if (labelEmail) {
+        labelEmail.innerHTML = isEmployer
+            ? 'Email công ty <span class="text-danger">*</span>'
+            : 'Email <span class="text-danger">*</span>';
+    }
+    if (labelSDT)
+        labelSDT.innerText = isEmployer ? "Số điện thoại công ty" : "Số điện thoại";
+    if (labelDiaChi)
+        labelDiaChi.innerText = isEmployer ? "Địa chỉ trụ sở chính" : "Địa chỉ";
 
-  if (btnSubmit) {
-    btnSubmit.innerText = isEmployer
-      ? "Đăng Ký Nhà Tuyển Dụng"
-      : "Đăng Ký Ứng Viên";
-    btnSubmit.className = isEmployer
-      ? "btn btn-success btn-lg"
-      : "btn btn-primary-blue btn-lg";
-  }
+    if (btnSubmit) {
+        btnSubmit.innerText = isEmployer
+            ? "Đăng Ký Nhà Tuyển Dụng"
+            : "Đăng Ký Ứng Viên";
+        btnSubmit.className = isEmployer
+            ? "btn btn-success btn-lg"
+            : "btn btn-primary-blue btn-lg";
+    }
 
-  if (maSoThue) {
-    isEmployer
-      ? maSoThue.setAttribute("required", "required")
-      : maSoThue.removeAttribute("required");
-  }
+    if (maSoThue) {
+        isEmployer
+            ? maSoThue.setAttribute("required", "required")
+            : maSoThue.removeAttribute("required");
+    }
 };
 
 /**
@@ -148,47 +148,45 @@ window.switchRole = function (roleVal) {
  * Khởi tạo kiểm tra tính hợp lệ của Form Bootstrap và xác nhận mật khẩu khớp nhau trước khi Submit.
  */
 document.addEventListener("DOMContentLoaded", () => {
-  "use strict";
-
-  // Chuẩn hóa: Tự động xóa các khoảng trắng thừa ở đầu/cuối khi người dùng rê chuột ra ngoài
-  const nameInputs = document.querySelectorAll("#HoTen, #HoTenEmployer");
-  nameInputs.forEach((input) => {
-    input.addEventListener("blur", function () {
-      this.value = this.value.trim().replace(/\s+/g, " ");
+    "use strict";
+    const nameInputs = document.querySelectorAll("#HoTen, #HoTenEmployer");
+    nameInputs.forEach((input) => {
+        input.addEventListener("blur", function () {
+            this.value = this.value.trim().replace(/\s+/g, " ");
+        });
     });
-  });
 
-  const forms = document.querySelectorAll(".needs-validation");
+    const forms = document.querySelectorAll(".needs-validation");
 
-  Array.prototype.slice.call(forms).forEach(function (form) {
-    form.addEventListener(
-      "submit",
-      function (event) {
-        const passwordInput = form.querySelector(
-          'input[type="password"][name="MatKhau"]',
+    Array.prototype.slice.call(forms).forEach(function (form) {
+        form.addEventListener(
+            "submit",
+            function (event) {
+                const passwordInput = form.querySelector(
+                    'input[type="password"][name="MatKhau"]',
+                );
+                const confirmInput = form.querySelector(
+                    'input[type="password"][name="MatKhauConfirm"]',
+                );
+
+                if (passwordInput && confirmInput) {
+                    const password = passwordInput.value;
+                    const confirmPassword = confirmInput.value;
+
+                    if (password !== confirmPassword) {
+                        confirmInput.setCustomValidity("Mật khẩu không trùng khớp!");
+                    } else {
+                        confirmInput.setCustomValidity("");
+                    }
+                }
+
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add("was-validated");
+            },
+            false,
         );
-        const confirmInput = form.querySelector(
-          'input[type="password"][name="MatKhauConfirm"]',
-        );
-
-        if (passwordInput && confirmInput) {
-          const password = passwordInput.value;
-          const confirmPassword = confirmInput.value;
-
-          if (password !== confirmPassword) {
-            confirmInput.setCustomValidity("Mật khẩu không trùng khớp!");
-          } else {
-            confirmInput.setCustomValidity("");
-          }
-        }
-
-        if (!form.checkValidity()) {
-          event.preventDefault();
-          event.stopPropagation();
-        }
-        form.classList.add("was-validated");
-      },
-      false,
-    );
-  });
+    });
 });

@@ -25,10 +25,8 @@ document.addEventListener('DOMContentLoaded', () => {
      * Lắng nghe sự kiện SUBMIT của Form
      */
     resetForm.addEventListener('submit', function (e) {
-        // 1. Luôn ngăn hành vi submit mặc định của trình duyệt
         e.preventDefault();
 
-        // 2. Kích hoạt Validation mặc định của HTML5 (minlength, maxlength, pattern...)
         if (!resetForm.checkValidity()) {
             e.stopPropagation();
             resetForm.classList.add('was-validated');
@@ -39,13 +37,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const password = document.getElementById('matKhau')?.value || '';
         const confirmPassword = document.getElementById('matKhauConfirm')?.value || '';
 
-        // 3. Kiểm tra mật khẩu nhập lại trùng khớp
         if (password !== confirmPassword) {
             showResetMessage('Mật khẩu nhập lại không trùng khớp!', 'danger');
             return;
         }
 
-        // 4. Nếu hợp lệ -> Tiến hành gửi AJAX
         const formData = new FormData(resetForm);
         
         btnResetPassword.disabled = true;

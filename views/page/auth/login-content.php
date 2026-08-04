@@ -24,7 +24,6 @@ if (isset($_SESSION['user_id'])) {
 			<div class="card border-0 shadow-lg overflow-hidden">
 				<div class="row g-0" style="min-height: 480px;">
 
-					<!-- Trái -->
 					<div class="col-md-5 bg-primary-blue d-flex flex-column justify-content-center align-items-center text-white p-5 text-center">
 
 						<h3 class="fw-bold mb-3">
@@ -46,7 +45,6 @@ if (isset($_SESSION['user_id'])) {
 
 					</div>
 
-					<!-- Phải -->
 					<div class="col-md-7 bg-white p-5 d-flex flex-column justify-content-center">
 
 						<h4 class="fw-bold text-primary-blue mb-4 text-center text-md-start">

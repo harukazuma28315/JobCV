@@ -33,14 +33,12 @@ class GoogleAuthController {
 
 		$idToken = $_POST['credential'];
 
-		// Phân tách cấu trúc mã hóa chuỗi JWT (Header.Payload.Signature)
 		$tokenParts = explode('.', $idToken);
 		if (count($tokenParts) !== 3) {
 			echo "<script>alert('Mã xác thực không đúng định dạng!'); window.history.back();</script>";
 			return;
 		}
 
-		// Giải mã vùng dữ liệu Payload của JWT để lấy thông tin cá nhân
 		$payload = json_decode(base64_decode(str_replace(['-', '_'], ['+', '/'], $tokenParts[1])), true);
 
 		if (!$payload || empty($payload['email'])) {
@@ -49,17 +47,12 @@ class GoogleAuthController {
 		}
 
 		$email = trim($payload['email']);
-		$hoTen = trim($payload['name']); // Lấy họ tên hiển thị của tài khoản Google
-
-		// Truy vấn đối chiếu kiểm tra sự tồn tại trong CSDL qua Model
+		$hoTen = trim($payload['name']);
 		$user = $this->userModel->getUserByEmail($email);
 
 		if ($user) {
-			// TRƯỜNG HỢP 1: Tài khoản đã tồn tại -> Tiến hành tự động Đăng nhập trực tiếp
 			$this->loginUserSession($user);
 		} else {
-			// TRƯỜNG HỢP 2: Chưa tồn tại tài khoản -> Tự động tạo mới (Đăng ký nhanh)
-			// Vì đăng nhập bằng Google nên đặt mật khẩu ngẫu nhiên hoặc băm bảo mật
 			$randomPassword = bin2hex(random_bytes(16));
 			$matKhauHashed = password_hash($randomPassword, PASSWORD_DEFAULT);
 			$maUser = "USR" . time() . rand(10, 99);
@@ -68,7 +61,7 @@ class GoogleAuthController {
 				'maUser' => $maUser,
 				'email' => $email,
 				'matKhauHashed' => $matKhauHashed,
-				'role' => 0, // Mặc định tự động đăng ký là Ứng viên (Role = 0)
+				'role' => 0,
 				'hoTen' => $hoTen,
 				'ngaySinh' => null,
 				'gioiTinh' => null,
@@ -76,7 +69,6 @@ class GoogleAuthController {
 				'diaChi' => null
 			];
 
-			// Thực thi ghi dữ liệu đồng thời vào bảng user và ungvien dựa trên Single Responsibility
 			$isRegistered = $this->userModel->registerCandidate($userData);
 
 			if ($isRegistered) {
@@ -98,7 +90,7 @@ class GoogleAuthController {
 		$_SESSION['user_email'] = $user['Email'];
 		$_SESSION['user_name'] = $user['HoTen'];
 		$_SESSION['user_role'] = $user['Role'];
-		$_SESSION['role'] = $user['Role']; // Đồng bộ với AuthHelper::requireRole() đang đọc key 'role'
+		$_SESSION['role'] = $user['Role'];
 
 		echo "<script>alert('Đăng nhập liên kết Google thành công!');"
 			. " window.location.href='../views/trangchu.php';</script>";

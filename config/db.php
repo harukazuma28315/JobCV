@@ -35,7 +35,6 @@ class Database {
 			$link = mysqli_connect(DB_HOST, DB_USER, DB_PASS, DB_NAME);
 
 			if (!$link) {
-				// Không lộ thông tin CSDL ra ngoài, chỉ ghi log nội bộ
 				error_log('Ket noi CSDL that bai: ' . mysqli_connect_error());
 				die('He thong dang gap su co, vui long thu lai sau.');
 			}

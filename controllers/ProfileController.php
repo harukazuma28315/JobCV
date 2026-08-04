@@ -119,8 +119,6 @@ class ProfileController {
 
 			$sdt = trim($_POST['sdt'] ?? '');
 
-			// 1. Kiểm tra Số điện thoại giống trang Đăng ký
-			// (Bắt buộc đúng 10 số & bắt đầu bằng số 0)
 			if (!empty($sdt) && !preg_match('/^0[0-9]{9}$/', $sdt)) {
 				echo "<script>alert('Số điện thoại phải bao gồm đúng 10 chữ số và bắt đầu bằng số 0!');"
 					. " window.history.back();</script>";
@@ -132,7 +130,6 @@ class ProfileController {
 				$website = trim($_POST['website'] ?? '');
 				$linhVuc = trim($_POST['linhVuc'] ?? '');
 
-				// Kiểm tra regex Địa chỉ nếu có nhập
 				$diaChiPattern = '/^[a-zA-Z0-9àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđĐ\s,\/]+$/u';
 
 				if (!empty($diaChi) && !preg_match($diaChiPattern, $diaChi)) {

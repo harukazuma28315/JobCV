@@ -18,7 +18,7 @@ class IdHelper
 	 */
 	public static function generate($prefix)
 	{
-		$raw = uniqid('', true); // ví dụ: 668f2a1c9b3e45.12345678
+		$raw = uniqid('', true);
 		$clean = str_replace('.', '', $raw);
 
 		return strtoupper($prefix) . '_' . $clean;

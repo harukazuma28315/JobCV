@@ -60,7 +60,6 @@ $diaDiemList   = $diaDiemList ?? [];
 			<i class="fa-solid fa-plus me-2"></i>Thêm danh mục mới
 		</button>
 	</div>
-	<!-- Thông báo -->
 	<?php if (isset($thongBao) && !empty($thongBao)): 
 		$alertClass = (isset($thongBao['type']) && $thongBao['type'] === 'success') ? 'success' : 'danger';
 	?>
@@ -70,7 +69,6 @@ $diaDiemList   = $diaDiemList ?? [];
 		</div>
 	<?php endif; ?>
 
-	<!-- Tabs for Ngành nghề and Địa điểm -->
 	<ul class="nav nav-tabs mb-3" id="myTab" role="tablist">
 		<li class="nav-item" role="presentation">
 			<button class="nav-link active" id="job-tab" data-bs-toggle="tab" data-bs-target="#job-tab-pane" type="button" role="tab">
@@ -86,7 +84,6 @@ $diaDiemList   = $diaDiemList ?? [];
 
 	<div class="tab-content card border-0 shadow-sm p-4 rounded-3" id="myTabContent">
 		
-		<!-- TAB NGÀNH NGHỀ -->
 		<div class="tab-pane fade show active" id="job-tab-pane" role="tabpanel">
 			<h5 class="fw-bold mb-3 text-secondary">Danh sách Ngành nghề tuyển dụng</h5>
 			<div class="table-responsive">
@@ -134,7 +131,6 @@ $diaDiemList   = $diaDiemList ?? [];
 			</div>
 		</div>
 
-		<!-- TAB ĐỊA ĐIỂM -->
 		<div class="tab-pane fade" id="location-tab-pane" role="tabpanel">
 			<h5 class="fw-bold mb-3 text-secondary">Danh sách Tỉnh thành / Địa điểm tuyển dụng</h5>
 			<div class="table-responsive">
@@ -184,7 +180,6 @@ $diaDiemList   = $diaDiemList ?? [];
 	</div>
 </div>
 
-<!-- Modal Thêm -->
 <div class="modal fade" id="addCategoryModal" tabindex="-1">
 	<div class="modal-dialog">
 		<div class="modal-content">
@@ -218,7 +213,6 @@ $diaDiemList   = $diaDiemList ?? [];
 	</div>
 </div>
 
-<!-- Modal Sửa (Sửa cả Tên và Mã) -->
 <div class="modal fade" id="editModal" tabindex="-1">
 	<div class="modal-dialog">
 		<div class="modal-content">

@@ -53,7 +53,6 @@ class EmployerProfileController {
 			)
 		);
 
-		// Chỉ cho phép ảnh, tránh upload file thực thi giả dạng ảnh
 		$allowExtensions = [
 			"jpg",
 			"jpeg",
@@ -70,8 +69,6 @@ class EmployerProfileController {
 			mkdir($directory, 0777, true);
 		}
 
-		// Đặt tên file theo mã nhà tuyển dụng (không theo tên file gốc) để mỗi lần
-		// upload mới sẽ tự động ghi đè logo cũ, tránh tích tụ file rác trên server.
 		$fileName = $maNhaTuyenDung . "." . $extension;
 
 		$uploadPath = $directory . $fileName;
@@ -108,7 +105,6 @@ class EmployerProfileController {
 			)
 		);
 
-		// Chỉ cho phép ảnh, tránh upload file thực thi giả dạng ảnh
 		$allowExtensions = [
 			"jpg",
 			"jpeg",
@@ -125,8 +121,6 @@ class EmployerProfileController {
 			mkdir($directory, 0777, true);
 		}
 
-		// Đặt tên file theo mã nhà tuyển dụng để lần upload sau tự động ghi đè
-		// ảnh bìa cũ, tránh tích tụ file rác trên server.
 		$fileName = $maNhaTuyenDung . "." . $extension;
 
 		$uploadPath = $directory . $fileName;

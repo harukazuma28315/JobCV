@@ -24,13 +24,11 @@
 
 						<div class="col-md-7 bg-white p-4">
 							<div class="tab-content" id="v-pills-tabContent">
-								<!-- TAB FORM ỨNG VIÊN -->
 								<div class="tab-pane fade show active" id="candidate-form" role="tabpanel">
 									<h4 class="fw-bold text-primary-blue mb-4">Đăng Ký Tài Khoản Ứng Viên</h4>
 									<form action="<?= $baseUrl ?>/index.php?route=auth/register-submit" method="POST" class="needs-validation" novalidate id="registerForm">
 										<input type="hidden" id="Role" name="Role" value="0">
 
-										<!-- Email -->
 										<div class="mb-3">
 											<label for="Email" class="form-label small fw-semibold" id="labelEmail">Email <span class="text-danger">*</span></label>
 											<div class="input-group">
@@ -39,26 +37,22 @@
 											</div>
 										</div>
 
-										<!-- OTP -->
 										<div class="mb-3">
 											<label for="Otp" class="form-label small fw-semibold">Mã xác thực OTP <span class="text-danger">*</span></label>
 											<input type="text" class="form-control py-2" id="Otp" name="Otp" required placeholder="Nhập 6 chữ số lấy từ Email" inputmode="numeric" maxlength="6" pattern="[0-9]{6}" oninput="this.value = this.value.replace(/\D/g, '')" title="Mã OTP phải bao gồm đúng 6 chữ số">
 										</div>
 
-										<!-- Mật khẩu -->
 										<div class="mb-3">
 											<label for="MatKhau" class="form-label small fw-semibold">Mật khẩu <span class="text-danger">*</span></label>
 											<input type="password" class="form-control py-2" id="MatKhau" name="MatKhau" required placeholder="Nhập mật khẩu (6-32 ký tự)" minlength="6" maxlength="32" pattern="^\S{6,32}$" oninput="this.value = this.value.replace(/\s/g, '')" title="Mật khẩu từ 6 đến 32 ký tự và không chứa khoảng trắng">
 										</div>
 
-										<!-- Xác nhận mật khẩu -->
 										<div class="mb-3">
 											<label for="MatKhauConfirm" class="form-label small fw-semibold">Nhập lại mật khẩu <span class="text-danger">*</span></label>
 											<input type="password" class="form-control py-2" id="MatKhauConfirm" name="MatKhauConfirm" required placeholder="Xác nhận lại mật khẩu" minlength="6" maxlength="32" oninput="this.value = this.value.replace(/\s/g, '')">
 											<div class="invalid-feedback" id="passwordErrorMsg">Vui lòng nhập lại mật khẩu trùng khớp.</div>
 										</div>
 
-										<!-- Họ và tên -->
 										<div class="mb-3">
 											<label for="HoTen" class="form-label small fw-semibold" id="labelHoTen">Họ và Tên <span class="text-danger">*</span></label>
 											<input type="text" class="form-control py-2" id="HoTen" name="HoTen" required placeholder="Nhập họ và tên đầy đủ" maxlength="100"
@@ -66,7 +60,6 @@
 												   title="Họ và tên chỉ bao gồm chữ cái và khoảng trắng, không chứa ký tự đặc biệt">
 										</div>
 
-										<!-- Ngày sinh & Giới tính -->
 										<div class="row" id="personalFields">
 											<div class="col-md-6 mb-3">
 												<label for="NgaySinh" class="form-label small fw-semibold">Ngày sinh</label>
@@ -85,13 +78,11 @@
 											</div>
 										</div>
 
-										<!-- Số điện thoại -->
 										<div class="mb-3">
 											<label for="SoDienThoai" class="form-label small fw-semibold">Số điện thoại <span class="text-danger">*</span></label>
 											<input type="text" class="form-control py-2" id="SoDienThoai" name="SDT" required placeholder="Nhập 10 chữ số (vd: 0912345678)" inputmode="numeric" maxlength="10" pattern="0[0-9]{9}" oninput="this.value = this.value.replace(/[^0-9]/g, '')" title="Số điện thoại phải bao gồm đúng 10 chữ số và bắt đầu bằng số 0">
 										</div>
 
-										<!-- Địa chỉ (Ứng viên) -->
 										<div class="mb-3">
 											<label for="DiaChi" class="form-label small fw-semibold" id="labelDiaChi">Địa chỉ</label>
 											<input type="text" class="form-control py-2" id="DiaChi" name="DiaChi" placeholder="Số nhà, tên đường, tỉnh/thành phố" maxlength="255" pattern="^[a-zA-Z0-9àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđĐ\s,\/]+$" title="Địa chỉ chỉ được chứa chữ cái, số, khoảng trắng, dấu phẩy (,) và dấu xuyệt (/). Không chứa các ký tự đặc biệt khác">
@@ -103,13 +94,11 @@
 									</form>
 								</div>
 
-								<!-- TAB FORM DOANH NGHIỆP -->
 								<div class="tab-pane fade" id="employer-form" role="tabpanel">
 									<h4 class="fw-bold text-success mb-4">Đăng Ký Tài Khoản Doanh Nghiệp</h4>
 									<form action="<?= $baseUrl ?>/index.php?route=auth/register-submit" method="POST" class="needs-validation" novalidate id="registerFormEmployer">
 										<input type="hidden" id="RoleEmployer" name="Role" value="1">
 
-										<!-- Email Công ty -->
 										<div class="mb-3">
 											<label for="EmailEmployer" class="form-label small fw-semibold" id="labelEmailEmployer">Email công ty <span class="text-danger">*</span></label>
 											<div class="input-group">
@@ -118,25 +107,21 @@
 											</div>
 										</div>
 
-										<!-- OTP -->
 										<div class="mb-3">
 											<label for="OtpEmployer" class="form-label small fw-semibold">Mã xác thực OTP <span class="text-danger">*</span></label>
 											<input type="text" class="form-control py-2" id="OtpEmployer" name="Otp" required placeholder="Nhập 6 chữ số lấy từ Email" inputmode="numeric" maxlength="6" pattern="[0-9]{6}" oninput="this.value = this.value.replace(/\D/g, '')" title="Mã OTP phải bao gồm đúng 6 chữ số">
 										</div>
 
-										<!-- Mật khẩu -->
 										<div class="mb-3">
 											<label for="MatKhauEmployer" class="form-label small fw-semibold">Mật khẩu <span class="text-danger">*</span></label>
 											<input type="password" class="form-control py-2" id="MatKhauEmployer" name="MatKhau" required placeholder="Nhập mật khẩu (6-32 ký tự)" minlength="6" maxlength="32" pattern="^\S{6,32}$" oninput="this.value = this.value.replace(/\s/g, '')" title="Mật khẩu từ 6 đến 32 ký tự và không chứa khoảng trắng">
 										</div>
 
-										<!-- Xác nhận mật khẩu -->
 										<div class="mb-3">
 											<label for="MatKhauConfirmEmployer" class="form-label small fw-semibold">Nhập lại mật khẩu <span class="text-danger">*</span></label>
 											<input type="password" class="form-control py-2" id="MatKhauConfirmEmployer" name="MatKhauConfirm" required placeholder="Xác nhận lại mật khẩu" minlength="6" maxlength="32" oninput="this.value = this.value.replace(/\s/g, '')">
 										</div>
 
-										<!-- Tên công ty -->
 										<div class="mb-3">
 											<label for="HoTenEmployer" class="form-label small fw-semibold">Tên công ty / Doanh nghiệp <span class="text-danger">*</span></label>
 											<input type="text" class="form-control py-2" id="HoTenEmployer" name="HoTen" required placeholder="Nhập tên công ty chính thức" maxlength="150"
@@ -144,19 +129,16 @@
 												   title="Tên công ty chỉ chứa chữ cái, số, khoảng trắng và các dấu (.,-&)">
 										</div>
 
-										<!-- SĐT công ty -->
 										<div class="mb-3">
 											<label for="SDTEmployer" class="form-label small fw-semibold">Số điện thoại công ty <span class="text-danger">*</span></label>
 											<input type="text" class="form-control py-2" id="SDTEmployer" name="SDT" required placeholder="Nhập 10 chữ số (vd: 0912345678)" inputmode="numeric" maxlength="10" pattern="0[0-9]{9}" oninput="this.value = this.value.replace(/[^0-9]/g, '')" title="Số điện thoại phải bao gồm đúng 10 chữ số và bắt đầu bằng số 0">
 										</div>
 
-										<!-- Địa chỉ trụ sở (Doanh nghiệp) -->
 										<div class="mb-3">
 											<label for="DiaChiEmployer" class="form-label small fw-semibold">Địa chỉ trụ sở chính</label>
 											<input type="text" class="form-control py-2" id="DiaChiEmployer" name="DiaChi" placeholder="Số nhà, tên đường, tỉnh/thành phố" maxlength="255" pattern="^[a-zA-Z0-9àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđĐ\s,\/]+$" title="Địa chỉ chỉ được chứa chữ cái, số, khoảng trắng, dấu phẩy (,) và dấu xuyệt (/). Không chứa các ký tự đặc biệt khác">
 										</div>
 
-										<!-- Chi tiết Doanh Nghiệp -->
 										<div class="border p-3 rounded bg-light mb-3">
 											<div class="mb-3">
 												<label for="MaSoThueEmployer" class="form-label small fw-semibold">Mã số thuế <span class="text-danger">*</span></label>

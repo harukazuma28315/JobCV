@@ -16,7 +16,6 @@ class HomeController {
 
 		$this->userModel = new UserModel($conn);
 
-		// TinTuyenDung hiện tại tự lấy global $conn
 		$this->tinTuyenDungModel = new JobPosting();
 		$this->nhaTuyenDungModel = new Employer();
 	}
@@ -43,14 +42,11 @@ class HomeController {
 
 		$categories = $this->tinTuyenDungModel->getCategories();
 
-		// Lấy danh sách vị trí duy nhất từ database
 		$positions = $this->tinTuyenDungModel->getPositions();
 
-		// Lấy danh sách địa điểm duy nhất từ database
 		$locations = $this->tinTuyenDungModel->getLocations();
 		
 		$keyword = $_GET['keyword'] ?? '';
-		// Việc làm nổi bật
 		$resultJobs = $this->tinTuyenDungModel->getFeaturedJobs(8);
 
 		$jobs = [];
@@ -59,7 +55,6 @@ class HomeController {
 			$jobs[] = $row;
 		}
 
-		// Công ty hàng đầu
 		$resultCompanies = $this->tinTuyenDungModel->getTopCompanies(4);
 
 		$companies = [];
@@ -68,7 +63,6 @@ class HomeController {
 			$companies[] = $row;
 		}
 
-		// // Ngành nghề phổ biến
 		$resultCategories = $this->tinTuyenDungModel->getPopularCategories(4);
 
 		$categories = [];
@@ -77,8 +71,6 @@ class HomeController {
 			$categories[] = $row;
 		}
 
-
-		// nhà tuyển dụng
 		$totalJobs = 0;
 		$totalApplications = 0;
 

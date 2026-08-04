@@ -94,7 +94,6 @@ class LoginController {
 			$this->respondWithError("Bạn đã nhập sai quá 5 lần! Vui lòng thử lại sau {$secondsRemaining} giây.");
 		}
 
-		// Khóa đã hết hạn: xóa cờ khóa và reset lại bộ đếm để không khóa nhầm ở lần đăng nhập tiếp theo.
 		unset($_SESSION['lockout_time']);
 		$_SESSION['login_attempts'] = 0;
 	}
@@ -112,8 +111,6 @@ class LoginController {
 			$this->respondWithError('Tài khoản của bạn đã bị khóa. Vui lòng liên hệ Admin!');
 		}
 
-		// Đăng nhập thành công: xóa bộ đếm/khóa rate-limit để không ảnh hưởng
-		// đến lần đăng nhập tiếp theo (nếu có).
 		unset($_SESSION['login_attempts']);
 		unset($_SESSION['lockout_time']);
 
@@ -121,7 +118,6 @@ class LoginController {
 		$_SESSION['user_email'] = $user['Email'];
 		$_SESSION['user_name'] = $user['HoTen'];
 		$_SESSION['user_role'] = $user['Role'];
-		// Lưu thêm key 'role' vì AuthHelper::requireRole() đọc key này thay vì 'user_role'.
 		$_SESSION['role'] = $user['Role'];
 
 		$role = (int)$user['Role'];

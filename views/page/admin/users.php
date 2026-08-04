@@ -7,7 +7,6 @@ if (session_status() === PHP_SESSION_NONE) {
 	session_start(); 
 }
 
-// Khởi tạo biến an toàn
 $keyword = $keyword ?? '';
 $role    = $role ?? null;
 $status  = $status ?? null;
@@ -61,7 +60,6 @@ $status  = $status ?? null;
 		<h3 class="fw-bold mb-0">Quản lý người dùng</h3>
 	</div>
 
-	<!-- Thông báo -->
 	<?php if (isset($thongBao) && !empty($thongBao)): 
 		$alertClass = (isset($thongBao['type']) && $thongBao['type'] === 'success') ? 'success' : 'danger';
 	?>
@@ -71,7 +69,6 @@ $status  = $status ?? null;
 		</div>
 	<?php endif; ?>
 
-	<!-- Bộ lọc -->
 	<form method="GET" action="<?= BASE_URL ?>/index.php">
 		<input type="hidden" name="route" value="admin/users">
 		<div class="card border-0 shadow-sm p-3 mb-4 rounded-3">
@@ -105,7 +102,6 @@ $status  = $status ?? null;
 		</div>
 	</form>
 
-	<!-- Bảng danh sách -->
 	<div class="card border-0 shadow-sm rounded-3">
 		<div class="table-responsive p-3">
 			<table class="table align-middle table-hover mb-0">
@@ -155,7 +151,6 @@ $status  = $status ?? null;
 								<div class="btn-action-group d-inline-flex gap-1">
 
 									<?php if (!empty($user['IsLocked'])): ?>
-										<!-- Bị khóa: chỉ Mở khóa -->
 										<form method="POST" action="<?= BASE_URL ?>/index.php?route=admin/users/unlock" style="display:inline;"
 											onsubmit="return confirm('Xác nhận mở khóa tài khoản này?')">
 											<input type="hidden" name="maUser" value="<?= htmlspecialchars($user['MaUser']) ?>">
@@ -165,7 +160,6 @@ $status  = $status ?? null;
 										</form>
 
 									<?php else: ?>
-										<!-- Đang hoạt động (HoatDong): chỉ Khóa -->
 										<form method="POST" action="<?= BASE_URL ?>/index.php?route=admin/users/lock" style="display:inline;"
 											onsubmit="return confirm('Xác nhận khóa tài khoản này?')">
 											<input type="hidden" name="maUser" value="<?= htmlspecialchars($user['MaUser']) ?>">

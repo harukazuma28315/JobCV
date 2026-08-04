@@ -10,10 +10,6 @@ class JobPosting {
 		$this->conn = $conn;
 	}
 
-	//==================================================
-	// TẠO TIN TUYỂN DỤNG
-	//==================================================
-
 	/**
 	 * Tạo mới một tin tuyển dụng.
 	 *
@@ -52,7 +48,6 @@ class JobPosting {
 			die("Lỗi prepare: " . $this->conn->error);
 		}
 
-		// Lấy dữ liệu thật từ form, có giá trị mặc định hợp lý nếu thiếu
 		$viTriTuyenDung  = !empty($data['viTriTuyenDung']) ? $data['viTriTuyenDung'] : $data['tieuDe'];
 		$capBac          = $data['capBac'] ?? '';
 		$soNamKinhNghiem = (int) ($data['soNamKinhNghiem'] ?? 0);
@@ -81,17 +76,14 @@ class JobPosting {
 			$trangThai
 		);
 
-		// Thực thi insert tin tuyển dụng
 		if (!$stmt->execute()) {
 			die("Lỗi SQL: " . $stmt->error);
 		}
 
-		// Lưu ngành nghề vào bảng chitietdanhmuc (nếu có)
 		if (!empty($data['category'])) {
 			$this->syncJobCategory($maTinTuyenDung, $data['category'], 'NganhNghe');
 		}
 
-		// Lưu địa điểm (thành phố) vào bảng chitietdanhmuc (nếu có)
 		if (!empty($data['location'])) {
 			$this->syncJobCategory($maTinTuyenDung, $data['location'], 'diadiem');
 		}
@@ -561,7 +553,6 @@ class JobPosting {
 		$params = [];
 		$types = "";
 
-		// Tìm theo tên công ty, địa điểm, tiêu đề, cấp bậc
 		if (!empty($filters["keyword"])) {
 			$sql .= " AND (
 						t.TieuDe LIKE ?
@@ -592,7 +583,6 @@ class JobPosting {
 			$types .= "d";
 		}
 
-		// Lọc theo địa điểm: dùng bảng danhmuc (qua chitietdanhmuc)
 		if (!empty($filters["location"])) {
 			$sql .= " AND EXISTS (
 						SELECT 1
@@ -644,7 +634,6 @@ class JobPosting {
 			$types .= "i";
 		}
 
-		// Lọc theo thời gian đăng tin
 		if (!empty($filters["postedDate"])) {
 			switch ($filters["postedDate"]) {
 				case '24h':

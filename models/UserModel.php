@@ -100,7 +100,6 @@ class UserModel {
 		$this->db->begin_transaction();
 
 		try {
-			// Thứ tự cột chuẩn CSDL: MaUser, Email, MatKhau, Role, HoTen, NgaySinh, GioiTinh, SDT, DiaChi
 			$sqlUser = "INSERT INTO user (MaUser, Email, MatKhau, Role, HoTen, NgaySinh, GioiTinh, SDT, DiaChi) 
 						VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 			$stmtUser = $this->db->prepare($sqlUser);
@@ -141,9 +140,6 @@ class UserModel {
 	 * @return bool True nếu đăng ký thành công, ngược lại False
 	 */
 	public function registerEmployer($userData, $employerData) {
-		// Dùng transaction vì cần ghi vào 2 bảng (user + nhatuyendung): nếu bảng
-		// thứ 2 lỗi thì phải rollback bảng đầu, tránh tạo ra tài khoản user
-		// không có hồ sơ doanh nghiệp đi kèm.
 		$this->db->begin_transaction();
 
 		try {
@@ -199,7 +195,6 @@ class UserModel {
 		$sql = "UPDATE user SET HoTen = ?, NgaySinh = ?, GioiTinh = ?, SDT = ?, DiaChi = ? WHERE MaUser = ?";
 		$stmt = $this->db->prepare($sql);
 		
-		// GioiTinh có thể là NULL, cần xử lý bind_param phù hợp
 		$gioiTinh = ($data['gioiTinh'] === '') ? null : (int)$data['gioiTinh'];
 		
 		$stmt->bind_param(
@@ -245,14 +240,12 @@ class UserModel {
 	public function updateEmployerProfile($maUser, $data) {
 		$this->db->begin_transaction();
 		try {
-			// 1. Cập nhật bảng user (chỉ sửa Số điện thoại và Địa chỉ)
 			$sqlUser = "UPDATE user SET SDT = ?, DiaChi = ? WHERE MaUser = ?";
 			$stmtUser = $this->db->prepare($sqlUser);
 			$stmtUser->bind_param("sss", $data['sdt'], $data['diaChi'], $maUser);
 			$stmtUser->execute();
 			$stmtUser->close();
 
-			// 2. Cập nhật bảng nhatuyendung (chỉ sửa Website và Lĩnh vực)
 			$sqlEmp = "UPDATE nhatuyendung SET Website = ?, LinhVuc = ? WHERE MaNhaTuyenDung = ?";
 			$stmtEmp = $this->db->prepare($sqlEmp);
 			$stmtEmp->bind_param("sss", $data['website'], $data['linhVuc'], $maUser);

@@ -28,7 +28,6 @@ require_once __DIR__ . '/../page/layouts/header.php';
 							Ứng tuyển công việc
 						</h3>
 
-						<!-- Thông tin công việc -->
 						<div class="border rounded p-3 mb-4 bg-light">
 
 							<h5 class="fw-bold mb-2">
@@ -47,7 +46,6 @@ require_once __DIR__ . '/../page/layouts/header.php';
 
 						</div>
 
-						<!-- CV được sử dụng -->
 						<div class="mb-4">
 
 							<h5 class="fw-bold mb-3">
@@ -86,7 +84,6 @@ require_once __DIR__ . '/../page/layouts/header.php';
 
 						</div>
 
-						<!-- Form ứng tuyển -->
 						<form
 							method="POST"
 							action="/JobCV/index.php?route=jobs/apply-submit"

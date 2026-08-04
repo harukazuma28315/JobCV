@@ -39,11 +39,9 @@ class RegisterController {
 			return;
 		}
 
-		// Nhận dữ liệu kiểm tra OTP từ form gửi lên
 		$email = trim($_POST['Email']);
 		$userOtp = isset($_POST['Otp']) ? trim($_POST['Otp']) : '';
 
-		// ================= KIỂM TRA MÃ OTP HỢP LỆ TRƯỚC KHI LÀM BẤT CỨ VIỆC GÌ =================
 		if (!isset($_SESSION['register_otp']) || !isset($_SESSION['register_email'])) {
 			echo "<script>alert('Vui lòng click lấy mã xác thực trước khi tiến hành đăng ký!'); window.history.back();</script>";
 			return;
@@ -60,7 +58,6 @@ class RegisterController {
 			return;
 		}
 
-		// Nhận dữ liệu mật khẩu và kiểm tra trùng khớp
 		$matKhau = $_POST['MatKhau'];
 		$matKhauConfirm = isset($_POST['MatKhauConfirm']) ? $_POST['MatKhauConfirm'] : '';
 
@@ -69,42 +66,34 @@ class RegisterController {
 			return;
 		}
 		
-		// Xoá mã OTP sau khi xác nhận khớp để tránh dùng lại (Bảo mật nâng cao)
 		unset($_SESSION['register_otp']);
 		unset($_SESSION['register_email']);
 		unset($_SESSION['otp_expired']);
 
-		// Định danh vai trò tài khoản (0: Ứng viên, 1: Nhà tuyển dụng)
 		$role = isset($_POST['Role']) ? intval($_POST['Role']) : 0;
 
-		// Thu thập và làm sạch dữ liệu chung
 		$email = trim($_POST['Email']);
 		$matKhau = $_POST['MatKhau'];
 		$hoTen = trim($_POST['HoTen']);
 		$sdt = !empty($_POST['SDT']) ? trim($_POST['SDT']) : null;
 		$diaChi = !empty($_POST['DiaChi']) ? trim($_POST['DiaChi']) : null;
 
-		// Chỉ lấy dữ liệu cá nhân nếu vai trò là Ứng viên (Nhà tuyển dụng sẽ nhận giá trị null mặc định)
 		$ngaySinh = ($role === 0 && !empty($_POST['NgaySinh'])) ? $_POST['NgaySinh'] : null;
 		$gioiTinh = ($role === 0 && isset($_POST['GioiTinh'])) ? intval($_POST['GioiTinh']) : null;
 
-		// Tạo mã định danh duy nhất và mã hóa mật khẩu bảo mật
 		$maUser = "USR" . time() . rand(10, 99);
 		$matKhauHashed = password_hash($matKhau, PASSWORD_DEFAULT);
 
-		// Kiểm tra tính hợp lệ về định dạng Email cấu trúc trước
 		if (!$this->userModel->isValidEmail($email)) {
 			echo "<script>alert('Định dạng địa chỉ Email không hợp lệ!'); window.history.back();</script>";
 			return;
 		}
 
-		// Kiểm tra trùng lặp tài khoản dựa trên Email
 		if ($this->userModel->isUserExists($email)) {
 			echo "<script>alert('Địa chỉ Email này đã được đăng ký!'); window.history.back();</script>";
 			return;
 		}
 
-		// Đóng gói mảng dữ liệu tài khoản tổng quan
 		$userData = [
 			'maUser' => $maUser,
 			'matKhauHashed' => $matKhauHashed,
@@ -119,7 +108,6 @@ class RegisterController {
 
 		$isSuccess = false;
 
-		// Định tuyến xử lý nghiệp vụ theo vai trò cụ thể
 		if ($role === 1) {
 			$employerData = [
 				'tenCongTy' => $hoTen,
@@ -132,7 +120,6 @@ class RegisterController {
 			$isSuccess = $this->userModel->registerCandidate($userData);
 		}
 
-		// Điều hướng trả về kết quả hiển thị cho View
 		if ($isSuccess) {
 			echo "<script>alert('Đăng ký tài khoản thành công!');"
 				. " window.location.href='/JobCV/index.php?route=auth/login';</script>";
