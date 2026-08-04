@@ -33,7 +33,7 @@ $statusLabel = match ($trangThai) {
 
 		<!-- Quay lại danh sách -->
 		<div class="mb-4">
-			<a href="<?= $baseUrl ?>/index.php?route=recruiter/list" class="btn btn-outline-secondary btn-sm">
+			<a href="<?= $baseUrl ?>/index.php?route=applications/manage" class="btn btn-outline-secondary btn-sm">
 				<i class="fa-solid fa-arrow-left me-2"></i>Quay lại danh sách ứng viên
 			</a>
 		</div>

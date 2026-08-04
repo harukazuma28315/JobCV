@@ -136,13 +136,13 @@ class RecruiterController {
 		// ==================================================
 		// 4. LẤY HỒ SƠ THEO TIN ĐANG CHỌN
 		// ==================================================
-
 		$danhSachHoSoUngTuyen =
 			$this->hoSoUngTuyenModel->getListForRecruiter(
 				$maNhaTuyenDung,
 				$maTinLoc,
 				$trangThaiLoc
 			);
+			
 
 
 		// ==================================================
@@ -176,7 +176,7 @@ class RecruiterController {
 
 		if (!$hoSoUngTuyen) {
 			ResponseHelper::setFlash('error', 'Ho so khong ton tai hoac khong thuoc cong ty ban.');
-			AuthHelper::redirect(BASE_URL . '/index.php?route=recruiter/list');
+			AuthHelper::redirect(BASE_URL . '/index.php?route=applications/manage');
 		}
 
 		// Lấy toàn bộ dữ liệu con của CV (học vấn, kinh nghiệm, dự án, chứng

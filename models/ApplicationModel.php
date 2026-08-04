@@ -191,13 +191,13 @@ class ApplicationModel {
 		$params = [$maNhaTuyenDung];
 		$types  = 's';
 
-		if ($maTinLoc) {
+		if ($maTinLoc !== null && $maTinLoc !== '') {
 			$sql .= " AND hs.MaTinTuyenDung = ?";
 			$params[] = $maTinLoc;
 			$types .= 's';
 		}
 
-		if ($trangThaiLoc) {
+		if ($trangThaiLoc !== null && $trangThaiLoc !== '') {
 			$sql .= " AND hs.TrangThai = ?";
 			$params[] = $trangThaiLoc;
 			$types .= 's';
