@@ -19,9 +19,6 @@ class AdminController {
 	 * Hiển thị trang Dashboard Admin
 	 */
 	public function showDashboard() {
-		// echo "<h2>DEBUG: Đang vào showDashboard</h2>";
-		// echo "ROOT_PATH = " . ROOT_PATH . "<br>";
-
 		// AuthHelper::requireRole(ROLE_ADMIN);
 		$_SESSION['role'] = 2;        // Giả lập quyền Admin
 		$_SESSION['user_id'] = 'U005';
@@ -33,7 +30,6 @@ class AdminController {
 			'tongDoanhNghiep'   => $this->statisticModel->getTotalCompanies()
 		);
 
-		// Lấy dữ liệu cho biểu đồ
 		$loaiBieuDo = isset($_GET['chartType']) ? $_GET['chartType'] : 'users';
 		$khoangThoiGian = isset($_GET['period']) ? $_GET['period'] : '30days';
 
@@ -41,7 +37,6 @@ class AdminController {
 
 		$thongBao = ResponseHelper::getFlash();
 
-		// Truyền dữ liệu vào View
 		require ROOT_PATH . '/views/page/admin/dashboard.php';
 	}
 }

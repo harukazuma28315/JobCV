@@ -120,7 +120,8 @@ class Employer {
 
 		return $statement->execute();
 	}
-	    /**
+	
+	/**
 	 * Đếm tổng số tin tuyển dụng của nhà tuyển dụng
 	 */
 	public function countJobs($maNhaTuyenDung) {

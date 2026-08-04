@@ -7,8 +7,6 @@
  *            Sử dụng thư viện PHPMailer tải trực tiếp (không qua Composer).
  */
 
-// Require truc tiep 3 file nguon cua PHPMailer theo huong dan "Without Composer".
-// TODO: Dam bao 3 file nay da duoc tai va dat dung vi tri (xem lib/PHPMailer/HUONG_DAN_CAI_DAT.txt)
 require_once ROOT_PATH . '/lib/PHPMailer/src/Exception.php';
 require_once ROOT_PATH . '/lib/PHPMailer/src/PHPMailer.php';
 require_once ROOT_PATH . '/lib/PHPMailer/src/SMTP.php';
@@ -119,7 +117,6 @@ class EmailService {
 	public function sendOTPEmail($userEmail, $otpCode) {
 		$tieuDeEmail = 'Mã xác thực';
 		
-		// Xây dựng template HTML rõ ràng, sử dụng hàm createEmailContent để đồng bộ chữ ký hệ thống[cite: 10]
 		$noiDungChinh = "
 			<h3>Mã xác thực (OTP) của bạn là:</h3>
 			<h1 style='color: #0d6efd; letter-spacing: 5px; margin: 15px 0;'>$otpCode</h1>
@@ -128,7 +125,6 @@ class EmailService {
 
 		$noiDungEmail = $this->createEmailContent('Bạn', $noiDungChinh);
 
-		// Thực hiện gửi thông qua cấu hình SMTP tập trung của hệ thống
 		return $this->sendEmailSMTP($userEmail, 'Người dùng mới', $tieuDeEmail, $noiDungEmail);
 	}
 
@@ -147,8 +143,8 @@ class EmailService {
 
 		try {
 			$mail->isSMTP();
-			$mail->SMTPDebug = 2;                    // Bật debug SMTP (0 = tắt, 2 = chi tiết)
-			$mail->Debugoutput = 'error_log';        // Ghi vào error log
+			$mail->SMTPDebug = 2;
+			$mail->Debugoutput = 'error_log';
 
 			$mail->Host = MAIL_SMTP_HOST;
 			$mail->SMTPAuth = true;

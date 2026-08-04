@@ -13,8 +13,6 @@ class JobModel {
 		$this->link = Database::getConnection();
 	}
 
-	// ====================== PHẦN CODE NHÀ TUYỂN DỤNG - KHÔNG THAY ĐỔI ======================
-
 	/**
 	 * Lấy thông tin tin tuyển dụng theo mã.
 	 */
@@ -75,8 +73,6 @@ class JobModel {
 
 		return $danhSachTinTuyenDung;
 	}
-
-	// ====================== PHẦN CHO ADMIN  ======================
 
 	/**
 	 * Lấy danh sách tin tuyển dụng cho Admin (có lọc)

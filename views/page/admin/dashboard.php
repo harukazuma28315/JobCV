@@ -1,7 +1,5 @@
 <?php
-// views/admin/dashboard.php
 if (session_status() === PHP_SESSION_NONE) { session_start(); }
-// Mock data để render biểu đồ & bảng
 ?>
 <!DOCTYPE html>
 <html lang="vi">
@@ -26,7 +24,6 @@ if (session_status() === PHP_SESSION_NONE) { session_start(); }
 </head>
 <body>
 
-<!-- SIDEBAR -->
 <div class="sidebar d-flex flex-column justify-content-between py-3">
 	<div>
 		<div class="px-4 py-3 border-bottom mb-3">
@@ -52,9 +49,7 @@ if (session_status() === PHP_SESSION_NONE) { session_start(); }
 	</div>
 </div>
 
-<!-- MAIN CONTENT -->
 <div class="main-content">
-	<!-- Header -->
 	<div class="d-flex justify-content-between align-items-center mb-4">
 		<h3 class="fw-bold mb-0">Trang tổng quan hệ thống</h3>
 		<div class="d-flex align-items-center gap-3">
@@ -63,9 +58,7 @@ if (session_status() === PHP_SESSION_NONE) { session_start(); }
 		</div>
 	</div>
 
-	<!-- 3 Cột Thống Kê (Stats Grid) -->
 	<div class="row g-3 mb-4">
-		<!-- Tổng số người dùng -->
 		<div class="col-12 col-sm-4 col-lg-4">
 			<div class="card stat-card shadow-sm p-3 bg-white">
 				<div class="d-flex justify-content-between align-items-center">
@@ -78,7 +71,6 @@ if (session_status() === PHP_SESSION_NONE) { session_start(); }
 			</div>
 		</div>
 
-		<!-- Tổng số bài đã đăng -->
 		<div class="col-12 col-sm-4 col-lg-4">
 			<div class="card stat-card shadow-sm p-3 bg-white">
 				<div class="d-flex justify-content-between align-items-center">
@@ -91,7 +83,6 @@ if (session_status() === PHP_SESSION_NONE) { session_start(); }
 			</div>
 		</div>
 
-		<!-- Tổng số doanh nghiệp -->
 		<div class="col-12 col-sm-4 col-lg-4">
 			<div class="card stat-card shadow-sm p-3 bg-white">
 				<div class="d-flex justify-content-between align-items-center">
@@ -103,16 +94,13 @@ if (session_status() === PHP_SESSION_NONE) { session_start(); }
 				</div>
 			</div>
 		</div>
-	<!-- KHU VỰC BIỂU ĐỒ SONG SONG ĐỘNG -->
 	<div class="card border-0 shadow-sm rounded-3 p-4 mb-4">
 		<div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-3 mb-4">
 			<div>
 				<h5 class="fw-bold mb-1">Báo cáo số liệu thống kê chi tiết</h5>
 				<span class="text-muted small">Chọn loại báo cáo và khoảng thời gian bên dưới để cập nhật số liệu</span>
 			</div>
-			<!-- Bộ đôi menu lọc song song -->
 			<div class="d-flex gap-2">
-				<!-- 1. Menu loại biểu đồ (Được đẩy sang trái) -->
 				<select class="form-select border-primary text-primary-blue fw-semibold" 
 						id="chartSelector" 
 						onchange="updateCharts()" 
@@ -122,7 +110,6 @@ if (session_status() === PHP_SESSION_NONE) { session_start(); }
 					<option value="efficiency" <?= (($_GET['chartType'] ?? 'users') === 'efficiency') ? 'selected' : '' ?>>Thống kê hiệu quả tuyển dụng</option>
 				</select>
 
-				<!-- 2. Menu chọn khoảng thời gian (Nằm bên phải ngoài cùng) -->
 			   <select class="form-select border-primary text-primary-blue fw-semibold" 
 						id="timeSelector" 
 						onchange="updateCharts()" 
@@ -135,7 +122,6 @@ if (session_status() === PHP_SESSION_NONE) { session_start(); }
 		</div>
 
 		<div class="row g-4">
-			<!-- BIỂU ĐỒ TRÒN (BÊN TRÁI) -->
 			<div class="col-12 col-lg-5">
 				<div class="border rounded-3 p-3 bg-light d-flex flex-column align-items-center justify-content-center" style="min-height: 350px;">
 					<h6 class="fw-bold text-center mb-3 text-muted" id="pieChartTitle">Tỷ lệ trạng thái tài khoản (%)</h6>
@@ -145,7 +131,6 @@ if (session_status() === PHP_SESSION_NONE) { session_start(); }
 				</div>
 			</div>
 
-			<!-- BIỂU ĐỒ CỘT (BÊN PHẢI) -->
 			<div class="col-12 col-lg-7">
 				<div class="border rounded-3 p-3 bg-light d-flex flex-column align-items-center justify-content-center" style="min-height: 350px;">
 					<h6 class="fw-bold text-center mb-3 text-muted" id="barChartTitle">Số lượng tài khoản chi tiết</h6>
@@ -157,7 +142,6 @@ if (session_status() === PHP_SESSION_NONE) { session_start(); }
 		</div>
 	</div>
 
-	<!-- SCRIPT ĐIỀU KHIỂN BIỂU ĐỒ DỰA TRÊN LỰA CHỌN -->
 	<script>
 		Chart.register(ChartDataLabels);
 
@@ -169,7 +153,6 @@ if (session_status() === PHP_SESSION_NONE) { session_start(); }
 		});
 
 		function initCharts(data) {
-			// Biểu đồ tròn
 			const ctxPie = document.getElementById('pieChartCanvas').getContext('2d');
 			if (pieChart) pieChart.destroy();
 			
@@ -198,7 +181,6 @@ if (session_status() === PHP_SESSION_NONE) { session_start(); }
 				}
 			});
 
-			// Biểu đồ cột
 			const ctxBar = document.getElementById('barChartCanvas').getContext('2d');
 			if (barChart) barChart.destroy();
 
@@ -228,7 +210,6 @@ if (session_status() === PHP_SESSION_NONE) { session_start(); }
 			window.location.href = `?route=admin/dashboard&chartType=${type}&period=${period}`;
 		}
 
-		// Gắn sự kiện
 		document.getElementById('chartSelector').addEventListener('change', updateCharts);
 		document.getElementById('timeSelector').addEventListener('change', updateCharts);
 	</script>

@@ -24,7 +24,6 @@ class UploadHelper
 		}
 
 		if ($file['error'] === UPLOAD_ERR_NO_FILE) {
-			// Không có file đính kèm - hợp lệ vì Cover Letter file là optional
 			return null;
 		}
 
@@ -43,8 +42,6 @@ class UploadHelper
 			throw new Exception('Dinh dang file khong hop le. Chi chap nhan PDF, DOC, DOCX.');
 		}
 
-		// Kiểm tra MIME type thực tế của file (không chỉ dựa vào đuôi mở rộng)
-		// để hạn chế người dùng đổi đuôi file giả mạo.
 		if (function_exists('finfo_open')) {
 			$finfo = finfo_open(FILEINFO_MIME_TYPE);
 			$mimeType = finfo_file($finfo, $file['tmp_name']);
@@ -59,7 +56,6 @@ class UploadHelper
 			mkdir(UPLOAD_COVER_LETTER_DIR, 0755, true);
 		}
 
-		// Đổi tên file để tránh trùng lặp giữa nhiều lượt upload
 		$tenFileMoi = IdHelper::generate('CL') . '.' . $phanMoRong;
 		$duongDanDich = UPLOAD_COVER_LETTER_DIR . $tenFileMoi;
 

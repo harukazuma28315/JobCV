@@ -128,7 +128,6 @@ function getHinhThucLabel($ma) {
 <div class="main-content">
 	<h3 class="fw-bold mb-4">Quản lý bài đăng</h3>
 
-	<!-- Thông báo -->
 	<?php if (isset($thongBao) && !empty($thongBao)): 
 		$alertClass = (isset($thongBao['type']) && $thongBao['type'] === 'success') ? 'success' : 'danger';
 	?>
@@ -137,7 +136,6 @@ function getHinhThucLabel($ma) {
 			<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
 		</div>
 	<?php endif; ?>
-	<!-- Bộ lọc -->
 	<form method="GET" action="<?= BASE_URL ?>/index.php">
 		<input type="hidden" name="route" value="admin/jobs">
 		<div class="card border-0 shadow-sm p-3 mb-4 rounded-3">
@@ -166,7 +164,6 @@ function getHinhThucLabel($ma) {
 		</div>
 	</form>
 
-	<!-- Bảng danh sách -->
 	<div class="card border-0 shadow-sm rounded-3">
 		<div class="table-responsive p-3">
 			<table class="table align-middle table-hover mb-0">
@@ -240,8 +237,6 @@ function getHinhThucLabel($ma) {
 			</table>
 		</div>
 
-		<!-- Modal xem chi tiet tin tuyen dung: dat ngoai <table> vi <div> khong duoc
-			 phep la con truc tiep cua <tbody> (tranh vo layout) -->
 		<?php foreach ($danhSachTin as $tin): $vStatus = getJobStatusBadge($tin); ?>
 			<div class="modal fade" id="viewJobModal-<?= htmlspecialchars($tin['MaTinTuyenDung']) ?>" tabindex="-1" aria-hidden="true">
 				<div class="modal-dialog modal-dialog-scrollable modal-lg">

@@ -218,8 +218,6 @@ class CVController {
 		$success = $this->cvService->update($cvData);
 
 		if ($success) {
-			// Đồng bộ 4 danh sách con: mục có mã cũ -> cập nhật, mục mới thêm
-			// trên form -> tạo mới, mục cũ bị xóa trên form -> xóa khỏi DB.
 			$this->cvService->syncEducation($maCV, $post['hocVan'] ?? []);
 			$this->cvService->syncExperience($maCV, $post['kinhNghiem'] ?? []);
 			$this->cvService->syncProject($maCV, $post['duAn'] ?? []);
@@ -264,7 +262,6 @@ class CVController {
 			exit('Không tìm thấy CV.');
 		}
 
-		// Kiểm tra CV có đúng user đang đăng nhập không
 		if ($cv['MaUngVien'] != $_SESSION['user_id']) {
 			exit('Bạn không có quyền chỉnh sửa CV này.');
 		}
@@ -343,7 +340,6 @@ class CVController {
 		}
 
 		$extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-		// Giới hạn định dạng cho phép để tránh upload file thực thi (php, exe...) lên server
 		$allowed = ['pdf', 'doc', 'docx'];
 
 		if (!in_array($extension, $allowed)) {
@@ -387,8 +383,6 @@ class CVController {
 				</script>
 			";
 		} else {
-			// Upload file thất bại: xóa luôn bản ghi CV vừa tạo để tránh để lại
-			// CV rỗng (không có file đính kèm) trong hệ thống.
 			$this->cvService->delete($maCV);
 
 			echo "
@@ -545,8 +539,6 @@ class CVController {
 			exit("File không tồn tại.");
 		}
 
-		// Ép trình duyệt tải file về thay vì mở trực tiếp trong tab
-		// (vì file có thể là PDF/DOC mà trình duyệt thường tự render).
 		header("Content-Description: File Transfer");
 		header("Content-Type: application/octet-stream");
 		header("Content-Disposition: attachment; filename=\"" . basename($filePath) . "\"");

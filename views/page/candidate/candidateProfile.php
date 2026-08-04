@@ -63,7 +63,6 @@ $resetEmail = $_SESSION['user_email'] ?? $profileData['email'] ?? '';
 						<form action="<?= $baseUrl ?>/index.php?route=profile/update" method="POST" class="needs-validation" novalidate id="candidateForm">
 							<input type="hidden" name="action" value="update">
 							<div class="row g-3">
-								<!-- Họ và tên (Giống trang Đăng ký) -->
 								<div class="col-12 col-md-6">
 									<label class="form-label fw-semibold text-dark">Họ và tên <span class="text-danger">*</span></label>
 									<input type="text" name="hoTen" id="HoTen" class="form-control py-2" value="<?php echo htmlspecialchars($profileData['fullname'] ?? ''); ?>" required maxlength="100"
@@ -72,25 +71,21 @@ $resetEmail = $_SESSION['user_email'] ?? $profileData['email'] ?? '';
 										   title="Họ và tên chỉ bao gồm chữ cái và khoảng trắng, không chứa ký tự đặc biệt">
 								</div>
 								
-								<!-- Email (Chỉ đọc) -->
 								<div class="col-12 col-md-6">
 									<label class="form-label fw-semibold text-dark">Email liên hệ</label>
 									<input type="email" name="email" class="form-control py-2" value="<?php echo htmlspecialchars($profileData['email'] ?? ''); ?>" readonly>
 								</div>
 
-								<!-- Số điện thoại (Giống trang Đăng ký) -->
 								<div class="col-12 col-md-6">
 									<label class="form-label fw-semibold text-dark">Số điện thoại <span class="text-danger">*</span></label>
 									<input type="text" name="sdt" class="form-control py-2" value="<?php echo htmlspecialchars($profileData['phone'] ?? ''); ?>" required placeholder="Nhập 10 chữ số (vd: 0912345678)" inputmode="numeric" maxlength="10" pattern="0[0-9]{9}" oninput="this.value = this.value.replace(/[^0-9]/g, '')" title="Số điện thoại phải bao gồm đúng 10 chữ số và bắt đầu bằng số 0">
 								</div>
 
-								<!-- Ngày sinh -->
 								<div class="col-12 col-md-6">
 									<label class="form-label fw-semibold text-dark">Ngày sinh</label>
 									<input type="date" name="ngaySinh" class="form-control py-2" value="<?php echo htmlspecialchars($profileData['birthDate'] ?? ''); ?>">
 								</div>
 
-								<!-- Giới tính -->
 								<div class="col-12 col-md-6">
 									<label class="form-label fw-semibold text-dark">Giới tính</label>
 									<select name="gioiTinh" class="form-select py-2">
@@ -99,7 +94,6 @@ $resetEmail = $_SESSION['user_email'] ?? $profileData['email'] ?? '';
 									</select>
 								</div>
 
-								<!-- Địa chỉ (Giống trang Đăng ký) -->
 								<div class="col-12">
 									<label class="form-label fw-semibold text-dark">Địa chỉ</label>
 									<input type="text" name="diaChi" class="form-control py-2" value="<?php echo htmlspecialchars($profileData['address'] ?? ''); ?>" maxlength="255" pattern="^[a-zA-Z0-9àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđĐ\s,\/]+$" oninput="this.value = this.value.replace(/[^a-zA-Z0-9àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđĐ\s,\/]/g, '')" title="Địa chỉ chỉ được chứa chữ cái, số, khoảng trắng, dấu phẩy (,) và dấu xuyệt (/). Không chứa các ký tự đặc biệt khác">

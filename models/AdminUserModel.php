@@ -39,7 +39,6 @@ class AdminUserModel {
 			$params[] = $role;
 			$types .= 'i';
 		}else {
-		// Mặc định: không hiện Admin
 		$sql .= " AND u.Role IN (0, 1)";
 		}
 

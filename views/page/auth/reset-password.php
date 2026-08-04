@@ -11,9 +11,6 @@ include_once __DIR__ . '/../layouts/header.php';
 		<div class="card-body p-0">
 			<h2 class="card-title fw-bold mb-3" style="color: #2b5a8f;">Đặt lại mật khẩu</h2>
 			<p class="text-secondary mb-4">Tạo mật khẩu mới cho tài khoản của bạn (từ 6 đến 32 ký tự, không chứa khoảng trắng).</p>
-
-			<!-- Bỏ novalidate nếu muốn dùng bong bóng thông báo mặc định của trình duyệt, 
-				 hoặc giữ needs-validation để dùng Bootstrap Validation UI -->
 			<form id="resetForm" class="needs-validation" novalidate autocomplete="off">
 				<input type="hidden" name="action" value="reset_password">
 

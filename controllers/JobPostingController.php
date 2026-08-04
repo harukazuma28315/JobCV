@@ -42,10 +42,8 @@ class JobPostingController {
 		];
 		$categories = $this->tinTuyenDungModel->getCategories();
 
-		// Lấy danh sách vị trí duy nhất từ database
 		$positions = $this->tinTuyenDungModel->getPositions();
 
-		// Lấy danh sách địa điểm duy nhất từ database
 		$locations = $this->tinTuyenDungModel->getLocations();
 
 		switch ($salary) {
@@ -107,10 +105,8 @@ class JobPostingController {
 	 * @return array|null
 	 */
 	public function detail($maTinTuyenDung) {
-		// Lấy thông tin tin tuyển dụng từ database
 		$job = $this->tinTuyenDungModel->getById($maTinTuyenDung);
 
-		// Nếu không tìm thấy tin tuyển dụng
 		if (!$job) {
 			http_response_code(404);
 			echo "404 - Không tìm thấy tin tuyển dụng.";
@@ -130,7 +126,6 @@ class JobPostingController {
 			}
 		}
 
-		// Nạp giao diện chi tiết
 		require_once __DIR__ . '/../views/page/jobs/detail.php';
 	}
 
@@ -141,7 +136,6 @@ class JobPostingController {
 	 * @return bool
 	 */
 	public function create(array $tinTuyenDungData = []) {
-		// Chỉ cho nhà tuyển dụng truy cập
 		if (
 			!isset($_SESSION['user_id']) ||
 			($_SESSION['user_role'] ?? 0) != 1
@@ -149,10 +143,8 @@ class JobPostingController {
 			exit('Bạn không có quyền truy cập.');
 		}
 
-		// Lấy mã nhà tuyển dụng đang đăng nhập
 		$maNhaTuyenDung = $_SESSION['user_id'];
 
-		// Nếu submit form
 		if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 			$tinTuyenDungData['maNhaTuyenDung'] = $maNhaTuyenDung;
@@ -173,16 +165,13 @@ class JobPostingController {
 			exit('Đăng tin tuyển dụng thất bại.');
 		}
 
-		// Lấy danh sách ngành nghề & địa điểm từ database
 		$categories = $this->tinTuyenDungModel->getCategories();
 		$locations = $this->tinTuyenDungModel->getLocations();
 		$jobs = $this->tinTuyenDungModel
 		->getByEmployer($maNhaTuyenDung);
 
-		// Vào từ route đăng tin -> mở sẵn tab "Đăng tin mới"
 		$activeTab = 'post';
 
-		// Hiển thị trang đăng tin
 		require_once __DIR__ . '/../views/page/employer/post-job.php';
 	}
 
@@ -206,10 +195,8 @@ class JobPostingController {
 		$categories = $this->tinTuyenDungModel->getCategories();
 		$locations = $this->tinTuyenDungModel->getLocations();
 
-		// Vào từ route quản lý -> mở sẵn tab "Quản lý tin tuyển dụng"
 		$activeTab = 'manage';
 
-		// Dùng chung view post-job.php (đã có tab Quản lý)
 		require_once __DIR__ . '/../views/page/employer/post-job.php';
 	}
 
@@ -219,7 +206,6 @@ class JobPostingController {
 	 * @param string $maTinTuyenDung
 	 */
 	public function editPage($maTinTuyenDung) {
-		// authorizeJobOwner đã tự kiểm tra đăng nhập, vai trò và quyền sở hữu
 		$job = $this->authorizeJobOwner($maTinTuyenDung);
 
 		$categories = $this->tinTuyenDungModel->getCategories();
@@ -248,7 +234,6 @@ class JobPostingController {
 
 		$result = $this->tinTuyenDungModel->update($tinTuyenDungData);
 
-		// Đồng bộ lại ngành nghề & địa điểm dù nội dung chính có đổi hay không
 		$this->tinTuyenDungModel->syncJobCategory(
 			$maTinTuyenDung,
 			$tinTuyenDungData['category'] ?? '',
@@ -354,12 +339,6 @@ class JobPostingController {
 	 *
 	 * @param string $maTinTuyenDung
 	 * @return bool
-	 */
-	/**
-	 * Đóng tin đang mở, hoặc mở lại tin đã đóng (dùng chung 1 nút trên giao diện).
-	 *
-	 * @param string $maTinTuyenDung
-	 * @return void
 	 */
 	public function toggleStatus(array $data = []) {
 		$maTinTuyenDung = $data['maTinTuyenDung'] ?? '';

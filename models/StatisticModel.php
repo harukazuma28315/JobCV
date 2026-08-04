@@ -13,8 +13,6 @@ class StatisticModel {
 		$this->link = Database::getConnection();
 	}
 
-	// ===================== THỐNG KÊ TỔNG QUÁT =====================
-
 	/**
 	 * Đếm tổng số người dùng (Ứng viên + Nhà tuyển dụng, KHÔNG tính tài khoản Admin) trong hệ thống.
 	 *
@@ -48,8 +46,6 @@ class StatisticModel {
 		return (int)$row['total'];
 	}
 
-	// ===================== DỮ LIỆU BIỂU ĐỒ (THẬT) =====================
-
 	/**
 	 * Lấy dữ liệu biểu đồ thống kê cho Dashboard Admin theo loại và khoảng thời gian.
 	 *
@@ -58,8 +54,6 @@ class StatisticModel {
 	 * @return array Cấu trúc gồm labels/data/pieTitle/barTitle để vẽ biểu đồ
 	 */
 	public function getChartData($loai, $khoangThoiGian) {
-		// $dateCondition chỉ áp dụng cho loại 'jobs' (tin theo khoảng thời gian đăng),
-		// vì 'users' và 'efficiency' hiện thống kê trên toàn bộ dữ liệu, không lọc theo thời gian.
 		$dateCondition = $this->getDateCondition($khoangThoiGian);
 
 		switch ($loai) {

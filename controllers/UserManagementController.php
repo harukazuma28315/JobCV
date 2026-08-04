@@ -25,8 +25,6 @@ class UserManagementController {
 		$_SESSION['role'] = 2;        
 		$_SESSION['user_id'] = 'U005';
 
-		// AuthHelper::requireRole(ROLE_ADMIN);  // Tạm comment khi test
-		
 		$keyword = isset($_GET['keyword']) ? trim($_GET['keyword']) : '';
 		$role    = isset($_GET['role']) && $_GET['role'] !== '' ? (int)$_GET['role'] : null;
 		$status  = isset($_GET['status']) && $_GET['status'] !== '' ? $_GET['status'] : null;

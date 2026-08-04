@@ -70,11 +70,6 @@ class RecruiterController {
 			exit('Bạn chưa đăng nhập.');
 		}
 
-
-		// ==================================================
-		// 1. LẤY DANH SÁCH TIN TUYỂN DỤNG CỦA NTD
-		// ==================================================
-
 		if (method_exists($this->tinTuyenDungModel, 'getJobsByRecruiter')) {
 
 			$danhSachTinTuyenDung =
@@ -98,11 +93,6 @@ class RecruiterController {
 			}
 		}
 
-
-		// ==================================================
-		// 2. XÁC ĐỊNH TIN ĐANG ĐƯỢC CHỌN
-		// ==================================================
-
 		if (isset($_GET['maTin'])) {
 
 			// Form filter đã được submit (kể cả khi người dùng chọn
@@ -116,26 +106,15 @@ class RecruiterController {
 			}
 
 		} else {
-
-			// Truy cập lần đầu, chưa từng submit filter -> mặc định lấy tin mới nhất
 			$maTinLoc = !empty($danhSachTinTuyenDung)
 				? $danhSachTinTuyenDung[0]['MaTinTuyenDung']
 				: null;
 		}
 
-
-		// ==================================================
-		// 3. LỌC TRẠNG THÁI
-		// ==================================================
-
 		$trangThaiLoc = isset($_GET['trangThai']) && $_GET['trangThai'] !== ''
 			? trim($_GET['trangThai'])
 			: null;
 
-
-		// ==================================================
-		// 4. LẤY HỒ SƠ THEO TIN ĐANG CHỌN
-		// ==================================================
 		$danhSachHoSoUngTuyen =
 			$this->hoSoUngTuyenModel->getListForRecruiter(
 				$maNhaTuyenDung,
@@ -143,12 +122,6 @@ class RecruiterController {
 				$trangThaiLoc
 			);
 			
-
-
-		// ==================================================
-		// 5. FILTER HIỂN THỊ
-		// ==================================================
-
 		$currentFilters = [
 			'maTin'     => $maTinLoc,
 			'trangThai' => $trangThaiLoc
@@ -227,8 +200,6 @@ class RecruiterController {
 				throw new Exception('Trạng thái không hợp lệ.');
 			}
 
-			// Truyền kèm $maNhaTuyenDung để chặn IDOR: chỉ lấy được hồ sơ ứng tuyển
-			// thuộc về tin tuyển dụng của chính công ty đang đăng nhập.
 			$hoSoUngTuyen = $this->hoSoUngTuyenModel->getDetailForRecruiter($maHoSo, $maNhaTuyenDung);
 
 			if (!$hoSoUngTuyen) {
@@ -241,8 +212,6 @@ class RecruiterController {
 				throw new Exception('Cập nhật thất bại.');
 			}
 
-			// Gửi email chỉ là thông báo phụ: nếu gửi thất bại vẫn giữ nguyên
-			// kết quả cập nhật trạng thái đã lưu thành công trong DB, chỉ đổi nội dung thông báo.
 			$guiMailThanhCong = $this->sendEmailByStatus($trangThaiMoi, $hoSoUngTuyen);
 
 			if ($guiMailThanhCong) {

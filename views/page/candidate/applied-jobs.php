@@ -6,7 +6,6 @@ include_once __DIR__ . '/../layouts/header.php';
 
 <div class="container py-5">
 	<div class="row g-4">
-		<!-- Cột trái: Tóm tắt thông tin nhanh -->
 		<div class="col-12 col-lg-3">
 			<div class="card border-0 shadow-sm p-4 text-center bg-white">
 				<img src="https://api.dicebear.com/7.x/adventurer/svg?seed=ntl" alt="Avatar" class="rounded-circle border border-3 border-primary mx-auto mb-3" style="width: 90px; height: 90px; object-fit: cover;">
@@ -34,7 +33,6 @@ include_once __DIR__ . '/../layouts/header.php';
 			</div>
 		</div>
 
-		<!-- Cột phải: Danh sách tin tuyển dụng đã nộp -->
 		<div class="col-12 col-lg-9">
 			<div class="card border-0 shadow-sm p-4 bg-white">
 				<div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
@@ -128,9 +126,7 @@ include_once __DIR__ . '/../layouts/header.php';
 								<td class="text-center">
 									<a href="<?= $baseUrl ?>/index.php?route=jobs/detail&maTinTuyenDung=<?= urlencode($application['MaTinTuyenDung']) ?>"
 										class="btn btn-light btn-sm text-primary-blue">
-
 										<i class="fa-solid fa-eye"></i>
-
 									</a>
 								</td>
 							</tr>
@@ -144,5 +140,4 @@ include_once __DIR__ . '/../layouts/header.php';
 	</div>
 </div>
 
-<!-- Nhúng Footer chung -->
 <?php include_once __DIR__ . '/../layouts/footer.php'; ?>

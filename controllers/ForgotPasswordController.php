@@ -81,7 +81,6 @@ class ForgotPasswordController {
 		$now = time();
 		$lastSentAt = isset($_SESSION['forgot_otp_last_sent_at']) ? (int) $_SESSION['forgot_otp_last_sent_at'] : 0;
 
-		// Tránh bị người dùng spam gửi email liên tục gây nghẽn mail server
 		if ($lastSentAt > 0 && ($now - $lastSentAt) < $this->cooldownSeconds) {
 			$remaining = $this->cooldownSeconds - ($now - $lastSentAt);
 			echo json_encode([
@@ -92,12 +91,11 @@ class ForgotPasswordController {
 			exit();
 		}
 
-		// Dùng random_int thay cho rand() để đảm bảo an toàn mật mã theo tiêu chuẩn SQA
 		$otp = random_int(100000, 999999);
 
 		$_SESSION['forgot_otp'] = $otp;
 		$_SESSION['forgot_email'] = $email;
-		$_SESSION['forgot_expired'] = $now + (15 * 60); // OTP có hiệu lực trong 15 phút
+		$_SESSION['forgot_expired'] = $now + (15 * 60);
 		$_SESSION['forgot_otp_last_sent_at'] = $now;
 
 		if ($this->emailService->sendOTPEmail($email, $otp)) {
@@ -127,8 +125,6 @@ class ForgotPasswordController {
 			exit();
 		}
 
-		// Đối chiếu cả email lẫn mã OTP: đề phòng người dùng đổi email trên form
-		// sau khi đã nhận OTP, tránh xác thực nhầm OTP của email khác.
 		if ($email !== $_SESSION['forgot_email'] || (int) $otp !== (int) $_SESSION['forgot_otp']) {
 			echo json_encode(['status' => 'error', 'message' => 'Mã OTP xác thực không chính xác!']);
 			exit();
@@ -146,7 +142,6 @@ class ForgotPasswordController {
 	 * @return void
 	 */
 	private function handleResetPassword() {
-		// Đảm bảo session đã được load
 		if (session_status() === PHP_SESSION_NONE) {
 			session_start();
 		}
@@ -155,7 +150,6 @@ class ForgotPasswordController {
 		$password = $_POST['matKhau'] ?? '';
 		$confirmPassword = $_POST['matKhauConfirm'] ?? '';
 
-		// Kiểm tra Session xác thực OTP
 		if (
 			!isset($_SESSION['forgot_verified']) || 
 			$_SESSION['forgot_verified'] !== true || 
@@ -170,9 +164,6 @@ class ForgotPasswordController {
 			exit();
 		}
 
-		// Kiểm tra định dạng mật khẩu ở phía server (không được chỉ dựa vào validate của client,
-		// vì client có thể bị bypass bằng cách tắt JS hoặc gọi thẳng API bằng Postman/cURL).
-		// Phải khớp đúng rule đã khai báo ở input pattern="^\S{6,32}$" bên reset-password.php
 		if (!preg_match('/^\S{6,32}$/', $password)) {
 			echo json_encode(['status' => 'error', 'message' => 'Mật khẩu phải từ 6 đến 32 ký tự và không chứa khoảng trắng!']);
 			exit();
@@ -180,7 +171,6 @@ class ForgotPasswordController {
 
 		$passwordHashed = password_hash($password, PASSWORD_DEFAULT);
 		if ($this->userModel->updatePassword($email, $passwordHashed)) {
-			// Xóa sạch session sau khi đổi thành công
 			unset(
 				$_SESSION['forgot_otp'],
 				$_SESSION['forgot_email'],

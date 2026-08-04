@@ -93,40 +93,33 @@ class ApplicationController {
 		$noiDungCoverLetter = isset($_POST['coverLetter']) ? trim($_POST['coverLetter']) : '';
 
 		try {
-			// 1. Kiểm tra CV tồn tại và thuộc về đúng ứng viên đang nộp
 			$hoSoCv = $this->cvModel->getOwnedCv($maCv, $maUngVien);
 			if (!$hoSoCv) {
 				throw new Exception('CV khong ton tai hoac khong thuoc ve ban.');
 			}
 
-			// 2. Kiểm tra tin tuyển dụng tồn tại
 			$tinTuyenDung = $this->tinTuyenDungModel->getById($maTinTuyenDung);
 			if (!$tinTuyenDung) {
 				throw new Exception('Tin tuyen dung khong ton tai.');
 			}
 
-			// 3. Kiểm tra tin chưa hết hạn
 			if ($this->tinTuyenDungModel->isExpired($tinTuyenDung)) {
 				throw new Exception('Tin tuyen dung nay da het han ung tuyen.');
 			}
 
-			// 4. Kiểm tra không nộp trùng (dựa trên UNIQUE KEY MaCV + MaTinTuyenDung)
 			if ($this->hoSoUngTuyenModel->isDuplicate($maCv, $maTinTuyenDung)) {
 				throw new Exception('Ban da nop CV nay vao tin tuyen dung nay roi, khong the nop trung.');
 			}
 
-			// 5. Kiểm tra độ dài Cover Letter dạng văn bản
 			if (mb_strlen($noiDungCoverLetter) > MAX_COVER_LETTER_TEXT_LENGTH) {
 				throw new Exception('Noi dung Cover Letter qua dai (toi da ' . MAX_COVER_LETTER_TEXT_LENGTH . ' ky tu).');
 			}
 
-			// 6. Upload file Cover Letter (nếu có) - validate định dạng và dung lượng bên trong Helper
 			$tepCoverLetter = null;
 			if (isset($_FILES['coverLetterFile'])) {
 				$tepCoverLetter = UploadHelper::uploadCoverLetter($_FILES['coverLetterFile']);
 			}
 
-			// 7. Lưu hồ sơ ứng tuyển
 			$maHoSo = IdHelper::generate('HS');
 			$taoThanhCong = $this->hoSoUngTuyenModel->create(array(
 				'maHS' => $maHoSo,
@@ -200,11 +193,9 @@ class ApplicationController {
 
 		$maNhaTuyenDung = $_SESSION['user_id'];
 
-		// Danh sách hồ sơ ứng tuyển
 		$danhSachHoSoUngTuyen = $this->hoSoUngTuyenModel
 			->getListForRecruiter($maNhaTuyenDung);
 
-		// Danh sách tin tuyển dụng (để lọc)
 		require_once ROOT_PATH . '/models/JobPosting.php';
 		$tinModel = new JobPosting();
 		$resultTin = $tinModel->getByEmployer($maNhaTuyenDung);

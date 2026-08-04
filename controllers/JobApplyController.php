@@ -19,7 +19,6 @@ class JobApplyController {
 	 * Hiển thị trang ứng tuyển
 	 */
 	public function apply($maTinTuyenDung) {
-		// Kiểm tra đăng nhập
 		if (!isset($_SESSION['user_id'])) {
 			header('Location: /JobCV/index.php?route=auth/login');
 			exit;
@@ -27,7 +26,6 @@ class JobApplyController {
 
 		$maUser = $_SESSION['user_id'];
 
-		// Lấy tin tuyển dụng
 		$job = $this->tinModel->getById($maTinTuyenDung);
 
 		if (!$job) {
@@ -36,7 +34,6 @@ class JobApplyController {
 			exit;
 		}
 
-		// Kiểm tra tin còn mở không
 		if ($job['TrangThai'] !== 'DangMo') {
 			echo "
 				<script>
@@ -47,7 +44,6 @@ class JobApplyController {
 			exit;
 		}
 
-		// Lấy CV của ứng viên
 		$cv = $this->cvModel->getByCandidate($maUser);
 
 		if (!$cv) {
@@ -61,7 +57,6 @@ class JobApplyController {
 			exit;
 		}
 
-		// Kiểm tra đã ứng tuyển chưa
 		$hasApplied = $this->jobApplyModel->hasApplied(
 			$cv['MaCV'],
 			$maTinTuyenDung
@@ -77,7 +72,6 @@ class JobApplyController {
 			exit;
 		}
 
-		// Hiển thị trang ứng tuyển
 		require_once __DIR__ . '/../views/applicant/applyJob.php';
 	}
 
@@ -90,7 +84,6 @@ class JobApplyController {
 			exit;
 		}
 
-		// Kiểm tra đăng nhập
 		if (!isset($_SESSION['user_id'])) {
 			header('Location: /JobCV/index.php?route=auth/login');
 			exit;
@@ -105,7 +98,6 @@ class JobApplyController {
 			die('Thiếu mã tin tuyển dụng.');
 		}
 
-		// Lấy CV ứng viên
 		$cv = $this->cvModel->getByCandidate($maUser);
 
 		if (!$cv) {
@@ -114,7 +106,6 @@ class JobApplyController {
 
 		$maCV = $cv['MaCV'];
 
-		// Kiểm tra ứng tuyển trùng
 		if (
 			$this->jobApplyModel->hasApplied(
 				$maCV,
@@ -124,10 +115,8 @@ class JobApplyController {
 			die('Bạn đã ứng tuyển công việc này rồi.');
 		}
 
-		// Sinh mã hồ sơ
 		$maHS = $this->jobApplyModel->generateId();
 
-		// Lưu hồ sơ
 		$success = $this->jobApplyModel->create(
 			$maHS,
 			$maCV,
