@@ -24,6 +24,28 @@ $diaDiemList   = $diaDiemList ?? [];
 		.main-content { margin-left: var(--sidebar-width); padding: 20px; }
 		.nav-link-admin { display: flex; align-items: center; padding: 12px 20px; color: #555; text-decoration: none; font-weight: 500; border-radius: 8px; margin: 4px 15px; }
 		.nav-link-admin.active { background-color: #f0f4f9; color: var(--primary-blue); }
+
+		/* Tab chia đều, không dồn cục bên trái */
+		#myTab.nav-tabs { border-bottom: 2px solid #e5e5e5; }
+		#myTab.nav-tabs .nav-item { flex: 1 1 0; text-align: center; }
+		#myTab.nav-tabs .nav-link {
+			width: 100%;
+			border: none;
+			border-bottom: 3px solid transparent;
+			border-radius: 0;
+			color: #6c757d;
+			font-weight: 600;
+			padding: 12px 0;
+		}
+		#myTab.nav-tabs .nav-link:hover {
+			border-color: transparent;
+			color: var(--primary-blue);
+		}
+		#myTab.nav-tabs .nav-link.active {
+			color: var(--primary-blue);
+			background-color: transparent;
+			border-bottom: 3px solid var(--primary-blue);
+		}
 	</style>
 </head>
 <body>
@@ -69,7 +91,7 @@ $diaDiemList   = $diaDiemList ?? [];
 		</div>
 	<?php endif; ?>
 
-	<ul class="nav nav-tabs mb-3" id="myTab" role="tablist">
+	<ul class="nav nav-tabs nav-fill mb-3" id="myTab" role="tablist">
 		<li class="nav-item" role="presentation">
 			<button class="nav-link active" id="job-tab" data-bs-toggle="tab" data-bs-target="#job-tab-pane" type="button" role="tab">
 				<i class="fa-solid fa-briefcase me-2"></i>Ngành nghề
@@ -150,7 +172,7 @@ $diaDiemList   = $diaDiemList ?? [];
 							<?php foreach ($diaDiemList as $item): ?>
 							<tr>
 								<td><strong><?= htmlspecialchars($item['TenDanhMuc']) ?></strong></td>
-								<td><?= htmlspecialchars($item['MaDanhMuc']) ?></td>
+								<td><span class="badge bg-light text-dark border"><?= htmlspecialchars($item['MaDanhMuc']) ?></span></td>
 								<td><?= date('d/m/Y', strtotime($item['NgayTao'] ?? 'now')) ?></td>
 								<td class="text-end">
 									<button class="btn btn-sm btn-outline-primary me-1" 
