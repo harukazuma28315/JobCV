@@ -96,7 +96,7 @@ $resetEmail = $_SESSION['user_email'] ?? $profileData['email'] ?? '';
 
 								<div class="col-12">
 									<label class="form-label fw-semibold text-dark">Địa chỉ</label>
-									<input type="text" name="diaChi" class="form-control py-2" value="<?php echo htmlspecialchars($profileData['address'] ?? ''); ?>" maxlength="255" pattern="^[a-zA-Z0-9àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđĐ\s,\/]+$" oninput="this.value = this.value.replace(/[^a-zA-Z0-9àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđĐ\s,\/]/g, '')" title="Địa chỉ chỉ được chứa chữ cái, số, khoảng trắng, dấu phẩy (,) và dấu xuyệt (/). Không chứa các ký tự đặc biệt khác">
+									<input type="text" name="diaChi" class="form-control py-2" value="<?php echo htmlspecialchars($profileData['address'] ?? ''); ?>" maxlength="255" pattern="^[a-zA-Z0-9àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđĐ\s,\/]+$" title="Địa chỉ chỉ được chứa chữ cái, số, khoảng trắng, dấu phẩy (,) và dấu xuyệt (/). Không chứa các ký tự đặc biệt khác">
 								</div>
 							</div>
 							

@@ -240,6 +240,9 @@ class ApplicationModel {
 					uUser.HoTen AS TenUngVien,
 					uUser.Email AS EmailUngVien,
 					uUser.SDT AS SdtUngVien,
+					uUser.NgaySinh,
+					uUser.GioiTinh,
+					uUser.DiaChi,
 					tin.MaTinTuyenDung,
 					tin.TieuDe AS TenTin
 				FROM hosotuyendung hs
