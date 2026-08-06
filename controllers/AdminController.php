@@ -19,9 +19,7 @@ class AdminController {
 	 * Hiển thị trang Dashboard Admin
 	 */
 	public function showDashboard() {
-		// AuthHelper::requireRole(ROLE_ADMIN);
-		$_SESSION['role'] = 2;        // Giả lập quyền Admin
-		$_SESSION['user_id'] = 'U005';
+		AuthHelper::requireRole(ROLE_ADMIN);
 
 		// Lấy dữ liệu thống kê tổng quát
 		$thongKe = array(

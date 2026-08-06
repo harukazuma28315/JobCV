@@ -21,11 +21,7 @@ class JobManagementController {
 	 * @return void
 	 */
 	public function showJobList() {
-		 // Giả lập Admin để test
-		$_SESSION['role'] = 2;        
-		$_SESSION['user_id'] = 'U005';
-
-		// AuthHelper::requireRole(ROLE_ADMIN);
+		AuthHelper::requireRole(ROLE_ADMIN);
 
 		$keyword = isset($_GET['keyword']) ? trim($_GET['keyword']) : '';
 		$status  = isset($_GET['status']) ? $_GET['status'] : null;
@@ -43,11 +39,7 @@ class JobManagementController {
 	 * @return void
 	 */
 	public function approveJob() {
-		 // Giả lập Admin để test
-		$_SESSION['role'] = 2;        
-		$_SESSION['user_id'] = 'U005';
-
-		// AuthHelper::requireRole(ROLE_ADMIN);
+		AuthHelper::requireRole(ROLE_ADMIN);
 		
 		$maTin = isset($_POST['maTin']) ? trim($_POST['maTin']) : '';
 
@@ -65,11 +57,8 @@ class JobManagementController {
 	 * @return void
 	 */
 	public function rejectJob() {
-		 // Giả lập Admin để test
-		$_SESSION['role'] = 2;        
-		$_SESSION['user_id'] = 'U005';
 
-		// AuthHelper::requireRole(ROLE_ADMIN);
+		AuthHelper::requireRole(ROLE_ADMIN);
 		$maTin = isset($_POST['maTin']) ? trim($_POST['maTin']) : '';
 
 		if ($this->jobModel->rejectJob($maTin)) {
@@ -86,11 +75,7 @@ class JobManagementController {
 	 * @return void
 	 */
 	public function removeJob() {
-		 // Giả lập Admin để test
-		$_SESSION['role'] = 2;        
-		$_SESSION['user_id'] = 'U005';
-
-		// AuthHelper::requireRole(ROLE_ADMIN);
+		AuthHelper::requireRole(ROLE_ADMIN);
 		$maTin = isset($_POST['maTin']) ? trim($_POST['maTin']) : '';
 
 		if ($this->jobModel->removeJob($maTin)) {

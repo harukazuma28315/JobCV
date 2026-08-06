@@ -21,9 +21,7 @@ class UserManagementController {
 	 * @return void
 	 */
 	public function showUserList() {
-		// Giả lập Admin để test
-		$_SESSION['role'] = 2;        
-		$_SESSION['user_id'] = 'U005';
+		AuthHelper::requireRole(ROLE_ADMIN);
 
 		$keyword = isset($_GET['keyword']) ? trim($_GET['keyword']) : '';
 		$role    = isset($_GET['role']) && $_GET['role'] !== '' ? (int)$_GET['role'] : null;
@@ -42,8 +40,7 @@ class UserManagementController {
 	 * @return void
 	 */
 	public function lockUser() {
-		$_SESSION['role'] = 2; // Giả lập Admin
-		// AuthHelper::requireRole(ROLE_ADMIN);  // Tạm comment khi test
+		AuthHelper::requireRole(ROLE_ADMIN);
 
 		$maUser = isset($_POST['maUser']) ? trim($_POST['maUser']) : '';
 
