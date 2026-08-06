@@ -120,7 +120,7 @@ function getHinhThucLabel($ma) {
 	</div>
 	<div class="px-4">
 		<a href="<?= BASE_URL ?>/index.php?route=auth/logout" class="btn btn-outline-danger w-100">
-			<i class="fa-solid fa-arrow-right-from-bracket me-2"></i>Thoát giao diện Admin
+			Thoát giao diện Admin
 		</a>
 	</div>
 </div>
